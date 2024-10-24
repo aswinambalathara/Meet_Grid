@@ -11,7 +11,13 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        'footer-brown':'#0F0606',
       },
+      fontFamily:{
+        sans: ['Poppins', 'Arial', 'sans-serif'],    
+        poltawski: ['Poltawski Nowy', 'serif'],       
+        alegreya: ['Alegreya SC', 'serif'],    
+      }
     },
   },
   plugins: [],

@@ -1,8 +1,9 @@
 import React from 'react'
-
 function Page() {
   return (
-    <div>Page</div>
+    <div className="landing w-full min-h-screen">
+
+    </div>
   )
 }
 
