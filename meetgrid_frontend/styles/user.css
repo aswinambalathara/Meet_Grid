@@ -1,0 +1,30 @@
+.user-auth-background{
+    background-image: url('../public/images/auth-bg.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.auth-form{
+    background-color: hsla(0, 0%, 100%, 0.250);
+}
+
+.auth-input{
+    position: relative;
+}
+
+.auth-input i{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    color: #2C1B1B;
+}
+
+.auth-button{
+    background-color: #211d1d;
+    color: white;
+    transition: 100ms ease;
+}
+.auth-button:hover{
+    background-color: #1c1a1a;
+    
+}
