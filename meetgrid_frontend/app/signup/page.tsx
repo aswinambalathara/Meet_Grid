@@ -2,7 +2,7 @@
 import "@/styles/user.css";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import AuthButton from "@/components/userComponents/Buttons/AuthButton";
+import BrownButton from "@/components/Buttons/BrownButton";
 import { useState } from "react";
 function UserSignUp() {
   const [Peye, setPeye] = useState(true);
@@ -54,7 +54,7 @@ function UserSignUp() {
             </Label>
             <div className="auth-input">
               <Input
-                type="password"
+                type={Peye? 'password' : 'text'}
                 id="password"
                 placeholder="Password"
                 className="placeholder:text-slate-300 border-amber-950 shadow-none focus-visible:ring-slate-300"
@@ -70,9 +70,9 @@ function UserSignUp() {
             <Label htmlFor="confirmPassword" className="mb-2">
               Confirm Password
             </Label>
-            <div className="auth-input">
+            <div className="auth-input"> 
               <Input
-                type="password"
+                type={CPeye? 'password' : 'text'}
                 id="confirmPassword"
                 placeholder="Confim Password"
                 className="placeholder:text-slate-300 border-amber-950 shadow-none focus-visible:ring-slate-300"
@@ -85,7 +85,7 @@ function UserSignUp() {
             </div>
           </div>
           <div className="grid w-full max-w-sm items-center gap-1.5 mb-5">
-            <AuthButton label="Sign Up" onclick={handleSubmit} />
+            <BrownButton label="Sign Up" onclick={handleSubmit} />
           </div>
           <div>
             <p className="text-sm">
