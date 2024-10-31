@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import BrownButton from "@/components/Buttons/BrownButton";
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 function Login() {
   const [eye, setEye] = useState(true);
@@ -55,12 +56,32 @@ function Login() {
                 ></i>
               )}
             </div>
+            <Link href="/forgotpassword" className="text-right text-nav-brown">
+              <small>Forgot Password?</small>
+            </Link>
           </div>
 
           <div className="grid w-full max-w-sm items-center gap-1.5 mb-5">
             <BrownButton label="Login" onclick={handleSubmit} />
           </div>
           <div className="mb-3 flex gap-2">
+            <div
+              id="g_id_onload"
+              data-client_id="379302884897-s9vo3654rvgkl8mslah1uigma6fq3udq.apps.googleusercontent.com"
+              data-context="signin"
+              data-ux_mode="popup"
+              data-callback="handleGoogleLogin"
+              data-auto_prompt="false"
+            ></div>
+
+            <div
+              className="g_id_signin"
+              data-type="icon"
+              data-shape="square"
+              data-theme="outline"
+              data-text="signin_with"
+              data-size="large"
+            ></div>
             <div className="w-[2px] h-10 bg-white"></div>
             <Image
               src="/icons/sendOTP.png"
@@ -79,8 +100,10 @@ function Login() {
           </div>
         </form>
         <div className="signup-note text-white text-center mb-8 md:mb-0">
-          <h2 className="font-bold text-3xl">MEET GRID</h2>
-          <h4>Connecting You to Events, and Events to Connections.</h4>
+          <Link href="/">
+            <h2 className="font-bold text-3xl">MEET GRID</h2>
+          </Link>
+          <h4>Connecting You to Events, and Events to Connections</h4>
         </div>
       </div>
     </div>

@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import BrownButton from "@/components/Buttons/BrownButton";
 import { useState } from "react";
+import Link from "next/link";
+  
 function UserSignUp() {
   const [Peye, setPeye] = useState(true);
   const [CPeye, setCPeye] = useState(true);
@@ -13,7 +15,7 @@ function UserSignUp() {
     <div className="SignUp-Container container min-h-screen bg-user-background flex items-center justify-center">
       <div className="user-auth-background md:w-3/4 min-h-[600px] rounded-xl flex flex-col md:flex-row items-center justify-between py-16 px-4 lg:px-28 md:py-0">
         <div className="signup-note text-white text-center mb-8 md:mb-0">
-          <h2 className="font-bold text-3xl">MEET GRID</h2>
+        <Link   href="/"><h2 className="font-bold text-3xl">MEET GRID</h2></Link>
           <h4>Connecting You to Events, and Events to Connections.</h4>
         </div>
         <form

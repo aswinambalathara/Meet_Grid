@@ -2,6 +2,7 @@
 import React from "react";
 import "@/styles/user.css";
 import Image from "next/image";
+import Logo from "@/components/ui/Logo";
 import { usePathname } from "next/navigation";
 
 function Footer() {
@@ -12,8 +13,9 @@ function Footer() {
   return (
     <div className="user-footer w-full min-h-[350px] bg-footer-brown">
       <div className="footer-content min-h-[350px] p-12 text-white">
-        <h4 className=" font-bold font text-3xl mb-10">MEET GRID</h4>
-        <div className="footer-contents flex flex-col sm:flex-row justify-between sm:items-center px-5">
+        {/* <h4 className=" font-bold font text-3xl ">MEET GRID</h4> */}
+        <Logo className="mb-10"/>
+        <div className="footer-contents flex flex-col sm:flex-row justify-between sm:items-center px-12">
           <div className="quick-links mb-5 sm:mb-0 ">
             <strong>Quick Links</strong>
             <ul className="mt-6 font-light">
