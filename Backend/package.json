@@ -21,10 +21,13 @@
     "ts-node": "^10.9.2"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/mongoose": "^5.11.96",
     "@types/node": "^22.7.9",
+    "@types/nodemailer": "^6.4.16",
     "typescript": "^5.6.3"
   }
 }

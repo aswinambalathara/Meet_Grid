@@ -14,6 +14,10 @@ export default interface IUser{
         jobTitle?: string;
         linkedinUrl?: string;
         skills?: string[];
+    },
+    verificationToken?:{
+        token:string,
+        expiry:Date
     }
     eventsHosted?:string[];
     eventsAttending?:string[];
@@ -23,7 +27,7 @@ export default interface IUser{
         city:string;
         country:string;
         state:string;
-        PostalCode:string
+        postalCode:string
     }
     isDeactivated?:boolean;
     isBlocked?:boolean;
