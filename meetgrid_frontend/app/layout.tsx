@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
-import Footer from "@/components/userComponents/Layout/Footer";
-import Navbar from '@/components/userComponents/Layout/Navbar'
+import Footer from "@/components/pagecomponents/user/Layout/Footer";
+import Navbar from '@/components/pagecomponents/user/Layout/Navbar'
 export const metadata: Metadata = {
   title: "Meet Grid",
   description: "Connecting You to Events, and Events to Connections",

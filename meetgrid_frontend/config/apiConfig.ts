@@ -1,6 +1,8 @@
 
-export const BASE_URL = process.env.SERVER_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
-const apiURLs = {
-    
+ const apiURLs = {
+    BASE_URL:BASE_URL
 }
+
+export default apiURLs

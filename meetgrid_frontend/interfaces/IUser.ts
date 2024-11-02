@@ -20,3 +20,10 @@ export default interface IUser{
         postalCode:string
     }
 }
+
+export interface IUserError {
+    email?:string | null
+    fullName?:string | null
+    password?:string | null
+    confirmPassword?:string | null
+}

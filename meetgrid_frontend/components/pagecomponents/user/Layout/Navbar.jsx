@@ -6,7 +6,7 @@ import Logo from "@/components/ui/Logo";
 function Navbar() {
   const path = usePathname()
   const [isLoggedIn, setLogState] = useState(false);
-if(path.includes('/login') || path.includes('/login')){
+if(path.includes('/login') || path.includes('/signup')){
   return null
 }
   return (

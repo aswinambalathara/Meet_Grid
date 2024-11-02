@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
-import EnterEmail from "@/components/Inputs/EnterEmail";
-import OtpInput from '../Inputs/OtpInput';
+import EnterEmail from "@/components/ui/Inputs/EnterEmail";
+import OtpInput from '@/components/ui/Inputs/OtpInput';
 import Link from 'next/link';
 
 function LoginOTP() {

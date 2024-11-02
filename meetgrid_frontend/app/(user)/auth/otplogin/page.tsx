@@ -1,7 +1,6 @@
 import React from "react";
-import LoginOTP from "@/components/userComponents/LoginOTP";
+import LoginOTP from "@/components/pagecomponents/user/Auth/LoginOTP";
 function page() {
-
 
   return (
     <LoginOTP/>

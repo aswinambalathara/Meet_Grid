@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import BrownButton from "@/components/Buttons/BrownButton";
+import BrownButton from "@/components/ui/Buttons/BrownButton";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,10 +13,10 @@ function Login() {
   const handleSubmit = () => {};
   return (
     <div className="login-container min-h-screen bg-user-background flex items-center justify-center">
-      <div className="user-auth-background md:w-3/4 min-h-[600px] rounded-xl flex flex-col-reverse md:flex-row items-center justify-between py-16 px-4 lg:px-28 md:py-0">
+      <div className="user-auth-background md:w-3/4 min-h-[700px] rounded-xl flex flex-col-reverse md:flex-row items-center justify-between py-16 px-4 lg:px-28 md:py-0">
         <form
           action=""
-          className="auth-form min-h-[500px] w-full sm:w-[450px] p-7 text-white flex flex-col items-center rounded-lg"
+          className="auth-form min-h-[500px] w-full sm:w-[450px] p-7 text-white flex flex-col items-center rounded-lg change-transition"
         >
           <h2 className="mb-10 font-semibold text-2xl">Login</h2>
           <div className="grid w-full max-w-sm items-center gap-1.5 mb-5">
@@ -65,23 +65,7 @@ function Login() {
             <BrownButton label="Login" onclick={handleSubmit} />
           </div>
           <div className="mb-3 flex gap-2">
-            <div
-              id="g_id_onload"
-              data-client_id="379302884897-s9vo3654rvgkl8mslah1uigma6fq3udq.apps.googleusercontent.com"
-              data-context="signin"
-              data-ux_mode="popup"
-              data-callback="handleGoogleLogin"
-              data-auto_prompt="false"
-            ></div>
 
-            <div
-              className="g_id_signin"
-              data-type="icon"
-              data-shape="square"
-              data-theme="outline"
-              data-text="signin_with"
-              data-size="large"
-            ></div>
             <div className="w-[2px] h-10 bg-white"></div>
             <Image
               src="/icons/sendOTP.png"
@@ -94,7 +78,7 @@ function Login() {
             <p className="text-sm">
               Don’t have an account?{" "}
               <span className="text-sm font-semibold text-stone-900">
-                SignUp
+                <Link href='/auth/signup'>SignUp</Link>
               </span>
             </p>
           </div>

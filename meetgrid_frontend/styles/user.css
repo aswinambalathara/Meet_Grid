@@ -30,3 +30,6 @@
     
 }
 
+.change-transition{
+    transition: 300ms ease ;
+}
