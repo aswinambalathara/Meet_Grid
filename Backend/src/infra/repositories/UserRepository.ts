@@ -52,5 +52,16 @@ export default class UserRepository implements IUserRepository{
             throw error
         }
     }
+
+    async verifyByToken(token:string):Promise<IUser | null>{
+        try {
+            return await this.model.findOne({
+                "verificationToken.token":token,
+                "verificationToken.expiry":{$gt:Date.now()}
+            })
+        } catch (error) {
+            throw error
+        }
+    }
 }
 

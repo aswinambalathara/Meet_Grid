@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import Logo from "@/components/ui/Logo";
 function Navbar() {
   const path = usePathname()
-  const [isLoggedIn, setLogState] = useState(true);
+  const [isLoggedIn, setLogState] = useState(false);
 if(path.includes('/login') || path.includes('/login')){
   return null
 }
