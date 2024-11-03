@@ -12,7 +12,7 @@ const axiosInstance = axios.create({
 })
 
 export const signUpUser = async (user: IUser) => {
-    const response = await axiosInstance.post('/signup', user);
+    const response = await axiosInstance.post('/register', user);
         return response.data;
 };
 
