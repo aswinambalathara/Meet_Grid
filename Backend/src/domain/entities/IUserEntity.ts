@@ -31,4 +31,5 @@ export default interface IUser{
     }
     isDeactivated?:boolean;
     isBlocked?:boolean;
+    isVerified?:boolean
 }

@@ -1,11 +1,12 @@
 import { model, Schema } from "mongoose";
 import IUser from "../../domain/entities/IUserEntity";
+import { required } from "joi";
 
 const userSchema = new Schema<IUser>({
   fullName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  phone: { type: String, required: true, default: null },
+  phone: { type: String }, 
   image: { type: String },
   bio: { type: String },
   gender: { type: String, enum: ["Male", "Female", "Other"] },
@@ -40,6 +41,7 @@ const userSchema = new Schema<IUser>({
   },
   isBlocked: { type: Boolean, required: true, default: false },
   isDeactivated: { type: Boolean, required: true, default: false },
+  isVerified:{type: Boolean, required:true, default:false},
   createdAt: { type: Date, default: Date.now() },
   updatedAt: { type: Date, default: Date.now() },
 });

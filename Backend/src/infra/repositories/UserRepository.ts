@@ -45,7 +45,7 @@ export default class UserRepository implements IUserRepository{
         }
     }
 
-    async update(id: string, user: IUser): Promise<IUser | null> {
+    async update(id: string, user: Partial<IUser>): Promise<IUser | null> {
         try {
             return await this.model.findByIdAndUpdate(id,user)
         } catch (error) {
