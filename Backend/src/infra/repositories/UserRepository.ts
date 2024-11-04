@@ -23,7 +23,7 @@ export default class UserRepository implements IUserRepository{
     }
     async findByEmail(email: string): Promise<IUser | null> {
         try {
-            return await this.model.findOne({email:email}).select('-password')
+            return await this.model.findOne({email:email})
         } catch (error) {
             throw error
         }
@@ -47,7 +47,7 @@ export default class UserRepository implements IUserRepository{
 
     async update(id: string, user: Partial<IUser>): Promise<IUser | null> {
         try {
-            return await this.model.findByIdAndUpdate(id,user)
+            return await this.model.findByIdAndUpdate(id,user,{new:true})
         } catch (error) {
             throw error
         }

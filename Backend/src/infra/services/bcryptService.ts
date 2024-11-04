@@ -1,6 +1,5 @@
 import bcrypt from 'bcrypt';
 import IPasswordService from '../../domain/interfaces/services/IBcryptService';
-import { deflate } from 'zlib';
 
 export default class BcryptService implements IPasswordService{
     async hash(password: string): Promise<string> {

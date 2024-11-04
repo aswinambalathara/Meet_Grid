@@ -1,6 +1,5 @@
 import { model, Schema } from "mongoose";
 import IUser from "../../domain/entities/IUserEntity";
-import { required } from "joi";
 
 const userSchema = new Schema<IUser>({
   fullName: { type: String, required: true },
@@ -28,6 +27,12 @@ const userSchema = new Schema<IUser>({
       expiry: { type: Date, required: true },
     },
     required: false,
+  },
+  otp:{
+    type:{
+      otp:{type:Number, required:true},
+      expiry:{type:Date,required:true}
+    }
   },
   location: {
     type: {

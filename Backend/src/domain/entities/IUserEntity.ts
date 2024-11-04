@@ -19,6 +19,10 @@ export default interface IUser{
         token:string,
         expiry:Date
     }
+    otp?:{
+        otp:number,
+        expiry:Date
+    }
     eventsHosted?:string[];
     eventsAttending?:string[];
     eventsAttended?:string[]
