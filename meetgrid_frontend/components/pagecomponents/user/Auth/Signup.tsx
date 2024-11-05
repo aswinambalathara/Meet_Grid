@@ -80,12 +80,11 @@ function UserSignUp() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    
     e.preventDefault();
     console.log('handle submit')
     setErrors({});
     const formErrors = validateSignUpForm(
-      user.fullName,
+      user.fullName!,
       user.email,
       user.password,
       confirmPassword
@@ -96,12 +95,14 @@ function UserSignUp() {
   if (hasErrors) return;
 
     const data = await signUpUser(user);
-    console.log(data)
-    if(data.statusCode === 201){
-      notify('Sign Up, Please verify your email','success');
+    
+
+    if(data.status){
+      notify(data.message,'success'); 
     }else{
       notify('Something went wrong','error');
     }
+    
   };
 
   return (
@@ -214,7 +215,7 @@ function UserSignUp() {
             </div>
           </div>
           <div className="grid w-full max-w-sm items-center gap-1.5 mb-5">
-            <BrownButton label="Sign Up" type="submit" onclick={handleSubmit}/>
+            <BrownButton label={"Signup"} type="submit" onclick={handleSubmit}/>
           </div>
           <div>
             <p className="text-sm">

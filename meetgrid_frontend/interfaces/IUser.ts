@@ -1,6 +1,6 @@
 export default interface IUser{
     email:string,
-    fullName:string;
+    fullName?:string;
     password:string;
     phone?:string;
     image?:string;

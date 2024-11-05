@@ -6,6 +6,7 @@ interface ValidationErrors {
     confirmPassword?: string | null;
   }
 
+
   
   export const validateFullName = (fullName: string): string | null=> {
     if (!fullName.trim()) return "Full Name is required";

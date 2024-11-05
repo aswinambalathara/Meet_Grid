@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from "react";
 import "@/styles/user.css";
-import { Input } from "../ui/input";
+import { Input } from "@/components/ui/input";
 import BrownButton from "../Buttons/BrownButton";
 
 function EnterEmail() {
@@ -13,7 +13,7 @@ function EnterEmail() {
     <div className="flex flex-col">
       <h2 className="mb-10 font-normal text-lg text-center">Enter Your Email Here</h2>
           <Input type="email" id="email" onChange={(e)=>setEmail(e.target.value)} placeholder="Email Address" className="mb-4"/>
-          <BrownButton label="Send OTP" onclick={handleSubmit} />
+          <BrownButton label="Send OTP" type="button" onclick={handleSubmit} />
     </div>
   );
 }

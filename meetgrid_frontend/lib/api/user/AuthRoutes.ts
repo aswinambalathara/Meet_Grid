@@ -11,6 +11,15 @@ const axiosInstance = axios.create({
     withCredentials:true
 })
 
+axiosInstance.interceptors.response.use((response:any)=>{
+    if(response.data.accessToken){
+        const auth = JSON.parse(localStorage.getItem("auth") || "{}");
+        auth.userToken = response.data.accessToken;
+        localStorage.setItem("auth",JSON.stringify(auth))
+    }
+    return response
+})
+
 export const signUpUser = async (user: IUser) => {
     const response = await axiosInstance.post('/register', user);
         return response.data;

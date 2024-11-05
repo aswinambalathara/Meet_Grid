@@ -1,0 +1,5 @@
+.admin-auth-background{
+    background-image: url('../public/images/adminAuth-bg.jpg');
+    background-size: cover;
+    background-position: center;
+}
