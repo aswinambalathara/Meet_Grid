@@ -19,7 +19,14 @@ type LoginResponse = {
   userName: string;
   accessToken: string;
   refreshToken: string;
+  status: boolean,
+  message:string
 };
+
+type response = {
+  status: boolean,
+  message:string
+}
 
 export default class AuthenticationUseCase {
   constructor(
@@ -30,7 +37,7 @@ export default class AuthenticationUseCase {
     private mailService: IEmailService,
     private validatorService: IValidationService
   ) {}
-  async register(user: IUser): Promise<string> {
+  async register(user: IUser): Promise<response> {
     this.validatorService.validateRequiredFields({
       email: user.email,
       password: user.password,
@@ -58,7 +65,7 @@ export default class AuthenticationUseCase {
       subject: "Verification Mail",
       link: `${SERVER_URL}/verify_email/${token}`,
     });
-    return `User created, verification link send to email${user.email}`;
+    return {status:true,message:`User created, verification link send to email${user.email}`}
   }
 
   async verifyEmail(token: string): Promise<string> {
@@ -119,7 +126,7 @@ export default class AuthenticationUseCase {
       foundUser._id!
     );
 
-    return { accessToken, refreshToken, userName: foundUser.fullName };
+    return { accessToken, refreshToken, userName: foundUser.fullName, status:true, message:"Login Successfull" };
   }
 
   async sendOTP(email: string): Promise<{ email: string; message: string }> {
@@ -191,7 +198,7 @@ export default class AuthenticationUseCase {
       user.email,
       user._id!
     );
-    return { refreshToken, accessToken, userName: user.fullName };
+    return { refreshToken, accessToken, userName: user.fullName , status:true, message:"Login successfull"};
   }
 
   async forgotPassword(email:string):Promise<{resetToken:string,message:string}>{
@@ -224,12 +231,22 @@ export default class AuthenticationUseCase {
     return {resetToken:resetToken,message:"Reset password email sent"}
   }
 
-  async validateResetToken (token:string):Promise<string>{
+  async validateResetToken (token:string):Promise<response>{
     const result = await this.userRepository.verifyByToken(token);
     if (!result) {
       throw new UnauthorizedError("Invalid or Expired token");
     }
-    return "Token Valid"
+    return {status:true,message:"Token valid"}
+  }
+
+  async changeForgotPassword (email:string,password:string):Promise<response>{
+    const foundUser = await this.userRepository.findByEmail(email);
+    if(!foundUser){
+      throw new NotFoundError("User not found")
+    }
+    foundUser.password = await this.passwordService.hash(password);
+    await this.userRepository.update(foundUser._id!,foundUser);
+    return {status:true,message:"Password Changed successfully"}
   }
   
   private generateOTP(length: number = 6): number {

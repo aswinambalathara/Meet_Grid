@@ -18,4 +18,5 @@ export default class AdminAuthController {
       next(error);
     }
   }
+  
 }
