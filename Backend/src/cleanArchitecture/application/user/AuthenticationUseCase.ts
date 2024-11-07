@@ -33,7 +33,7 @@ export default class AuthenticationUseCase {
     private userRepository: IUserRepository,
     private passwordService: IPasswordService,
     private cryptoService: ITokenService,
-    private TokenService: IJWTService,
+    private TokenService: IJWTService, 
     private mailService: IEmailService,
     private validatorService: IValidationService
   ) {}

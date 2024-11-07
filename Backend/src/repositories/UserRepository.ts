@@ -1,9 +1,9 @@
 import IUser from "../interfaces/entities/IUser";
 import IUserRepository from "../interfaces/repository/IUserRepository";
-import userModel from "../models/userModel";
+import UserModel from '../models/UserModel'
 
 export default class UserRepository implements IUserRepository{
-    private model = userModel;
+    private model = UserModel;
 
     async create(user: IUser): Promise<IUser> {
         try {
