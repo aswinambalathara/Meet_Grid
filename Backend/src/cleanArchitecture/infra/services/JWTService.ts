@@ -1,6 +1,6 @@
 import IJWTService from "../../domain/interfaces/services/IJWTService";
 import jwt, { JwtPayload, TokenExpiredError } from "jsonwebtoken";
-import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from "../config/env";
+import { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } from "../../../config/env";
 
 export default class JWTService implements IJWTService {
   private signToken(

@@ -2,7 +2,7 @@ import IEmailService, {
   SendMailProps,
 } from "../../domain/interfaces/services/IMailService";
 import nodemailer from "nodemailer";
-import { NODEMAILER_PASSKEY, SENDER_EMAIL } from "../config/env";
+import { NODEMAILER_PASSKEY, SENDER_EMAIL } from "../../../config/env";
 import fs from "fs/promises";
 import path from "path";
 

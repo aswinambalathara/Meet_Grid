@@ -1,7 +1,7 @@
 import express from 'express';
-import { PORT, CLIENT_URL} from './infra/config/env';
-import { connectDB } from './infra/config/connectDB';
-import routes from './presentation/routers/index'
+import { PORT, CLIENT_URL} from './config/env';
+import { connectDB } from './config/connectDB';
+import routes from './routes/index'
 import cors from 'cors'
 const app = express()
 const port = PORT || 4000

@@ -11,7 +11,7 @@ import {
   ForbiddenError,
   UnauthorizedError,
 } from "../errors/errors";
-import { SERVER_URL, CLIENT_URL } from "../../infra/config/env";
+import { SERVER_URL, CLIENT_URL } from "../../../config/env";
 import IJWTService from "../../domain/interfaces/services/IJWTService";
 
 
@@ -65,6 +65,7 @@ export default class AuthenticationUseCase {
       subject: "Verification Mail",
       link: `${SERVER_URL}/verify_email/${token}`,
     });
+    console.log(`${SERVER_URL}/verify_email/${token}`)
     return {status:true,message:`User created, verification link send to email${user.email}`}
   }
 
