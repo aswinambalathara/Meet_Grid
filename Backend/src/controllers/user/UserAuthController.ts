@@ -1,40 +1,32 @@
-import { Response, Request, NextFunction } from 'express';
-import { StatusCode } from '../../types/index';
-import { CLIENT_URL } from '../../config/env';
-import UserAuthService from '../../services/user/UserAuthService';
-
+import { Response, Request, NextFunction } from "express";
+import { StatusCode } from "../../types/index";
+import { CLIENT_URL } from "../../config/env";
+import UserAuthService from "../../services/user/UserAuthService";
 
 export default class AuthUserController {
-  
   constructor(private userAuthService: UserAuthService) {
     this.userAuthService = userAuthService;
   }
 
-  async handleUserSignUp(
-    req: Request, 
-    res: Response,
-    next: NextFunction
-  ): Promise<Response | void> {
+  async handleUserSignUp(req: Request, res: Response, next: NextFunction) {
     try {
       const userData = req.body;
       const result = await this.userAuthService.createUser(userData);
-      return res.status(StatusCode.Created).json(result);
+      res.status(StatusCode.Created).json(result);
     } catch (error) {
       next(error);
     }
   }
 
-  async handleUserVerification( 
+  async handleUserVerification(
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<Response | void> {
+  ) {
     try {
       const { token } = req.params;
       await this.userAuthService.verifyRegisteredUser(token);
-      return res
-        .status(StatusCode.Success)
-        .redirect(`${CLIENT_URL}/auth/login`);
+      res.status(StatusCode.Success).redirect(`${CLIENT_URL}/auth/login`);
     } catch (error) {
       console.error(error);
       next(error);
@@ -45,12 +37,12 @@ export default class AuthUserController {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<any> {
+  ) {
     try {
-      const {email,password} = req.body;
-      const result = await this.userAuthService.doUserLogin(email,password);
+      const { email, password } = req.body;
+      const result = await this.userAuthService.doUserLogin(email, password);
       // const { accessToken, refreshToken, status, message, userName } = result;
-      return res.status(StatusCode.Success).json({
+       res.status(StatusCode.Success).json({
         // accessToken,
         // status,
         // message,
@@ -86,7 +78,10 @@ export default class AuthUserController {
   ): Promise<any> {
     try {
       const { email, otp } = req.body;
-      const result = await this.userAuthService.validateUserOTPLogin(otp, email);
+      const result = await this.userAuthService.validateUserOTPLogin(
+        otp,
+        email
+      );
       // const { accessToken, message, refreshToken, status, userName } = result;
       return res.status(StatusCode.Success).json({
         // accessToken,
@@ -106,7 +101,9 @@ export default class AuthUserController {
   ): Promise<any> {
     try {
       const { email } = req.body;
-      const result = await this.userAuthService.requestForgotPasswordReset(email);
+      const result = await this.userAuthService.requestForgotPasswordReset(
+        email
+      );
       return res.status(StatusCode.Success).json(result);
     } catch (error) {
       next(error);
