@@ -12,4 +12,4 @@ export const connectDB = async ()=>{
             console.error("Unknown error occurred while connecting to MongoDB");
           }
     }
-}
+} 

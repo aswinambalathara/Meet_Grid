@@ -24,7 +24,7 @@ export default class UserAuthService{
         
     }
 
-    async doSendUserOTPLogin (email:string):Promise<void>{
+    async sendUserOTPLogin (email:string):Promise<void>{
 
     }
 

@@ -3,19 +3,32 @@ import path from "path";
 import morgan from "morgan";
 import fs from 'fs'
 
-const logDirectory = path.join(__dirname, "logs");
+const logDirectory = path.join(__dirname,'..', "logs");
+
 if (!fs.existsSync(logDirectory)) {
   fs.mkdirSync(logDirectory);
 }
 
 
-const logStream = rfs.createStream("access.log", {
+const accessLogStream = rfs.createStream("access.log", {
   interval: "1d",
-  path: path.join(__dirname, "logs"),
+  path: logDirectory,
   maxFiles: 7,
   maxSize: "20M",
 });
 
-const logger = morgan("combined",{stream:logStream});
-export const devLogger = morgan('dev')
-export default logger;
+const requestLogger = morgan("combined",{stream:accessLogStream});
+
+const errorLogStream = rfs.createStream('error.log',{
+  interval:'1d',
+  path:logDirectory,
+  maxFiles:7,
+  maxSize:'20M'
+})
+
+const errorLogger = morgan('combined',{stream:errorLogStream});
+
+const devLogger = morgan('dev')
+
+export {errorLogger,requestLogger,devLogger}
+
