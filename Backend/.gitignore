@@ -1,3 +1,5 @@
 /node_modules
 /.env
 /eslint.config.mjs
+/src/logs
+/public/eslintconfig

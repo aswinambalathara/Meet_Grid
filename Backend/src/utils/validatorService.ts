@@ -5,10 +5,10 @@ import CustomError from "./CustomError";
 export default class JoiService {
   public validateRequiredFields(input: object): void {
     const schema = Joi.object().keys(
-      Object.keys(input).reduce((acc, key) => {
+      Object.keys(input).reduce<{ [key: string]: Joi.Schema }>((acc, key) => {
         acc[key] = Joi.required();
         return acc;
-      }, {} as any)
+      }, {})
     );
 
     const { error } = schema.validate(input);

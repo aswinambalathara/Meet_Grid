@@ -1,5 +1,5 @@
 import { Response, Request, NextFunction } from "express";
-import { StatusCode } from "../../types/index";
+import { Cookie, StatusCode } from "../../types/index";
 import { CLIENT_URL } from "../../config/env";
 import UserAuthService from "../../services/user/UserAuthService";
 
@@ -8,7 +8,11 @@ export default class AuthUserController {
     this.userAuthService = userAuthService;
   }
 
-  async handleUserSignUp(req: Request, res: Response, next: NextFunction) {
+  async handleUserSignUp(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
     try {
       const userData = req.body;
       const result = await this.userAuthService.createUser(userData);
@@ -22,9 +26,13 @@ export default class AuthUserController {
     req: Request,
     res: Response,
     next: NextFunction
-  ) {
+  ): Promise<void> {
     try {
-      const { token } = req.params;
+      const { token } = req.query;
+      if (typeof token !== "string") {
+        res.status(StatusCode.BadRequest).send("Invalid Token");
+        return;
+      }
       await this.userAuthService.verifyRegisteredUser(token);
       res.status(StatusCode.Success).redirect(`${CLIENT_URL}/auth/login`);
     } catch (error) {
@@ -37,16 +45,21 @@ export default class AuthUserController {
     req: Request,
     res: Response,
     next: NextFunction
-  ) {
+  ): Promise<void> {
     try {
       const { email, password } = req.body;
-      const result = await this.userAuthService.doUserLogin(email, password);
-      // const { accessToken, refreshToken, status, message, userName } = result;
-       res.status(StatusCode.Success).json({
-        // accessToken,
-        // status,
-        // message,
-        // userName,
+      const { accessToken, refreshToken, status, message } =
+        await this.userAuthService.doUserLogin(email, password);
+      res.cookie(Cookie.User, refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
+      res.status(StatusCode.Success).json({
+        accessToken,
+        status,
+        message,
       });
     } catch (error) {
       next(error);
@@ -57,15 +70,11 @@ export default class AuthUserController {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<any> {
+  ): Promise<void> {
     try {
       const { email } = req.body;
       const result = await this.userAuthService.sendUserOTPLogin(email);
-
-      return res.status(StatusCode.Accepted).json({
-        // email: result.email,
-        // message: result.message,
-      });
+      res.status(StatusCode.Accepted).json(result);
     } catch (error) {
       next(error);
     }
@@ -75,7 +84,7 @@ export default class AuthUserController {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<any> {
+  ): Promise<void> {
     try {
       const { email, otp } = req.body;
       const result = await this.userAuthService.validateUserOTPLogin(
@@ -83,7 +92,7 @@ export default class AuthUserController {
         email
       );
       // const { accessToken, message, refreshToken, status, userName } = result;
-      return res.status(StatusCode.Success).json({
+      res.status(StatusCode.Success).json({
         // accessToken,
         // message,
         // status,
@@ -98,13 +107,13 @@ export default class AuthUserController {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<any> {
+  ): Promise<void> {
     try {
       const { email } = req.body;
       const result = await this.userAuthService.requestForgotPasswordReset(
         email
       );
-      return res.status(StatusCode.Success).json(result);
+      res.status(StatusCode.Success).json(result);
     } catch (error) {
       next(error);
     }
@@ -114,11 +123,11 @@ export default class AuthUserController {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<any> {
+  ): Promise<void> {
     try {
       const token = req.body;
       const result = await this.userAuthService.validateResetToken(token);
-      return res.status(StatusCode.Success).json(result);
+      res.status(StatusCode.Success).json(result);
     } catch (error) {
       next(error);
     }
@@ -128,14 +137,14 @@ export default class AuthUserController {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<any> {
+  ): Promise<void> {
     try {
       const { email, password } = req.body;
       const result = await this.userAuthService.updateForgotPassword(
         email,
         password
       );
-      return res.status(StatusCode.Accepted).json(result);
+      res.status(StatusCode.Accepted).json(result);
     } catch (error) {
       next(error);
     }

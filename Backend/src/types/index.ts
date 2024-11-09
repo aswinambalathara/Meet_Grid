@@ -15,3 +15,20 @@ export enum StatusCode {
     BadGateway = 502,
     ServiceUnavailable = 503,
  }
+
+ export enum Cookie{
+    Admin = "adminToken",
+    User = "userToken"
+ }
+
+ export type TokenResponse = {
+   accessToken :string;
+   refreshToken : string;
+   status : boolean;
+   message:string
+ }
+
+ export type response = {
+   status:boolean,
+   message:string
+ }
