@@ -7,7 +7,7 @@ import EmailService from "../../utils/EmailService";
 import CustomError from "../../utils/CustomError";
 import { StatusCode, TokenResponse, response } from "../../types";
 import CryptoService from "../../utils/CryptoService";
-import { SERVER_URL } from "../../config/env";
+import { CLIENT_URL, SERVER_URL } from "../../config/env";
 import generateOTP from "../../utils/OTPService";
 
 export default class UserAuthService {
@@ -172,7 +172,7 @@ export default class UserAuthService {
     const OTP = generateOTP();
     const otp = {
       otp: OTP,
-      expiry: new Date(Date.now() + 10 * 60 * 1000),
+      expiry: new Date(Date.now() + 5 * 60 * 1000),
     };
     foundUser.otp = otp;
 
@@ -188,16 +188,107 @@ export default class UserAuthService {
     return { message: `OTP sent to ${foundUser.email}`, status: true };
   }
 
-  async validateUserOTPLogin(email: string, otp: number): Promise<TokenResponse> {
-    const query = {email,otp:{otp:otp,expiry:}}
-    const validate = await this.userRepository.findUser(query)
+  async validateUserOTPLogin(
+    email: string,
+    otp: number
+  ): Promise<TokenResponse> {
+    const foundUser = await this.userRepository.findByEmail(email);
+    if (!foundUser)
+      throw new CustomError(
+        "Something went wrong",
+        StatusCode.InternalServerError
+      );
+    if (foundUser.isBlocked)
+      throw new CustomError("User Blocked", StatusCode.Forbidden);
+    if (
+      foundUser?.otp?.otp !== otp ||
+      Number(foundUser?.otp?.otp) < Date.now()
+    ) {
+      throw new CustomError(
+        "Invalid OTP or OTP expired",
+        StatusCode.Unauthorized
+      );
+    }
+
+    const accessToken = this.jwtService.createAccessToken(
+      foundUser.email,
+      foundUser._id!
+    );
+    const refreshToken = this.jwtService.createRefreshToken(
+      foundUser.email,
+      foundUser._id!
+    );
+
+    return {
+      refreshToken,
+      accessToken,
+      message: "Login Successfull",
+      status: true,
+    };
   }
 
-  //   async requestForgotPasswordReset(email: string): Promise<void> {}
+  async requestForgotPasswordReset(email: string): Promise<response> {
+    this.validatorService.validateEmailFormat(email);
 
-  //   async validateResetToken(token: string): Promise<void> {}
+    const foundUser = await this.userRepository.findByEmail(email);
 
-  //   async updateForgotPassword(email: string, password: string): Promise<void> {}
+    if (!foundUser)
+      throw new CustomError("User not found", StatusCode.NotFound);
+    if (foundUser.isBlocked)
+      throw new CustomError("User Blocked", StatusCode.Forbidden);
 
-  //   async refreshAccessToken(token: string): Promise<void> {}
+    const resetToken = this.tokenService.generateToken();
+    foundUser.verificationToken = {
+      token: resetToken,
+      expiry: new Date(Date.now() + 10 * 60 * 1000),
+    };
+    await this.userRepository.update(foundUser._id!, foundUser);
+
+    await this.emailService.sendMail({
+      email: foundUser.email,
+      name: foundUser.fullName,
+      subject: "Reset Password",
+      pathOfTemplate: "../../../public/resetPassword.html",
+      link: `${CLIENT_URL}/forgot_password/reset?token=${resetToken}`,
+    });
+    return { message: `Reset Password request sent ${email}`, status: true };
+  }
+
+  async validateResetToken(token: string): Promise<response> {
+    const isValid = await this.userRepository.verifyByToken(token);
+    if (!isValid)
+      throw new CustomError("Invalid Token", StatusCode.Unauthorized);
+    return { status: true, message: "Reset token is valid" };
+  }
+
+  async updateForgotPassword(
+    email: string,
+    password: string
+  ): Promise<response> {
+    this.validatorService.validatePassword(password);
+    const foundUser = await this.userRepository.findByEmail(email);
+    if (!foundUser)
+      throw new CustomError(
+        "Something went wrong",
+        StatusCode.InternalServerError
+      );
+    if (foundUser.isBlocked)
+      throw new CustomError("User blocked", StatusCode.Forbidden);
+    password = await this.bcryptService.hash(password);
+    foundUser.password = password;
+    await this.userRepository.update(foundUser._id!, foundUser);
+    return { status: true, message: "Reset Password Successfull" };
+  }
+
+  async refreshAccessToken(token: string): Promise<{ accessToken: string }> {
+    const { email } = this.jwtService.verifyRefreshToken(token);
+    const foundUser = await this.userRepository.findByEmail(email);
+    if (!foundUser)
+      throw new CustomError("Unauthorized", StatusCode.Unauthorized);
+    const accessToken = this.jwtService.createAccessToken(
+      email,
+      foundUser._id!
+    );
+    return { accessToken };
+  }
 }

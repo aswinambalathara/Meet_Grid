@@ -1,7 +1,7 @@
 import IAdmin from "../../interfaces/entities/IAdmin";
 import IAdminRepository from "../../interfaces/repository/IAdminRepository";
 import IJWTService from "../../interfaces/utilServices/IJWTService";
-import { StatusCode } from "../../types";
+import { StatusCode, TokenResponse } from "../../types";
 import BcryptService from "../../utils/BcryptService";
 import CustomError from "../../utils/CustomError";
 
@@ -14,7 +14,7 @@ export default class AdminAuthService {
 
   async doAdminLogin(
     admin: IAdmin
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  ): Promise<TokenResponse> {
     const { email, password } = admin;
     const foundAdmin = await this.adminRepository.findByEmail(email);
     if (!foundAdmin)
@@ -34,7 +34,7 @@ export default class AdminAuthService {
       foundAdmin._id!
     );
 
-    return { accessToken, refreshToken };
+    return { accessToken, refreshToken,message:"Login Successfull",status:true};
   }
 
   async refreshAccessToken(token: string): Promise<{ accessToken: string }> {

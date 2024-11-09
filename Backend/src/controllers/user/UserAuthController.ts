@@ -87,16 +87,18 @@ export default class AuthUserController {
   ): Promise<void> {
     try {
       const { email, otp } = req.body;
-      const result = await this.userAuthService.validateUserOTPLogin(
-        otp,
-        email
-      );
-      // const { accessToken, message, refreshToken, status, userName } = result;
+      const { accessToken, refreshToken, message, status } =
+        await this.userAuthService.validateUserOTPLogin(otp, email);
+      res.cookie(Cookie.User, refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
       res.status(StatusCode.Success).json({
-        // accessToken,
-        // message,
-        // status,
-        // userName,
+        accessToken,
+        message,
+        status,
       });
     } catch (error) {
       next(error);
@@ -145,6 +147,41 @@ export default class AuthUserController {
         password
       );
       res.status(StatusCode.Accepted).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async handleRefreshToken(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { userToken } = req.cookies;
+      const { accessToken } = await this.userAuthService.refreshAccessToken(
+        userToken
+      );
+      res.status(StatusCode.Success).json({ accessToken });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async handleUserLogout(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { userToken } = req.cookies;
+      if (!userToken) res.status(StatusCode.NoContent);
+      res.clearCookie(Cookie.User, {
+        httpOnly: true,
+        sameSite: "strict",
+        secure: true,
+      });
+      res.status(StatusCode.Success).json({ message: "Logout Successfull" });
     } catch (error) {
       next(error);
     }

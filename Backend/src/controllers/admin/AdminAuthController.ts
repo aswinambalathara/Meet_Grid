@@ -32,8 +32,6 @@ export default class AdminAuthController {
   ): Promise<void> {
     try {
       const { adminToken } = req.cookies;
-      if (!adminToken)
-        res.status(StatusCode.Forbidden).json({ message: "Unauthenticated" });
       const { accessToken } = await this.adminAuthService.refreshAccessToken(
         adminToken
       );

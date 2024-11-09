@@ -30,14 +30,11 @@ export default class UserRepository implements IUserRepository {
     return await this.model.findByIdAndUpdate(id, user, { new: true });
   }
 
-  async findUser(query: Partial<IUser>): Promise<IUser | null> {
-    return await this.model.findOne(query)
-  }
-
   async verifyByToken(token: string): Promise<IUser | null> {
     return await this.model.findOne({
       "verificationToken.token": token,
-      "verificationToken.expiry": { $gt: Date.now() },
+      "verificationToken.expiry": { $gt: Date.now()},
     });
   }
+
 }
