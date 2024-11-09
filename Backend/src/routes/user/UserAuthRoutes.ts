@@ -47,4 +47,32 @@ router.post(
   authUserController.handleOTPLogin.bind(authUserController)
 );
 
+router.post(
+  "/login/validate-otp",
+  authUserController.validateOTPLogin.bind(authUserController)
+);
+
+router.post("/login/resend-otp");
+
+router.post(
+  "/forgot-password",
+  authUserController.handleForgotPassword.bind(authUserController)
+);
+router.post(
+  "/forgot-password/validate-token",
+  authUserController.validateResetToken.bind(authUserController)
+);
+router.patch(
+  "/forgot-password/update",
+  authUserController.handlePasswordUpdate.bind(authUserController)
+);
+router.get(
+  "/refresh",
+  authUserController.handleRefreshToken.bind(authUserController)
+);
+router.get(
+  "/logout",
+  authUserController.handleUserLogout.bind(authUserController)
+);
+
 export default router;

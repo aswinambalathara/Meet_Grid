@@ -4,12 +4,12 @@ import CustomError from "../utils/CustomError";
 import { StatusCode } from "../types";
 
 export default function errorHandler(
-  error: any,
+  error: CustomError | Error,
   req: Request,
   res: Response,
-  next: NextFunction
-) {
-  const statusCode = error.statusCode || StatusCode.InternalServerError;
+  _next: NextFunction
+):void {
+  const statusCode = (error instanceof CustomError && error.statusCode) || StatusCode.InternalServerError;
   const message = error.message || "Internal Server Error";
 
   if (error instanceof CustomError) {

@@ -6,10 +6,6 @@ export default class AdminRepository implements IAdminRepository {
   private model = AdminModel;
 
   async findByEmail(email: string): Promise<IAdmin | null> {
-    try {
-      return await this.model.findOne({ email: email });
-    } catch (error) {
-      throw error;
-    }
+    return await this.model.findOne({ email: email });
   }
 }

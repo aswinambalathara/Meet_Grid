@@ -72,4 +72,13 @@ export default class JoiService {
     }
     return true;
   }
+
+  public validateIdFormat(id: string): boolean {
+    const schema = Joi.string().pattern(new RegExp("^[a-fA-F0-9]{24}$"));
+    const { error } = schema.validate(id);
+    if (error) {
+       throw new CustomError("Invalid ID format", StatusCode.BadRequest);
+    }
+    return true;
+ }
 }
