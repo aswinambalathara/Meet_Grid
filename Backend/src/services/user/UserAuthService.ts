@@ -168,23 +168,15 @@ export default class UserAuthService {
         StatusCode.Forbidden
       );
     }
+    await this.sendOTP(foundUser);
+    return { message: `OTP sent to ${foundUser.email}`, status: true };
+  }
 
-    const OTP = generateOTP();
-    const otp = {
-      otp: OTP,
-      expiry: new Date(Date.now() + 5 * 60 * 1000),
-    };
-    foundUser.otp = otp;
-
-    await this.userRepository.update(foundUser._id!, foundUser);
-
-    await this.emailService.sendMail({
-      email: foundUser.email,
-      name: foundUser.fullName,
-      pathOfTemplate: "../../../public/otpVerification.html",
-      subject: "OTP Authentication Mail",
-      otp: OTP,
-    });
+  async resendOTPLogin(email: string): Promise<response> {
+    const foundUser = await this.userRepository.findByEmail(email);
+    if (!foundUser)
+      throw new CustomError("Invalid Email Address", StatusCode.NotFound);
+    await this.sendOTP(foundUser);
     return { message: `OTP sent to ${foundUser.email}`, status: true };
   }
 
@@ -290,5 +282,24 @@ export default class UserAuthService {
       foundUser._id!
     );
     return { accessToken };
+  }
+
+  private async sendOTP(user: IUser): Promise<void> {
+    const OTP = generateOTP();
+    const otp = {
+      otp: OTP,
+      expiry: new Date(Date.now() + 5 * 60 * 1000),
+    };
+    user.otp = otp;
+
+    await this.userRepository.update(user._id!, user);
+
+    await this.emailService.sendMail({
+      email: user.email,
+      name: user.fullName,
+      pathOfTemplate: "../../../public/otpVerification.html",
+      subject: "OTP Authentication Mail",
+      otp: OTP,
+    });
   }
 }

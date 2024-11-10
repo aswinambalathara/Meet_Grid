@@ -80,6 +80,20 @@ export default class AuthUserController {
     }
   }
 
+  async handleResendOTP(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { email } = req.body;
+      const result = await this.userAuthService.resendOTPLogin(email);
+      res.status(StatusCode.Success).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async validateOTPLogin(
     req: Request,
     res: Response,

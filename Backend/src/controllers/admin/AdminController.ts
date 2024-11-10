@@ -53,7 +53,8 @@ export default class AdminController {
       }
       await this.adminUserService.toggleUserBlockStatus(id, isBlocked);
       res.status(StatusCode.Success).json({
-        message: `Patient ${isBlocked ? "Unblocked" : "Blocked"} Successfully`,
+        message: `User ${isBlocked ? "Unblocked" : "Blocked"} Successfully`,
+        status: true,
       });
     } catch (error) {
       next(error);
@@ -66,7 +67,20 @@ export default class AdminController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id, isActivated } = req.body;
+      const { id, isDeactivated } = req.body;
+      if (!id || typeof isDeactivated !== "boolean") {
+        res.status(StatusCode.BadRequest).json({
+          status: false,
+          message: "Id required",
+        });
+      }
+      await this.adminUserService.toggleUserActivationStatus(id, isDeactivated);
+      res.status(StatusCode.Success).json({
+        message: `User ${
+          isDeactivated ? "Deactivated" : "Activated"
+        } Successfully`,
+        status: true,
+      });
     } catch (error) {
       next(error);
     }

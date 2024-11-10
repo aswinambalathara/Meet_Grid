@@ -10,8 +10,16 @@ export default class AdminUserService {
     private validatorService: JoiService
   ) {}
 
-  async getUsers(offset: number, limit: number,searchTerm?:string): Promise<IUser[]> {
-    return await this.userRepository.getPaginatedUsers(offset, limit,searchTerm);
+  async getUsers(
+    offset: number,
+    limit: number,
+    searchTerm?: string
+  ): Promise<IUser[]> {
+    return await this.userRepository.getPaginatedUsers(
+      offset,
+      limit,
+      searchTerm
+    );
   }
 
   async toggleUserBlockStatus(id: string, isBlocked: boolean): Promise<IUser> {
@@ -34,5 +42,17 @@ export default class AdminUserService {
       throw new CustomError("User not found with id", StatusCode.NotFound);
     return user;
   }
-  
+
+  async toggleUserActivationStatus(
+    id: string,
+    isDeactivated: boolean
+  ): Promise<IUser> {
+    this.validatorService.validateIdFormat(id);
+    const updatedUser = await this.userRepository.update(id, {
+      isDeactivated: !isDeactivated,
+    });
+    if (!updatedUser)
+      throw new CustomError("User not found with Id", StatusCode.NotFound);
+    return updatedUser;
+  }
 }
