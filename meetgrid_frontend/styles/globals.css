@@ -7,7 +7,7 @@ body{
     padding: 0;
     box-sizing: border-box;
     background-color: #1B1919;
-    @apply font-sans
+    /* @apply font-sans */
 }
 
 @layer base {

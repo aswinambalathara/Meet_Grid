@@ -6,7 +6,7 @@ import BrownButton from "@/components/ui/Buttons/BrownButton";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import EnterEmail from "@/components/ui/modals/EnterEmail";
+//import EnterEmail from "@/components/ui/modals/EnterEmail";
 import IUser, { IUserError } from "@/interfaces/IUser";
 import {
   validateEmail,
@@ -16,7 +16,7 @@ import debounce from "@/lib/utils/utilFunctions/debounce";
 import Error from "@/components/ui/Error/Error";
 import { loginUser } from "@/lib/api/user/AuthRoutes";
 import { useAuth } from "@/lib/hooks/useAuth";
-import toast, {Toaster} from 'react-hot-toast'
+import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 function Login() {
@@ -25,12 +25,12 @@ function Login() {
     email: "",
     password: "",
   });
-  const {userToken,setCredentials} = useAuth()
+  const { userToken, setCredentials } = useAuth();
   const [errors, setErrors] = useState<IUserError>({
     email: "",
     password: "",
   });
-  const router = useRouter()
+  const router = useRouter();
   const isAuthorised = !!userToken;
   const debouncedValidateEmail = debounce((email: string) => {
     const emailError = validateEmail(email);
@@ -59,26 +59,28 @@ function Login() {
     }
   };
 
-  const  handleForgotEmail = () => {};
+  //const  handleForgotEmail = () => {};
 
-  const  handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('entered')
+    console.log("entered");
     const emailError = validateEmail(user.email);
     const passwordError = validatePassword(user.password);
     setErrors({ email: emailError || "", password: passwordError || "" });
-    if(emailError || passwordError) return
+    if (emailError || passwordError) return;
 
-    const data = await loginUser(user.email,user.password)
-    console.log(data)
-    if(data.status){
-      setCredentials("userToken",data.accessToken);
-      setCredentials("userName",data.userName);
-      router.push('/')
-    }else{
+    const data = await loginUser(user.email, user.password);
+    console.log(data);
+    if (data.status) {
+      setCredentials("userToken", data.accessToken);
+      setCredentials("userName", data.userName);
+      router.push("/");
+    } else {
       toast.error(data.message || "Something went wrong");
     }
   };
+
+  if(isAuthorised) return null
 
   return (
     <div className="login-container min-h-screen bg-user-background flex items-center justify-center">
@@ -131,14 +133,14 @@ function Login() {
 
             <div className="flex justify-end">
               {errors.password && <Error error={errors.password} />}
-              <EnterEmail
+              {/* <EnterEmail
                 button={
                   <small className=" text-nav-brown cursor-pointer hover:text-nav-brown/80">
                     Forgot Password?
                   </small>
                 }
                 handleClick={handleForgotEmail}
-              />
+              /> */}
             </div>
           </div>
 
@@ -148,12 +150,12 @@ function Login() {
           <div className="mb-3 flex gap-2">
             <div className="w-[2px] h-10 bg-white"></div>
             <div className="cursor-pointer hover:bg-slate-400 rounded-full transition ease duration-300">
-            <Image
-            src="/icons/sendOTP.png"
-            alt="sendOTPIcon"
-            width={40}
-            height={40}
-          />
+              <Image
+                src="/icons/sendOTP.png"
+                alt="sendOTPIcon"
+                width={40}
+                height={40}
+              />
             </div>
           </div>
           <div>
