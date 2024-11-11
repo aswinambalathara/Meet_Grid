@@ -27,7 +27,7 @@ export const AdminSidebarLinks: NavLinks[] = [
   },
   {
     label: "Feedback & Reviews",
-    href: "/admin/review-management",
+    href: "/admin/reviews-management",
     icon: "fa-solid fa-comments",
   },
   {

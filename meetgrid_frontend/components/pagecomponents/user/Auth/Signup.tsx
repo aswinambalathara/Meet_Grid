@@ -44,7 +44,7 @@ function UserSignUp() {
     }
 
     if (id === "password") {
-      let errorMessage = validatePassword(value);
+      const errorMessage = validatePassword(value);
 
       setErrors((prev) => ({
         ...prev,

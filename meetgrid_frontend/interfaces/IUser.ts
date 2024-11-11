@@ -18,7 +18,9 @@ export default interface IUser{
         country:string;
         state:string;
         postalCode:string
-    }
+    },
+    isBlocked?:boolean,
+    isDeactivated?:boolean
 }
 
 export interface IUserError {

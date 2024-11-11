@@ -11,7 +11,7 @@ function Navbar() {
   const { userToken, logout } = useAuth();
   const isAuthorised = !!userToken;
   if (
-    path.includes("/auth/login") ||
+    path.includes("auth") ||
     path.includes("/auth/signup") ||
     path.includes("/admin")
   ) {
