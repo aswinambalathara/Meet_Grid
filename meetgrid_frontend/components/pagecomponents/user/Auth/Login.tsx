@@ -2,36 +2,39 @@
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import BrownButton from "@/components/ui/Buttons/BrownButton";
+import BrownButton from "@/components/ui/buttons/BrownButton";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-//import EnterEmail from "@/components/ui/modals/EnterEmail";
 import IUser, { IUserError } from "@/interfaces/IUser";
 import {
   validateEmail,
   validatePassword,
-} from "@/lib/utils/validations/signupValidation";
-import debounce from "@/lib/utils/utilFunctions/debounce";
-import Error from "@/components/ui/Error/Error";
-import { loginUser } from "@/lib/api/user/AuthRoutes";
+} from "@/lib/utility/authFormValidation";
+import debounce from "@/lib/utility/debounce";
+import ErrorComponent from "@/components/ui/errors/Error";
+import { forgotPassword, loginUser } from "@/lib/api/user/AuthRoutes";
 import { useAuth } from "@/lib/hooks/useAuth";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import EnterEmail from "@/components/ui/modals/EnterEmail";
 
 function Login() {
+  const router = useRouter();
   const [eye, setEye] = useState(true);
   const [user, setUser] = useState<IUser>({
     email: "",
     password: "",
   });
-  const { userToken, setCredentials } = useAuth();
+  const { setCredentials } = useAuth();
+
   const [errors, setErrors] = useState<IUserError>({
     email: "",
     password: "",
   });
-  const router = useRouter();
-  const isAuthorised = !!userToken;
+
+  const [loading, setLoading] = useState(false);
+
   const debouncedValidateEmail = debounce((email: string) => {
     const emailError = validateEmail(email);
     setErrors((prevErrors) => ({ ...prevErrors, email: emailError || "" }));
@@ -59,31 +62,45 @@ function Login() {
     }
   };
 
-  //const  handleForgotEmail = () => {};
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("entered");
-    const emailError = validateEmail(user.email);
-    const passwordError = validatePassword(user.password);
-    setErrors({ email: emailError || "", password: passwordError || "" });
-    if (emailError || passwordError) return;
-
-    const data = await loginUser(user.email, user.password);
-    console.log(data);
-    if (data.status) {
-      setCredentials("userToken", data.accessToken);
-      setCredentials("userName", data.userName);
-      router.push("/");
-    } else {
-      toast.error(data.message || "Something went wrong");
+  const handleForgotEmail = async (email: string): Promise<boolean> => {
+    try {
+      const data = await forgotPassword(email);
+      toast.success(data.message);
+      return true
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+      return false
     }
   };
 
-  if(isAuthorised) return null
+  const handleSubmit = async (e: React.FormEvent) => {
+    setLoading(true);
+    e.preventDefault();
+    const emailError = validateEmail(user.email);
+    const passwordError = validatePassword(user.password);
+    setErrors({ email: emailError || "", password: passwordError || "" });
+    if (emailError || passwordError) {
+      setLoading(false);
+      return;
+    }
+    try {
+      const data = await loginUser(user.email, user.password);
+      setLoading(false);
+      setCredentials("userToken", data.accessToken);
+      router.replace("/");
+    } catch (error) {
+      setLoading(false);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+    }
+  };
 
   return (
     <div className="login-container min-h-screen bg-user-background flex items-center justify-center">
+      <Toaster position="bottom-right" />
       <div className="user-auth-background md:w-3/4 min-h-[700px] rounded-xl flex flex-col-reverse md:flex-row items-center justify-between py-16 px-4 lg:px-28 md:py-0">
         <form
           onSubmit={handleSubmit}
@@ -104,8 +121,9 @@ function Login() {
               />
               <i className="fa-regular fa-envelope"></i>
             </div>
-            {errors.email && <Error error={errors.email} />}
+            {errors.email && <ErrorComponent error={errors.email} />}
           </div>
+
           <div className="grid w-full max-w-sm items-center gap-1.5 mb-5">
             <Label htmlFor="password" className="mb-2">
               Password
@@ -130,31 +148,38 @@ function Login() {
                 ></i>
               )}
             </div>
-
-            <div className="flex justify-end">
-              {errors.password && <Error error={errors.password} />}
-              {/* <EnterEmail
+            <div className="relative flex">
+              {errors.password && <ErrorComponent error={errors.password} />}
+              <EnterEmail
+                description="Enter you email for password reset link"
                 button={
-                  <small className=" text-nav-brown cursor-pointer hover:text-nav-brown/80">
+                  <small className="text-nav-brown cursor-pointer hover:text-nav-brown/80 text-end absolute right-0">
                     Forgot Password?
                   </small>
                 }
                 handleClick={handleForgotEmail}
-              /> */}
+              />
             </div>
           </div>
 
-          <div className="grid w-full max-w-sm items-center gap-1.5 mb-5">
-            <BrownButton label="Login" type="submit" />
+          <div className="grid w-full max-w-sm items-center gap-1.5 mb-5 mt-2">
+            <BrownButton label="Login" type="submit" loading={loading} />
           </div>
+
           <div className="mb-3 flex gap-2">
             <div className="w-[2px] h-10 bg-white"></div>
             <div className="cursor-pointer hover:bg-slate-400 rounded-full transition ease duration-300">
-              <Image
-                src="/icons/sendOTP.png"
-                alt="sendOTPIcon"
-                width={40}
-                height={40}
+              <EnterEmail
+                description="Enter you email for receiving otp"
+                button={
+                  <Image
+                    src="/icons/sendOTP.png"
+                    alt="sendOTPIcon"
+                    width={40}
+                    height={40}
+                  />
+                }
+                handleClick={handleForgotEmail}
               />
             </div>
           </div>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
-import Navbar from "@/components/pagecomponents/user/Layout/Navbar";
-import Footer from "@/components/pagecomponents/user/Layout/Footer";
+import Navbar from "@/components/pagecomponents/user/layout/Navbar";
+import Footer from "@/components/pagecomponents/user/layout/Footer";
 import {Poppins,Poltawski_Nowy,Alegreya_SC} from 'next/font/google';
 import { AuthProvider } from "@/lib/context/AuthProvider";
 export const metadata: Metadata = {

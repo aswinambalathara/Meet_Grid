@@ -1,16 +1,20 @@
-import React from 'react'
-import Login from '@/components/pagecomponents/user/Auth/Login'
-import { Metadata } from 'next'
+import React from "react";
+import Login from "@/components/pagecomponents/user/auth/Login";
+import { Metadata } from "next";
+import RequireUserAuth from "@/components/wrappers/requireUserAuth";
 
-export const metadata : Metadata = {
+export const metadata: Metadata = {
   title: "Meet Grid | User Login",
   description: "Connecting You to Events, and Events to Connections",
-}
+};
 
 function page() {
+  
   return (
-    <Login/>
+    <RequireUserAuth>
+      <Login />;
+    </RequireUserAuth>
   )
 }
 
-export default page
+export default page;

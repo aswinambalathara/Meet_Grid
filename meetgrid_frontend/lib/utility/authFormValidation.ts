@@ -24,6 +24,11 @@ interface ValidationErrors {
   export const validatePassword = (password: string): string | null => {
     // Minimum length of 6 characters
     const minLengthRegex = /^.{6,}$/;
+
+    if(!password.trim()){
+      return 'Password is required'
+    }
+    
     if (!minLengthRegex.test(password)) {
       return "Password must be at least 6 characters long.";
     }

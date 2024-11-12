@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Logo from "@/components/ui/Logo";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -9,7 +9,11 @@ import { useAuth } from "@/lib/hooks/useAuth";
 function Navbar() {
   const path = usePathname();
   const { userToken, logout } = useAuth();
-  const isAuthorised = !!userToken;
+  const [isAuthorised,setAuthorisation] = useState(false)
+
+  useEffect(()=>{
+    setAuthorisation(!!userToken)
+  },[userToken])
   if (
     path.includes("auth") ||
     path.includes("/auth/signup") ||
@@ -20,7 +24,6 @@ function Navbar() {
 
   const handleLogOut = () => {
     logout("userToken");
-    logout("userName");
   };
   return (
     <header

@@ -5,7 +5,6 @@ import React, { createContext, useState, useEffect, ReactNode } from "react";
 // Define the shape of our authentication state
 interface AuthState {
   userToken: string;
-  userName:string;
   adminToken: string;
   resetUserEmail: string;
   otpMail: string;
@@ -35,7 +34,6 @@ const getPersistedAuthState = (): AuthState => {
     adminToken: "",
     otpMail: "",
     resetUserEmail: "",
-    userName:''
   };
 };
 

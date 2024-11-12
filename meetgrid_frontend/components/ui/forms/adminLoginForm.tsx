@@ -1,15 +1,15 @@
 "use client";
 import React, { useState } from "react";
 import IAdmin, { IAdminErrors } from "@/interfaces/IAdmin";
-import BrownButton from "../Buttons/BrownButton";
+import BrownButton from "../buttons/BrownButton";
 import { Label } from "../label";
 import { Input } from "../input";
-import Error from "../Error/Error";
+import Error from "../errors/Error";
 import {
   validateEmail,
   validatePassword,
-} from "@/lib/utils/validations/signupValidation";
-import debounce from "@/lib/utils/utilFunctions/debounce";
+} from "@/lib/utility/authFormValidation";
+import debounce from "@/lib/utility/debounce";
 
 function AdminLoginForm() {
   const [admin, setAdmin] = useState<IAdmin>({
@@ -21,7 +21,7 @@ function AdminLoginForm() {
     email: "",
     password: "",
   });
-  
+
   const debouncedValidateEmail = debounce((email: string) => {
     const emailError = validateEmail(email);
     setErrors((prevErrors) => ({ ...prevErrors, email: emailError || "" }));
@@ -50,14 +50,17 @@ function AdminLoginForm() {
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     const emailError = validateEmail(admin.email);
     const passwordError = validatePassword(admin.password);
     setErrors({ email: emailError || "", password: passwordError || "" });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="min-h-full w-full sm:w-[450px] p-7 flex flex-col text-black items-center rounded-lg">
+    <form
+      onSubmit={handleSubmit}
+      className="min-h-full w-full sm:w-[450px] p-7 flex flex-col text-black items-center rounded-lg"
+    >
       <h2 className="mb-10 font-semibold text-2xl text-black">Admin Login</h2>
       <div className="grid w-full max-w-sm items-center gap-1.5 mb-5">
         <Label htmlFor="email" className="mb-2">
