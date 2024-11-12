@@ -52,7 +52,10 @@ router.post(
   authUserController.validateOTPLogin.bind(authUserController)
 );
 
-router.post("/login/resend-otp");
+router.post(
+  "/login/resend-otp",
+  authUserController.handleResendOTP.bind(authUserController)
+);
 
 router.post(
   "/forgot-password",

@@ -102,7 +102,7 @@ export default class AuthUserController {
     try {
       const { email, otp } = req.body;
       const { accessToken, refreshToken, message, status } =
-        await this.userAuthService.validateUserOTPLogin(otp, email);
+        await this.userAuthService.validateUserOTPLogin(email,Number(otp));
       res.cookie(Cookie.User, refreshToken, {
         httpOnly: true,
         secure: true,
@@ -141,7 +141,7 @@ export default class AuthUserController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const token = req.body;
+      const {token} = req.body;
       const result = await this.userAuthService.validateResetToken(token);
       res.status(StatusCode.Success).json(result);
     } catch (error) {

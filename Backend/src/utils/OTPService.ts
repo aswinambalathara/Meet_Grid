@@ -1,10 +1,7 @@
 export default function generateOTP(length: number = 6): number {
-  let otp = "";
-  const digits = "0123456789";
-
-  for (let i = 0; i < length; i++) {
-    otp += digits[Math.floor(Math.random() * 10)];
-  }
-
-  return Number(otp);
+  const min = 10 ** (length - 1); // Minimum value with 6 digits, e.g., 100000
+  const max = 10 ** length - 1;   // Maximum value with 6 digits, e.g., 999999
+  const otp = Math.floor(Math.random() * (max - min + 1)) + min;
+  return otp;
 }
+

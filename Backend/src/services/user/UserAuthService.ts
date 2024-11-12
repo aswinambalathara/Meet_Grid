@@ -168,6 +168,7 @@ export default class UserAuthService {
         StatusCode.Forbidden
       );
     }
+
     await this.sendOTP(foundUser);
     return { message: `OTP sent to ${foundUser.email}`, status: true };
   }
@@ -192,10 +193,16 @@ export default class UserAuthService {
       );
     if (foundUser.isBlocked)
       throw new CustomError("User Blocked", StatusCode.Forbidden);
-    if (
-      foundUser?.otp?.otp !== otp ||
-      Number(foundUser?.otp?.otp) < Date.now()
-    ) {
+
+    if (!foundUser.otp || !foundUser.otp.otp || !foundUser.otp.expiry) {
+      throw new CustomError(
+        "OTP data is missing",
+        StatusCode.InternalServerError
+      );
+    }
+
+    const otpExpiry = new Date(foundUser.otp.expiry!);
+    if (foundUser?.otp?.otp !== otp || otpExpiry < new Date()) {
       throw new CustomError(
         "Invalid OTP or OTP expired",
         StatusCode.Unauthorized
@@ -241,7 +248,7 @@ export default class UserAuthService {
       name: foundUser.fullName,
       subject: "Reset Password",
       pathOfTemplate: "/resetPassword.html",
-      link: `${CLIENT_URL}/forgot_password/reset?token=${resetToken}`,
+      link: `${CLIENT_URL}/auth/reset-password?token=${resetToken}`,
     });
     return { message: `Reset Password request sent ${email}`, status: true };
   }
@@ -266,6 +273,16 @@ export default class UserAuthService {
       );
     if (foundUser.isBlocked)
       throw new CustomError("User blocked", StatusCode.Forbidden);
+    const matchPassword = await this.bcryptService.compare(
+      password,
+      foundUser.password
+    );
+    if (matchPassword) {
+      throw new CustomError(
+        "Old password and New password must be different",
+        StatusCode.BadRequest
+      );
+    }
     password = await this.bcryptService.hash(password);
     foundUser.password = password;
     await this.userRepository.update(foundUser._id!, foundUser);
