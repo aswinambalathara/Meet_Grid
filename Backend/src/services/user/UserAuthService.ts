@@ -46,11 +46,11 @@ export default class UserAuthService {
     await this.emailService.sendMail({
       email,
       name: fullName,
-      pathOfTemplate: "../../../public/userVerification.html",
+      pathOfTemplate: "/userVerification.html",
       subject: "Verification Mail",
-      link: `${SERVER_URL}/user/auth/verify-user?token=${token}`,
+      link: `${SERVER_URL}api/user/auth/verify-user?token=${token}`,
     });
-    console.log(`link: ${SERVER_URL}/user/auth/verify-user?token=${token}`);
+    console.log(`link: ${SERVER_URL}api/user/auth/verify-user?token=${token}`);
     return {
       status: true,
       message: `User created verification link has sent to ${email}`,
@@ -93,9 +93,9 @@ export default class UserAuthService {
       await this.emailService.sendMail({
         email: foundUser.email,
         name: foundUser.fullName,
-        pathOfTemplate: "../../../public/userVerification.html",
+        pathOfTemplate: "/userVerification.html",
         subject: "Verification Mail",
-        link: `${SERVER_URL}/user/auth/verify-user?token=${token}`,
+        link: `${SERVER_URL}/api/user/auth/verify-user?token=${token}`,
       });
 
       throw new CustomError(
@@ -158,9 +158,9 @@ export default class UserAuthService {
       await this.emailService.sendMail({
         email: foundUser.email,
         name: foundUser.fullName,
-        pathOfTemplate: "../../../public/userVerification.html",
+        pathOfTemplate: "/userVerification.html",
         subject: "Verification Mail",
-        link: `${SERVER_URL}/user/auth/verify-user?token=${token}`,
+        link: `${SERVER_URL}/api/user/auth/verify-user?token=${token}`,
       });
 
       throw new CustomError(
@@ -240,7 +240,7 @@ export default class UserAuthService {
       email: foundUser.email,
       name: foundUser.fullName,
       subject: "Reset Password",
-      pathOfTemplate: "../../../public/resetPassword.html",
+      pathOfTemplate: "/resetPassword.html",
       link: `${CLIENT_URL}/forgot_password/reset?token=${resetToken}`,
     });
     return { message: `Reset Password request sent ${email}`, status: true };
@@ -297,7 +297,7 @@ export default class UserAuthService {
     await this.emailService.sendMail({
       email: user.email,
       name: user.fullName,
-      pathOfTemplate: "../../../public/otpVerification.html",
+      pathOfTemplate: "/otpVerification.html",
       subject: "OTP Authentication Mail",
       otp: OTP,
     });

@@ -17,7 +17,7 @@ export default class NodeMailerService {
     subject,
   }: SendEmailProps): Promise<void> {
     let htmlTemplate = await readFileAsync(
-      path.join(__dirname, pathOfTemplate),
+      path.join(__dirname, "../../public/", pathOfTemplate),
       "utf-8"
     );
 
