@@ -1,7 +1,6 @@
 import React from "react";
 import Login from "@/components/pagecomponents/user/auth/Login";
 import { Metadata } from "next";
-import RequireUserAuth from "@/components/wrappers/requireUserAuth";
 
 export const metadata: Metadata = {
   title: "Meet Grid | User Login",
@@ -11,9 +10,8 @@ export const metadata: Metadata = {
 function page() {
   
   return (
-    <RequireUserAuth>
-      <Login />;
-    </RequireUserAuth>
+
+      <Login />
   )
 }
 

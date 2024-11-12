@@ -1,7 +1,8 @@
 import React from "react";
-import ResetPassword from "@/components/pagecomponents/user/auth/ResetPassword";
-function page() {
-  return <ResetPassword />;
+import ResetPasswordPage from "@/components/wrappers/ResetPasswordWrapper";
+
+async function page() {
+  return <ResetPasswordPage/>
 }
 
 export default page;

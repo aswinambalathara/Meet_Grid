@@ -19,7 +19,7 @@ function EnterEmail({
   description,
 }: {
   button: ReactNode;
-  handleClick: (email: string) => Promise<boolean>;
+  handleClick: (email: string) => Promise<boolean | void>;
   description: string;
 }) {
   const [email, setEmail] = useState("");

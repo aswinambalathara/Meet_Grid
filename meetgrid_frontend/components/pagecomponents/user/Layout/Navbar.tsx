@@ -8,12 +8,12 @@ import { useAuth } from "@/lib/hooks/useAuth";
 
 function Navbar() {
   const path = usePathname();
-  const { userToken, logout } = useAuth();
-  const [isAuthorised,setAuthorisation] = useState(false)
+  const {  userToken, logout, } = useAuth();
+  const [isAuthorised, setAuthorisation] = useState(false);
 
-  useEffect(()=>{
-    setAuthorisation(!!userToken)
-  },[userToken])
+  useEffect(() => {
+    setAuthorisation(!!userToken);
+  }, [userToken]);
   if (
     path.includes("auth") ||
     path.includes("/auth/signup") ||
@@ -36,7 +36,7 @@ function Navbar() {
           <li className="bg-[#1B1919] px-4 py-2 rounded-full hover:bg-transparent hover:ring-slate-100 hover:ring-1 cursor-pointer transition-all duration-300">
             Explore Events
           </li>
-          
+
           {isAuthorised && (
             <li className="bg-[#1B1919] px-4 py-2 rounded-full hover:bg-transparent hover:ring-slate-100 hover:ring-1 cursor-pointer">
               Connections

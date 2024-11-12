@@ -1,11 +1,11 @@
-import React from 'react'
+import React from 'react';
 
-function Error({error}:{error:string}) {
+function Error({ error, ...props }: { error: string } & React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className='flex items-center text-red-800'>
-        <small>{error}</small>
+    <div {...props} className={`flex items-center text-red-800 ${props.className || ''}`}>
+      <small>{error}</small>
     </div>
-  )
+  );
 }
 
-export default Error
+export default Error;

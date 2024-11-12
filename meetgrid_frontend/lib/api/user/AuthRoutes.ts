@@ -24,7 +24,7 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     return Promise.reject(error);
-  } 
+  }
 );
 
 export const signUpUser = async (user: IUser) => {
@@ -32,7 +32,7 @@ export const signUpUser = async (user: IUser) => {
     const response = await axiosInstance.post("/create", user);
     return response.data;
   } catch (error) {
-     errorHandler(error);
+    errorHandler(error);
   }
 };
 
@@ -47,16 +47,25 @@ export const loginUser = async (email: string, password: string) => {
 
 export const loginOTPEmail = async (email: string) => {
   try {
-    const response = await axiosInstance.post("/login_OTP/email", { email });
+    const response = await axiosInstance.post("/login/send-otp", { email });
     return response.data;
   } catch (error) {
     handleError(error);
   }
 };
 
-export const loginWithOTP = async (otp: string) => {
+export const loginWithOTP = async (otp: string,email:string) => {
   try {
-    const response = await axiosInstance.post("/login_OTP/email", { otp });
+    const response = await axiosInstance.post("/login/validate-otp", { otp ,email});
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const resendOTP = async (email: string) => {
+  try {
+    const response = await axiosInstance.post("/login/resend-otp", { email });
     return response.data;
   } catch (error) {
     handleError(error);
@@ -67,6 +76,38 @@ export const forgotPassword = async (email: string) => {
   try {
     const response = await axiosInstance.post("/forgot-password", { email });
     return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const validateResetToken = async (token: string) => {
+  try {
+    const response = await axiosInstance.post(
+      "/forgot-password/validate-token",
+      { token }
+    );
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const updateForgotPassword = async (email: string, password: string) => {
+  try {
+    const response = await axiosInstance.patch("/forgot-password/update", {
+      email,
+      password,
+    });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const userLogout = async () => {
+  try {
+    await axiosInstance.get("/logout");
   } catch (error) {
     handleError(error);
   }
