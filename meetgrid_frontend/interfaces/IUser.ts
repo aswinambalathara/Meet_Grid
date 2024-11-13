@@ -1,4 +1,5 @@
 export default interface IUser{
+    readonly _id?:string
     email:string,
     fullName?:string;
     password:string;

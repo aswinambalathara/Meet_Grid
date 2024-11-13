@@ -33,6 +33,7 @@ export default class AdminAuthController {
   ): Promise<void> {
     try {
       const { adminToken } = req.cookies;
+      console.log(adminToken)
       const { accessToken } = await this.adminAuthService.refreshAccessToken(
         adminToken
       );

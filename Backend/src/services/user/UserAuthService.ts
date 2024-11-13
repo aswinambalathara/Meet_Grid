@@ -48,7 +48,7 @@ export default class UserAuthService {
       name: fullName,
       pathOfTemplate: "/userVerification.html",
       subject: "Verification Mail",
-      link: `${SERVER_URL}api/user/auth/verify-user?token=${token}`,
+      link: `${SERVER_URL}/api/user/auth/verify-user?token=${token}`,
     });
     console.log(`link: ${SERVER_URL}api/user/auth/verify-user?token=${token}`);
     return {
@@ -97,7 +97,7 @@ export default class UserAuthService {
         subject: "Verification Mail",
         link: `${SERVER_URL}/api/user/auth/verify-user?token=${token}`,
       });
-
+      console.log(`${SERVER_URL}/api/user/auth/verify-user?token=${token}`)
       throw new CustomError(
         `User not verified. Verification email sent to ${foundUser.email}.`,
         StatusCode.Forbidden

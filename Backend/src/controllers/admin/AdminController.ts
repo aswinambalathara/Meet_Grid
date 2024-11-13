@@ -14,7 +14,7 @@ export default class AdminController {
       const searchTerm = req.query?.searchTerm as string;
       const offset = +(req.query.offset as string) || 0;
       const limit = +(req.query.limit as string) || 10;
-      
+
       const users = await this.adminUserService.getUsers(
         offset,
         limit,

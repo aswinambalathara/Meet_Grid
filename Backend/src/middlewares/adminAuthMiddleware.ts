@@ -19,18 +19,21 @@ export default class AdminAuthMiddleware {
         res.status(StatusCode.Unauthorized).json({
           message: "Unauthorized: No or invalid Access token provided",
         });
+        return;
       }
       const token = tokenString?.split(" ")[1];
       if (!token) {
         res
           .status(StatusCode.Unauthorized)
           .json({ message: "Unauthorized: Access Token is missing" });
+        return;
       }
       const { id, email } = this.tokenService.verifyAccessToken(token!);
       if (!id || !email) {
         res
           .status(StatusCode.Unauthorized)
           .json({ message: "Unauthorized: Invalid Access Token" });
+        return;
       }
 
       req.admin = { email, id };
@@ -40,10 +43,12 @@ export default class AdminAuthMiddleware {
         res
           .status(StatusCode.Unauthorized)
           .json({ message: "Access token expired" });
+        return;
       }
       res
         .status(StatusCode.Unauthorized)
         .json({ message: "Unauthorized: Invalid Access token" });
+      return;
     }
   }
 }

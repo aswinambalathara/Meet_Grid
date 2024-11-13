@@ -26,7 +26,10 @@ export default class AdminUserService {
     }
   }
 
-  async toggleUserBlockStatus(id: string, isBlocked: boolean): Promise<IUser> {
+  async toggleUserBlockStatus(
+    id: string,
+    isBlocked: boolean
+  ): Promise<{ isBlocked: boolean; message: string }> {
     this.validatorService.validateIdFormat(id);
     const updatedUser = await this.userRepository.update(id, {
       isBlocked: !isBlocked,
@@ -36,7 +39,10 @@ export default class AdminUserService {
         "Error while updating | User Not Found",
         StatusCode.NotFound
       );
-    return updatedUser;
+    return {
+      isBlocked: updatedUser.isBlocked!,
+      message: isBlocked ? "User Blocked" : "User Unblocked",
+    };
   }
 
   async getUser(id: string): Promise<IUser> {
