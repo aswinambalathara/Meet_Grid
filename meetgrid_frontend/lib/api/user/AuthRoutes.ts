@@ -2,7 +2,6 @@ import axios, { AxiosResponse } from "axios";
 import IUser from "@/interfaces/IUser";
 import apiURLs from "@/config/apiConfig";
 import errorHandler from "@/lib/utility/errorHandler";
-import handleError from "@/lib/utility/errorHandler";
 const { BASE_URL } = apiURLs;
 
 const axiosInstance = axios.create({
@@ -50,16 +49,19 @@ export const loginOTPEmail = async (email: string) => {
     const response = await axiosInstance.post("/login/send-otp", { email });
     return response.data;
   } catch (error) {
-    handleError(error);
+    errorHandler(error);
   }
 };
 
-export const loginWithOTP = async (otp: string,email:string) => {
+export const loginWithOTP = async (otp: string, email: string) => {
   try {
-    const response = await axiosInstance.post("/login/validate-otp", { otp ,email});
+    const response = await axiosInstance.post("/login/validate-otp", {
+      otp,
+      email,
+    });
     return response.data;
   } catch (error) {
-    handleError(error);
+    errorHandler(error);
   }
 };
 
@@ -68,7 +70,7 @@ export const resendOTP = async (email: string) => {
     const response = await axiosInstance.post("/login/resend-otp", { email });
     return response.data;
   } catch (error) {
-    handleError(error);
+    errorHandler(error);
   }
 };
 
@@ -77,7 +79,7 @@ export const forgotPassword = async (email: string) => {
     const response = await axiosInstance.post("/forgot-password", { email });
     return response.data;
   } catch (error) {
-    handleError(error);
+    errorHandler(error);
   }
 };
 
@@ -89,7 +91,7 @@ export const validateResetToken = async (token: string) => {
     );
     return response.data;
   } catch (error) {
-    handleError(error);
+    errorHandler(error);
   }
 };
 
@@ -101,7 +103,7 @@ export const updateForgotPassword = async (email: string, password: string) => {
     });
     return response.data;
   } catch (error) {
-    handleError(error);
+    errorHandler(error);
   }
 };
 
@@ -109,6 +111,6 @@ export const userLogout = async () => {
   try {
     await axiosInstance.get("/logout");
   } catch (error) {
-    handleError(error);
+    errorHandler(error);
   }
 };
