@@ -1,7 +1,12 @@
 "use client";
 
+import {
+  LeftButtonIcon,
+  RightButtonIcon,
+} from "@/components/ui/buttons/Paginations";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import AdminUserModal from "@/components/ui/modals/AdminUserModal";
 import {
   Table,
   TableBody,
@@ -16,23 +21,27 @@ import {
   changeAccountStatus,
   getUsers,
 } from "@/lib/api/admin/AdminAuthorisedRoutes";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
 function UserManagement() {
   const [users, setUsers] = useState<IUser[] | []>([]);
   const [offset, setOffset] = useState(0);
-  const [limit, setLimit] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const limit = 10;
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedUser, selectUser] = useState<IUser | null>(null);
+  const [isModelOpen, setModelOpen] = useState(false);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const data = await getUsers(offset, limit, searchTerm);
         setUsers(data);
+        setLoading(false);
       } catch (error) {
         console.error(error);
+        setLoading(false);
       }
     };
     fetchUsers();
@@ -73,6 +82,11 @@ function UserManagement() {
     }
   };
 
+  const handleViewProfile = useCallback((user: IUser) => {
+    selectUser(user);
+    setModelOpen(true);
+  }, []);
+
   return (
     <div className="w-full container">
       <Toaster position="top-right" />
@@ -106,7 +120,15 @@ function UserManagement() {
           </TableHeader>
           <TableBody className="overflow-y-auto">
             {loading ? (
-              <div></div>
+              <TableRow>
+                <TableCell
+                  rowSpan={4}
+                  colSpan={4}
+                  className="text-center text-slate-900 h-32"
+                >
+                  <p>Loading . . .</p>
+                </TableCell>
+              </TableRow>
             ) : !users.length ? (
               <TableRow>
                 <TableCell
@@ -138,7 +160,10 @@ function UserManagement() {
                       : "Active"}
                   </TableCell>
                   <TableCell className="flex gap-2">
-                    <i className="fa-solid fa-eye text-sky-700 text-base"></i>
+                    <i
+                      className="fa-solid fa-eye text-sky-700 text-base"
+                      onClick={() => handleViewProfile(user)}
+                    ></i>
                     {user.isBlocked ? (
                       <i
                         className="fa-solid fa-lock text-base text-yellow-700 cursor-pointer"
@@ -175,7 +200,17 @@ function UserManagement() {
             )}
           </TableBody>
         </Table>
+        <div className="flex justify-end items-center gap-2">
+          <LeftButtonIcon/> <RightButtonIcon />
+        </div>
       </div>
+      {selectedUser && (
+        <AdminUserModal
+          open={isModelOpen}
+          setOpen={setModelOpen}
+          user={selectedUser}
+        />
+      )}
     </div>
   );
 }

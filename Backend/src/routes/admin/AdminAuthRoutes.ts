@@ -26,7 +26,7 @@ router.get(
   "/refresh",
   adminAuthController.handleRefreshToken.bind(adminAuthController)
 );
-router.post(
+router.get(
   "/logout",
   adminAuthController.handleAdminLogout.bind(adminAuthController)
 );
