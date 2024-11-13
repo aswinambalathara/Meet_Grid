@@ -14,6 +14,7 @@ export default class AdminController {
       const searchTerm = req.query?.searchTerm as string;
       const offset = +(req.query.offset as string) || 0;
       const limit = +(req.query.limit as string) || 10;
+      
       const users = await this.adminUserService.getUsers(
         offset,
         limit,
@@ -31,7 +32,7 @@ export default class AdminController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.body;
+      const { id } = req.params;
       const user = await this.adminUserService.getUser(id);
       res.status(StatusCode.Success).json(user);
     } catch (error) {

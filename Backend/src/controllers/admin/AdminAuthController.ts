@@ -13,6 +13,7 @@ export default class AdminAuthController {
       const adminData = req.body;
       const { accessToken, refreshToken } =
         await this.adminAuthService.doAdminLogin(adminData);
+
       res.cookie(Cookie.Admin, refreshToken, {
         httpOnly: true,
         secure: true,

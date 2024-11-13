@@ -15,11 +15,15 @@ export default class AdminUserService {
     limit: number,
     searchTerm?: string
   ): Promise<IUser[]> {
-    return await this.userRepository.getPaginatedUsers(
-      offset,
-      limit,
-      searchTerm
-    );
+    if (searchTerm !== "undefined") {
+      return await this.userRepository.getPaginatedUsers(
+        offset,
+        limit,
+        searchTerm
+      );
+    } else {
+      return await this.userRepository.getPaginatedUsers(offset, limit);
+    }
   }
 
   async toggleUserBlockStatus(id: string, isBlocked: boolean): Promise<IUser> {

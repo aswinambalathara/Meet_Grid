@@ -12,19 +12,17 @@ export default class AdminAuthService {
     private bcryptService: BcryptService
   ) {}
 
-  async doAdminLogin(
-    admin: IAdmin
-  ): Promise<TokenResponse> {
+  async doAdminLogin(admin: IAdmin): Promise<TokenResponse> {
     const { email, password } = admin;
     const foundAdmin = await this.adminRepository.findByEmail(email);
     if (!foundAdmin)
       throw new CustomError("Account not found", StatusCode.NotFound);
-    const isAuthorised = await this.bcryptService.compare(
-      password,
-      foundAdmin.password
-    );
+
+    const isAuthorised = foundAdmin.password === password;
+    
     if (!isAuthorised)
       throw new CustomError("Invalid credentials", StatusCode.Unauthorized);
+
     const accessToken = this.jwtService.createAccessToken(
       foundAdmin.email,
       foundAdmin._id!
@@ -34,7 +32,12 @@ export default class AdminAuthService {
       foundAdmin._id!
     );
 
-    return { accessToken, refreshToken,message:"Login Successfull",status:true};
+    return {
+      accessToken,
+      refreshToken,
+      message: "Login Successfull",
+      status: true,
+    };
   }
 
   async refreshAccessToken(token: string): Promise<{ accessToken: string }> {

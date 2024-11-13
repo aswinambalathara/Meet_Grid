@@ -5,6 +5,7 @@ import routes from "./routes/index";
 import cors from "cors";
 import { requestLogger, devLogger } from "./utils/logger";
 import path from "path";
+import cookieParser from "cookie-parser";
 const app = express();
 const port = PORT || 4000;
 
@@ -17,6 +18,7 @@ app.use(
   })
 );
 
+app.use(cookieParser());
 app.use(requestLogger);
 app.use(devLogger);
 app.use(express.static(path.join(__dirname, "public")));
