@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import "@/styles/user.css";
-import BrownButton from "../buttons/BrownButton";
+import BrownButton from "../Buttons/BrownButton";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { loginWithOTP, resendOTP } from "@/lib/api/user/AuthRoutes";
 import toast, { Toaster } from "react-hot-toast";

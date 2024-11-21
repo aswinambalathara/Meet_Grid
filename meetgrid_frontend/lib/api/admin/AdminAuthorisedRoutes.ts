@@ -6,6 +6,7 @@ import axios, {
 import apiURLs from "@/config/apiConfig";
 import handleError from "@/lib/utility/errorHandler";
 const { ADMIN_URL } = apiURLs;
+
 const adminAxiosInstance = axios.create({
   baseURL: `${ADMIN_URL}`,
   headers: {

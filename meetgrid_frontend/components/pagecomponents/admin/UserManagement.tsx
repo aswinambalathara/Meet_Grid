@@ -3,7 +3,7 @@
 import {
   LeftButtonIcon,
   RightButtonIcon,
-} from "@/components/ui/buttons/Paginations";
+} from "@/components/ui/Buttons/Paginations";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import AdminUserModal from "@/components/ui/modals/AdminUserModal";
@@ -82,6 +82,14 @@ function UserManagement() {
     }
   };
 
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const { value } = e.target as HTMLInputElement;
+
+    if (e.key === "Enter") {
+      setSearchTerm(value);
+    }
+  };
+
   const handleViewProfile = useCallback((user: IUser) => {
     selectUser(user);
     setModelOpen(true);
@@ -103,7 +111,7 @@ function UserManagement() {
               id="search-term"
               placeholder="Search User"
               className="py-5 placeholder:text-white/50 border-slate-900"
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={handleSearch}
             />
             <i className="fa-solid fa-magnifying-glass absolute right-3"></i>
           </div>
@@ -201,7 +209,7 @@ function UserManagement() {
           </TableBody>
         </Table>
         <div className="flex justify-end items-center gap-2">
-          <LeftButtonIcon/> <RightButtonIcon />
+          <LeftButtonIcon /> <RightButtonIcon />
         </div>
       </div>
       {selectedUser && (

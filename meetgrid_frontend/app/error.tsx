@@ -1,6 +1,6 @@
 "use client";
 
-import BrownButton from "@/components/ui/buttons/BrownButton";
+import BrownButton from "@/components/ui/Buttons/BrownButton";
 import { useEffect } from "react";
 
 export default function Error({
