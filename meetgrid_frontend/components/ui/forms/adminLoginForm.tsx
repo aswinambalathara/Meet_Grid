@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import IAdmin, { IAdminErrors } from "@/interfaces/IAdmin";
-import BrownButton from "../buttons/BrownButton";
+import BrownButton from "../Buttons/BrownButton";
 import { Label } from "../label";
 import { Input } from "../input";
 import ErrorComponent from "../errors/Error";
@@ -74,7 +74,7 @@ function AdminLoginForm() {
       setCredentials("adminToken", accessToken);
       toast.success(data.message);
       setLoading(false);
-      router.push("/admin");
+      router.replace("/admin");
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);

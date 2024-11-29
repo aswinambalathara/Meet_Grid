@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Sidebar from "@/components/pagecomponents/admin/layout/Sidebar"; 
+import Sidebar from "@/components/pagecomponents/admin/Layout/Sidebar"; 
 import { ReactNode } from "react";
 export const metadata: Metadata = {
   title: "Meet Grid",

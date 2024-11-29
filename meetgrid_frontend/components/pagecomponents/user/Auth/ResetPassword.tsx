@@ -1,5 +1,5 @@
 "use client";
-import BrownButton from "@/components/ui/buttons/BrownButton";
+import BrownButton from "@/components/ui/Buttons/BrownButton";
 import { Input } from "@/components/ui/input";
 import Logo from "@/components/ui/Logo";
 import "@/styles/user.css";

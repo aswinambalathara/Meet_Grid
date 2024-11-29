@@ -8,8 +8,10 @@ export default function errorHandler(
   req: Request,
   res: Response,
   _next: NextFunction
-):void {
-  const statusCode = (error instanceof CustomError && error.statusCode) || StatusCode.InternalServerError;
+): void {
+  const statusCode =
+    (error instanceof CustomError && error.statusCode) ||
+    StatusCode.InternalServerError;
   const message = error.message || "Internal Server Error";
 
   if (error instanceof CustomError) {

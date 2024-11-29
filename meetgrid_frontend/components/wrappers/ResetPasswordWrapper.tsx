@@ -1,12 +1,12 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import ResetPassword from "@/components/pagecomponents/user/auth/ResetPassword";
+import ResetPassword from "@/components/pagecomponents/user/Auth/ResetPassword";
 import { useSearchParams, useRouter, notFound } from "next/navigation";
 import toast from "react-hot-toast";
 import { validateResetToken } from "@/lib/api/user/AuthRoutes";
 import { useAuth } from "@/lib/hooks/useAuth";
-import BrownButton from "../ui/buttons/BrownButton";
-import Link from "next/link";
+//import BrownButton from "../ui/Buttons/BrownButton";
+//import Link from "next/link";
 
 function ResetPasswordPage() {
   const searchParams = useSearchParams();

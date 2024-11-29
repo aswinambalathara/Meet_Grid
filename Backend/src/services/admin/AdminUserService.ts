@@ -2,7 +2,7 @@ import IUser from "../../interfaces/entities/IUser";
 import IUserRepository from "../../interfaces/repository/IUserRepository";
 import { StatusCode } from "../../types";
 import CustomError from "../../utils/CustomError";
-import JoiService from "../../utils/ValidatorService";
+import JoiService from "../../utils/validatorService";
 
 export default class AdminUserService {
   constructor(

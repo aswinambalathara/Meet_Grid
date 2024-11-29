@@ -1,9 +1,9 @@
 import IUserRepository from "../../interfaces/repository/IUserRepository";
 import IUser from "../../interfaces/entities/IUser";
 import IJWTService from "../../interfaces/utilServices/IJWTService";
-import BcryptService from "../../utils/BcryptService";
-import ValidatorService from "../../utils/ValidatorService";
-import EmailService from "../../utils/EmailService";
+import BcryptService from "../../utils/bcryptService";
+import ValidatorService from "../../utils/validatorService";
+import EmailService from "../../utils/emailService";
 import CustomError from "../../utils/CustomError";
 import { StatusCode, TokenResponse, response } from "../../types";
 import CryptoService from "../../utils/CryptoService";
@@ -50,7 +50,7 @@ export default class UserAuthService {
       subject: "Verification Mail",
       link: `${SERVER_URL}/api/user/auth/verify-user?token=${token}`,
     });
-    console.log(`link: ${SERVER_URL}api/user/auth/verify-user?token=${token}`);
+    console.log(`link: ${SERVER_URL}/api/user/auth/verify-user?token=${token}`);
     return {
       status: true,
       message: `User created verification link has sent to ${email}`,

@@ -1,5 +1,5 @@
 import React, { ReactNode, useState } from "react";
-import BrownButton from "../buttons/BrownButton";
+import BrownButton from "../Buttons/BrownButton";
 import {
   Dialog,
   DialogContent,

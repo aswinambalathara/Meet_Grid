@@ -1,9 +1,9 @@
 import { Router } from "express";
 
-import BcryptService from "../../utils/BcryptService";
-import NodeMailerService from "../../utils/EmailService";
-import JoiService from "../../utils/ValidatorService";
-import JWTService from "../../utils/JwtService";
+import BcryptService from "../../utils/bcryptService";
+import NodeMailerService from "../../utils/emailService";
+import JoiService from "../../utils/validatorService";
+import JWTService from "../../utils/jwtService";
 
 import UserRepository from "../../repositories/UserRepository";
 import UserAuthService from "../../services/user/UserAuthService";

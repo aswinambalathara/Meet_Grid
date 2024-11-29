@@ -1,5 +1,5 @@
 import React from "react";
-import Login from "@/components/pagecomponents/user/auth/Login";
+import Login from "@/components/pagecomponents/user/Auth/Login";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -10,7 +10,6 @@ export const metadata: Metadata = {
 function page() {
   
   return (
-
       <Login />
   )
 }

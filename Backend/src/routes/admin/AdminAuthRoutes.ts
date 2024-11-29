@@ -3,8 +3,8 @@ import { Router } from "express";
 import AdminAuthService from "../../services/admin/AdminAuthService";
 import AdminAuthController from "../../controllers/admin/AdminAuthController";
 import AdminRepository from "../../repositories/AdminRepository";
-import JWTService from "../../utils/JwtService";
-import BcryptService from "../../utils/BcryptService";
+import JWTService from "../../utils/jwtService";
+import BcryptService from "../../utils/bcryptService";
 
 const router = Router();
 

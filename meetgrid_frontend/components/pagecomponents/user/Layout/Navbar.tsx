@@ -5,11 +5,14 @@ import Logo from "@/components/ui/Logo";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/hooks/useAuth";
+import { userLogout } from "@/lib/api/user/AuthRoutes";
+import toast from "react-hot-toast";
 
 function Navbar() {
   const path = usePathname();
-  const {  userToken, logout, } = useAuth();
+  const { userToken, logout } = useAuth();
   const [isAuthorised, setAuthorisation] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   useEffect(() => {
     setAuthorisation(!!userToken);
@@ -22,8 +25,24 @@ function Navbar() {
     return null;
   }
 
-  const handleLogOut = () => {
-    logout("userToken");
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
+
+  const closeDropdown = () => {
+    setIsDropdownOpen(false);
+  };
+
+  const handleLogOut = async () => {
+    try {
+      await userLogout();
+      logout("userToken");
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+        //console.error(error);
+      }
+    }
   };
   return (
     <header
@@ -49,10 +68,26 @@ function Navbar() {
 
           {isAuthorised ? (
             <li
-              onClick={handleLogOut}
+              onClick={toggleDropdown}
               className="bg-[#1B1919] px-4 py-2 rounded-full hover:bg-transparent hover:ring-slate-100 hover:ring-1 cursor-pointer"
             >
               <i className="fa-solid fa-user"></i>
+              {isDropdownOpen && (
+                <ul
+                  className="absolute right-10 top-20 mt-2 w-36 bg-blue-50 text-black rounded-lg shadow-lg z-50"
+                  onMouseLeave={closeDropdown} // Close dropdown on mouse leave (optional)
+                >
+                  <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer">
+                    <Link href="/profile">Profile</Link>
+                  </li>
+                  <li
+                    className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                    onClick={handleLogOut}
+                  >
+                    Logout
+                  </li>
+                </ul>
+              )}
             </li>
           ) : (
             <li className="bg-[#1B1919] px-4 py-2 rounded-full hover:bg-transparent hover:ring-slate-100 hover:ring-1 cursor-pointer">

@@ -4,7 +4,7 @@ import UserRepository from "../../repositories/UserRepository";
 import AdminUserService from "../../services/admin/AdminUserService";
 import AdminController from "../../controllers/admin/AdminController";
 
-import JoiService from "../../utils/ValidatorService";
+import JoiService from "../../utils/validatorService";
 
 const validatorService = new JoiService()
 

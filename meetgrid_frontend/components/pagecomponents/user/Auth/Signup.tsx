@@ -3,8 +3,8 @@
 import "@/styles/user.css";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import BrownButton from "@/components/ui/buttons/BrownButton";
-import { useState } from "react";
+import BrownButton from "@/components/ui/Buttons/BrownButton";
+import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import IUser, { IUserError } from "@/interfaces/IUser";
 import toast, { Toaster } from "react-hot-toast";
@@ -18,8 +18,19 @@ import {
 } from "@/lib/utility/authFormValidation";
 
 import { signUpUser } from "@/lib/api/user/AuthRoutes";
+import { useAuth } from "@/lib/hooks/useAuth";
+import notfound from "@/app/not-found";
 
 function UserSignUp() {
+  const { userToken } = useAuth();
+  const isAuthorised = !!userToken;
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const [Peye, setPeye] = useState(true);
   const [loading, setLoading] = useState(false);
   const [CPeye, setCPeye] = useState(true);
@@ -28,9 +39,9 @@ function UserSignUp() {
     fullName: "",
     password: "",
   });
-  
+
   const [confirmPassword, setConfirmPassword] = useState("");
-  
+
   const [errors, setErrors] = useState<IUserError>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,6 +122,14 @@ function UserSignUp() {
       }
     }
   };
+
+  if (!mounted) {
+    return null;
+  }
+
+  if (isAuthorised) {
+    return notfound();
+  }
 
   return (
     <div className="SignUp-Container container min-h-screen bg-user-background flex items-center justify-center">

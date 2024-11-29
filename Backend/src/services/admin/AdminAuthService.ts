@@ -2,7 +2,7 @@ import IAdmin from "../../interfaces/entities/IAdmin";
 import IAdminRepository from "../../interfaces/repository/IAdminRepository";
 import IJWTService from "../../interfaces/utilServices/IJWTService";
 import { StatusCode, TokenResponse } from "../../types";
-import BcryptService from "../../utils/BcryptService";
+import BcryptService from "../../utils/bcryptService";
 import CustomError from "../../utils/CustomError";
 
 export default class AdminAuthService {
