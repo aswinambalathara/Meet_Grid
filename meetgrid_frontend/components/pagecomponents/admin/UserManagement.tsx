@@ -98,7 +98,7 @@ function UserManagement() {
   return (
     <div className="w-full container">
       <Toaster position="top-right" />
-      <div className="main-container bg-slate-300/50 rounded-lg min-h-screen p-5">
+      <div className="main-container bg-indigo-950/30 rounded-lg min-h-screen p-5">
         <div className="mb-6 text-slate-800">
           <h2 className=" text-xl  font-semibold">All Users</h2>
           <small>A list of all users with their details</small>
