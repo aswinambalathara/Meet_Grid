@@ -35,7 +35,7 @@ export default class JWTService implements IJWTService {
     return this.signToken({ email, id }, REFRESH_TOKEN_SECRET!, "7d");
   }
   verifyRefreshToken(token: string): { email: string; id: string } {
-    const decoded = this.verifyToken(token, ACCESS_TOKEN_SECRET!);
+    const decoded = this.verifyToken(token, REFRESH_TOKEN_SECRET!);
     return { email: decoded.email, id: decoded.id };
   }
 }

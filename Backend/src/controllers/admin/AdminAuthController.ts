@@ -20,7 +20,7 @@ export default class AdminAuthController {
         sameSite: "strict",
         maxAge: 30 * 24 * 60 * 60 * 1000,
       });
-      
+
       res.status(StatusCode.Success).json({ accessToken });
     } catch (error) {
       next(error);
@@ -34,7 +34,7 @@ export default class AdminAuthController {
   ): Promise<void> {
     try {
       const { adminToken } = req.cookies;
-      console.log(adminToken);
+      //console.log('adminRefreshToken: ',adminToken);
       const { accessToken } = await this.adminAuthService.refreshAccessToken(
         adminToken
       );

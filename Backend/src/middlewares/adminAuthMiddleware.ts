@@ -1,7 +1,6 @@
 import { NextFunction, Response } from "express";
 import { StatusCode } from "../types";
 import IJWTService from "../interfaces/utilServices/IJWTService";
-//import { errorLogger } from "../utils/logger";
 import { CustomRequest } from "../types";
 
 export default class AdminAuthMiddleware {
@@ -11,44 +10,38 @@ export default class AdminAuthMiddleware {
 
   exec(req: CustomRequest, res: Response, next: NextFunction): void {
     try {
-      const authHeader = req.headers.authorization || req.headers.Authorization;
-      const tokenString = Array.isArray(authHeader)
-        ? authHeader[0]
-        : authHeader;
-      if (!tokenString?.startsWith("Bearer ")) {
+      const authHeader = req.headers.authorization as string | undefined;
+      const token = authHeader?.startsWith("Bearer ")
+        ? authHeader.split(" ")[1]
+        : null;
+      if (!token) {
         res.status(StatusCode.Unauthorized).json({
-          message: "Unauthorized: No or invalid Access token provided",
+          message: "Unauthorized: No or Invalid Access token provided",
         });
         return;
       }
-      const token = tokenString?.split(" ")[1];
-      if (!token) {
-        res
-          .status(StatusCode.Unauthorized)
-          .json({ message: "Unauthorized: Access Token is missing" });
-        return;
-      }
-      const { id, email } = this.tokenService.verifyAccessToken(token!);
-      if (!id || !email) {
-        res
-          .status(StatusCode.Unauthorized)
-          .json({ message: "Unauthorized: Invalid Access Token" });
+
+      const payload = this.tokenService.verifyAccessToken(token);
+      if (!payload?.id || !payload?.email) {
+        res.status(StatusCode.Unauthorized).json({
+          message: "Unauthorized: Invalid Access Token",
+        });
         return;
       }
 
-      req.admin = { email, id };
+      req.admin = { email: payload.email, id: payload.id };
       next();
     } catch (error) {
       if (error instanceof Error && error.message === "Token Expired") {
-        res
-          .status(StatusCode.Unauthorized)
-          .json({ message: "Access token expired" });
+        res.status(StatusCode.Unauthorized).json({
+          message: "Access token expired",
+        });
         return;
       }
-      res
-        .status(StatusCode.Unauthorized)
-        .json({ message: "Unauthorized: Invalid Access token" });
-      return;
+      console.error("Unexpected error in AdminAuthMiddleware", error);
+      res.status(StatusCode.Unauthorized).json({
+        message: "Unauthorized: Invalid Access token",
+      });
     }
   }
 }
