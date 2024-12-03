@@ -23,6 +23,7 @@ function Sidebar() {
       router.push("/admin/login");
     } catch (error) {
       if (error instanceof Error) {
+        logout("adminToken");
         console.error(error);
       }
     }

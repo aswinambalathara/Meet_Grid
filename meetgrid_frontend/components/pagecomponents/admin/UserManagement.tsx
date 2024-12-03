@@ -7,7 +7,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import AdminUserModal from "@/components/ui/modals/AdminUserModal";
-import ProtectedRoute from "@/components/wrappers/RequireAdminAuth";
+
 import {
   Table,
   TableBody,
@@ -97,7 +97,6 @@ function UserManagement() {
   }, []);
 
   return (
-    <ProtectedRoute>
       <div className="w-full container">
         <Toaster position="top-right" />
         <div className="main-container bg-indigo-950/30 rounded-lg min-h-screen p-5">
@@ -228,7 +227,6 @@ function UserManagement() {
           />
         )}
       </div>
-    </ProtectedRoute>
   );
 }
 
