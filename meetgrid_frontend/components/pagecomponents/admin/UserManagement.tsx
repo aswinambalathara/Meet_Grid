@@ -7,6 +7,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import AdminUserModal from "@/components/ui/modals/AdminUserModal";
+import ProtectedRoute from "@/components/wrappers/RequireAdminAuth";
 import {
   Table,
   TableBody,
@@ -96,130 +97,138 @@ function UserManagement() {
   }, []);
 
   return (
-    <div className="w-full container">
-      <Toaster position="top-right" />
-      <div className="main-container bg-indigo-950/30 rounded-lg min-h-screen p-5">
-        <div className="mb-6 text-slate-800">
-          <h2 className=" text-xl  font-semibold">All Users</h2>
-          <small>A list of all users with their details</small>
-        </div>
-        <div className="search-container mb-10 flex flex-col gap-2 text-slate-900">
-          <Label className=" font-medium">Search User</Label>
-          <div className=" relative flex items-center">
-            <Input
-              type="text"
-              id="search-term"
-              placeholder="Search User"
-              className="py-5 placeholder:text-white/50 border-slate-900"
-              onKeyDown={handleSearch}
-            />
-            <i className="fa-solid fa-magnifying-glass absolute right-3"></i>
+    <ProtectedRoute>
+      <div className="w-full container">
+        <Toaster position="top-right" />
+        <div className="main-container bg-indigo-950/30 rounded-lg min-h-screen p-5">
+          <div className="mb-6 text-slate-800">
+            <h2 className=" text-xl  font-semibold">All Users</h2>
+            <small>A list of all users with their details</small>
           </div>
-        </div>
-        <Table>
-          {/* <TableCaption>List of Users</TableCaption> */}
-          <TableHeader>
-            <TableRow>
-              <TableHead className="text-slate-900">Full Name</TableHead>
-              <TableHead className="text-slate-900">Email Address</TableHead>
-              <TableHead className="text-slate-900">Status</TableHead>
-              <TableHead className="text-slate-900">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody className="overflow-y-auto">
-            {loading ? (
+          <div className="search-container mb-10 flex flex-col gap-2 text-slate-900">
+            <Label className=" font-medium">Search User</Label>
+            <div className=" relative flex items-center">
+              <Input
+                type="text"
+                id="search-term"
+                placeholder="Search User"
+                className="py-5 placeholder:text-white/50 border-slate-900"
+                onKeyDown={handleSearch}
+              />
+              <i className="fa-solid fa-magnifying-glass absolute right-3"></i>
+            </div>
+          </div>
+          <Table>
+            {/* <TableCaption>List of Users</TableCaption> */}
+            <TableHeader>
               <TableRow>
-                <TableCell
-                  rowSpan={4}
-                  colSpan={4}
-                  className="text-center text-slate-900 h-32"
-                >
-                  <p>Loading . . .</p>
-                </TableCell>
+                <TableHead className="text-slate-900">Full Name</TableHead>
+                <TableHead className="text-slate-900">Email Address</TableHead>
+                <TableHead className="text-slate-900">Status</TableHead>
+                <TableHead className="text-slate-900">Actions</TableHead>
               </TableRow>
-            ) : !users.length ? (
-              <TableRow>
-                <TableCell
-                  rowSpan={4}
-                  colSpan={4}
-                  className="text-center text-slate-900 h-32"
-                >
-                  No users found
-                </TableCell>
-              </TableRow>
-            ) : (
-              users.map((user) => (
-                <TableRow key={user._id}>
-                  <TableCell>{user.fullName}</TableCell>
-                  <TableCell>{user.email}</TableCell>
+            </TableHeader>
+            <TableBody className="overflow-y-auto">
+              {loading ? (
+                <TableRow>
                   <TableCell
-                    className={
-                      user.isBlocked
-                        ? "text-red-700"
-                        : user.isDeactivated
-                        ? "text-orange-600"
-                        : "text-green-900"
-                    }
+                    rowSpan={4}
+                    colSpan={4}
+                    className="text-center text-slate-900 h-32"
                   >
-                    {user.isBlocked
-                      ? "Blocked"
-                      : user.isDeactivated
-                      ? "Deactivated"
-                      : "Active"}
-                  </TableCell>
-                  <TableCell className="flex gap-2">
-                    <i
-                      className="fa-solid fa-eye text-sky-700 text-base"
-                      onClick={() => handleViewProfile(user)}
-                    ></i>
-                    {user.isBlocked ? (
-                      <i
-                        className="fa-solid fa-lock text-base text-yellow-700 cursor-pointer"
-                        onClick={() =>
-                          handleBlockStatus(user._id!, user.isBlocked!)
-                        }
-                      ></i>
-                    ) : (
-                      <i
-                        className="fa-solid fa-unlock text-base text-yellow-700 cursor-pointer"
-                        onClick={() =>
-                          handleBlockStatus(user._id!, user.isBlocked!)
-                        }
-                      ></i>
-                    )}
-                    {user.isDeactivated ? (
-                      <i
-                        className="fa-solid fa-trash-can-arrow-up text-base text-red-700 cursor-pointer"
-                        onClick={() =>
-                          handleUserDeleteStatus(user._id!, user.isDeactivated!)
-                        }
-                      ></i>
-                    ) : (
-                      <i
-                        className="fa-solid fa-trash-can text-base text-red-700 cursor-pointer"
-                        onClick={() =>
-                          handleUserDeleteStatus(user._id!, user.isDeactivated!)
-                        }
-                      ></i>
-                    )}
+                    <p>Loading . . .</p>
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-        <div className="flex justify-end items-center gap-2">
-          <LeftButtonIcon /> <RightButtonIcon />
+              ) : !users.length ? (
+                <TableRow>
+                  <TableCell
+                    rowSpan={4}
+                    colSpan={4}
+                    className="text-center text-slate-900 h-32"
+                  >
+                    No users found
+                  </TableCell>
+                </TableRow>
+              ) : (
+                users.map((user) => (
+                  <TableRow key={user._id}>
+                    <TableCell>{user.fullName}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell
+                      className={
+                        user.isBlocked
+                          ? "text-red-700"
+                          : user.isDeactivated
+                          ? "text-orange-600"
+                          : "text-green-900"
+                      }
+                    >
+                      {user.isBlocked
+                        ? "Blocked"
+                        : user.isDeactivated
+                        ? "Deactivated"
+                        : "Active"}
+                    </TableCell>
+                    <TableCell className="flex gap-2">
+                      <i
+                        className="fa-solid fa-eye text-sky-700 text-base"
+                        onClick={() => handleViewProfile(user)}
+                      ></i>
+                      {user.isBlocked ? (
+                        <i
+                          className="fa-solid fa-lock text-base text-yellow-700 cursor-pointer"
+                          onClick={() =>
+                            handleBlockStatus(user._id!, user.isBlocked!)
+                          }
+                        ></i>
+                      ) : (
+                        <i
+                          className="fa-solid fa-unlock text-base text-yellow-700 cursor-pointer"
+                          onClick={() =>
+                            handleBlockStatus(user._id!, user.isBlocked!)
+                          }
+                        ></i>
+                      )}
+                      {user.isDeactivated ? (
+                        <i
+                          className="fa-solid fa-trash-can-arrow-up text-base text-red-700 cursor-pointer"
+                          onClick={() =>
+                            handleUserDeleteStatus(
+                              user._id!,
+                              user.isDeactivated!
+                            )
+                          }
+                        ></i>
+                      ) : (
+                        <i
+                          className="fa-solid fa-trash-can text-base text-red-700 cursor-pointer"
+                          onClick={() =>
+                            handleUserDeleteStatus(
+                              user._id!,
+                              user.isDeactivated!
+                            )
+                          }
+                        ></i>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+          <div className="flex justify-end items-center gap-2">
+            <LeftButtonIcon /> <RightButtonIcon />
+          </div>
         </div>
+        {selectedUser && (
+          <AdminUserModal
+            open={isModelOpen}
+            setOpen={setModelOpen}
+            user={selectedUser}
+          />
+        )}
       </div>
-      {selectedUser && (
-        <AdminUserModal
-          open={isModelOpen}
-          setOpen={setModelOpen}
-          user={selectedUser}
-        />
-      )}
-    </div>
+    </ProtectedRoute>
   );
 }
 

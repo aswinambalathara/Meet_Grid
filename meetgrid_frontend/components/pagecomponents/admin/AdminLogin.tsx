@@ -1,26 +1,22 @@
 "use client";
 
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useState } from "react";
 import AdminLoginForm from "@/components/ui/forms/adminLoginForm";
 import "@/styles/admin.css";
 import { useAuth } from "@/lib/hooks/useAuth";
-//import notfound from "@/app/admin/not-found";
-import { useRouter } from "next/navigation";
+import { useRouter} from "next/navigation";
 
 function AdminLogin() {
-  const router = useRouter()
   const { adminToken } = useAuth();
-  const isAuthorised = !!adminToken;
-  const [mounted, setMounted] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+      if (adminToken) {
+          router.push('/admin'); // Redirect logged-in users
+      }
+  }, [adminToken, router]);
 
-  if (!mounted) return null;
-  if (isAuthorised) {
-    router.push('/admin')
-  }
+  if (adminToken) return null;
 
   return (
     <div className="admin-container min-h-screen admin-auth-background flex items-center justify-center">

@@ -14,7 +14,7 @@ function AdminLayout({ children }: { children: ReactNode }) {
       <Sidebar />
       <main
         className={`min-h-screen ${
-          adminToken || !path.includes("/admin/login") ? "ml-[300px] p-10" : ""
+          adminToken || !path.includes("/admin/login") ? "ml-[300px] p-10" : "ml-0 p-0"
         }`}
       >
         {children}

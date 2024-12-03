@@ -1,8 +1,7 @@
-import React from 'react'
-import UserManagement from '@/components/pagecomponents/admin/UserManagement'
-
+import React from "react";
+import UserManagement from "@/components/pagecomponents/admin/UserManagement";
 function page() {
-  return <UserManagement/>
+  return <UserManagement />;
 }
 
-export default page
+export default page;

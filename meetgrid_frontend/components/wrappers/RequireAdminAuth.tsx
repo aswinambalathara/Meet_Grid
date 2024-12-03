@@ -1,16 +1,20 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useAuth } from "@/lib/hooks/useAuth";
-import { notFound } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-function withAuth<T extends object>(WrappedComponent: React.ComponentType<T>) {
-  return function RequireUserAuth(props: T) {
-    const { adminToken } = useAuth();
+function RequireAdminAuth({ children }: { children: React.ReactNode }) {
+  const { adminToken } = useAuth();
+  const router = useRouter();
 
-    if (adminToken) return notFound();
-    return <WrappedComponent {...props} />;
-  };
+  useEffect(() => {
+    if (!adminToken) {
+      router.push("/admin/login");
+    }
+  }, [adminToken, router]);
+  
+  return <>{adminToken ? children : null}</>;
 }
 
-export default withAuth;
+export default RequireAdminAuth;
