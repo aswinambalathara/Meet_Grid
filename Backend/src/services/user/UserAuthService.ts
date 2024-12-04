@@ -48,9 +48,9 @@ export default class UserAuthService {
       name: fullName,
       pathOfTemplate: "/userVerification.html",
       subject: "Verification Mail",
-      link: `${SERVER_URL}/api/user/auth/verify-user?token=${token}`,
+      link: `${SERVER_URL}api/user/auth/verify-user?token=${token}`,
     });
-    console.log(`link: ${SERVER_URL}/api/user/auth/verify-user?token=${token}`);
+    console.log(`link: ${SERVER_URL}api/user/auth/verify-user?token=${token}`);
     return {
       status: true,
       message: `User created verification link has sent to ${email}`,
