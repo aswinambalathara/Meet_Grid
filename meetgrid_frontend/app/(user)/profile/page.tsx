@@ -35,9 +35,7 @@ function page() {
           <ul className="w-full px-3 py-4 flex flex-col gap-2">
             {UserSidebarLinks.map((linkObj, index) => (
               <li
-                className={`bg-slate-600 p-2 rounded-sm hover:bg-slate-400 cursor-pointer transition-all ease-linear duration-200 ${
-                  linkObj.textcolor || ""
-                }`}
+                className={` p-2 ${linkObj.href === activeSection? 'bg-slate-400 text-sm text-slate-900 font-medium' : 'bg-slate-600'} ${linkObj.href === 'deactivate-account' && 'text-red-500'} rounded-sm hover:bg-slate-400 cursor-pointer transition-all ease-linear duration-200`}
                 key={index}
                 onClick={() => setActiveSection(linkObj.href)}
               >

@@ -50,5 +50,5 @@ export const UserSidebarLinks: NavLinks[] = [
   { label: "Events", href: "events" },
   { label: "Your Events", href: "your-events" },
   { label: "Change Password", href: "change-password" },
-  { label: "Deactivate Account", href: "deactivate-account", textcolor:'text-red-400'},
+  { label: "Deactivate Account", href: "deactivate-account"},
 ];
