@@ -45,10 +45,10 @@ export const AdminLogoutLink: NavLinks = {
 };
 
 export const UserSidebarLinks: NavLinks[] = [
-  { label: "Basic Details", href: "/profile/basic-details" },
-  { label: "Professional Details", href: "/profile/professional-details" },
-  { label: "Events", href: "/profile/events" },
-  { label: "Your Events", href: "/profile/your-events" },
-  { label: "Change Password", href: "/profile/change-password" },
-  { label: "Deactivate Account", href: "/profile/deactivate", textcolor:'text-red-400'},
+  { label: "Basic Details", href: "basic" },
+  { label: "Professional Details", href: "professional-details" },
+  { label: "Events", href: "events" },
+  { label: "Your Events", href: "your-events" },
+  { label: "Change Password", href: "change-password" },
+  { label: "Deactivate Account", href: "deactivate-account", textcolor:'text-red-400'},
 ];

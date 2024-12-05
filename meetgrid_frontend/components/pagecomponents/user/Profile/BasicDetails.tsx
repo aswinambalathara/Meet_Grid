@@ -2,7 +2,7 @@ import React from 'react'
 
 function BasicDetails() {
   return (
-    <div>BasicDetails</div>
+    <div className='bg-slate-500'>BasicDetails</div>
   )
 }
 
