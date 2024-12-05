@@ -4,32 +4,44 @@ import "@/styles/user.css";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import BrownButton from "@/components/ui/Buttons/BrownButton";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import IUser, { IUserError } from "@/interfaces/IUser";
-import toast, {Toaster} from 'react-hot-toast'
+import toast, { Toaster } from "react-hot-toast";
+import ErrorComponent from "@/components/ui/errors/Error";
 import {
   validateSignUpForm,
   validateEmail,
   validateConfirmPassword,
   validateFullName,
   validatePassword,
-} from "@/lib/utils/validations/signupValidation";
-import Error from "@/components/ui/Error/Error";
+} from "@/lib/utility/authFormValidation";
+
 import { signUpUser } from "@/lib/api/user/AuthRoutes";
+import { useAuth } from "@/lib/hooks/useAuth";
+import notfound from "@/app/not-found";
 
 function UserSignUp() {
+  const { userToken } = useAuth();
+  const isAuthorised = !!userToken;
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const [Peye, setPeye] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [CPeye, setCPeye] = useState(true);
   const [user, setUser] = useState<IUser>({
     email: "",
     fullName: "",
     password: "",
   });
-  const notify = (message:string,type:"success" | "error") =>{
-    type === "success" ? toast.success(message) : toast.error(message);
-  }
+
   const [confirmPassword, setConfirmPassword] = useState("");
+
   const [errors, setErrors] = useState<IUserError>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,7 +56,7 @@ function UserSignUp() {
     }
 
     if (id === "password") {
-      let errorMessage = validatePassword(value);
+      const errorMessage = validatePassword(value);
 
       setErrors((prev) => ({
         ...prev,
@@ -81,33 +93,47 @@ function UserSignUp() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('handle submit')
+    setLoading(true);
+    console.log("handle submit");
     setErrors({});
     const formErrors = validateSignUpForm(
       user.fullName!,
       user.email,
       user.password,
       confirmPassword
-    )
+    );
     setErrors(formErrors);
-    console.log(formErrors)
+    console.log(formErrors);
     const hasErrors = Object.values(formErrors).some((error) => error !== null);
-  if (hasErrors) return;
 
-    const data = await signUpUser(user);
-    
-
-    if(data.status){
-      notify(data.message,'success'); 
-    }else{
-      notify('Something went wrong','error');
+    if (hasErrors) {
+      return setLoading(false);
     }
-    
+
+    try {
+      const data = await signUpUser(user);
+      setLoading(false);
+      toast.success(data.message);
+    } catch (error: unknown) {
+      //console.log(error,"hi")
+      setLoading(false);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+    }
   };
+
+  if (!mounted) {
+    return null;
+  }
+
+  if (isAuthorised) {
+    return notfound();
+  }
 
   return (
     <div className="SignUp-Container container min-h-screen bg-user-background flex items-center justify-center">
-      <Toaster/>
+      <Toaster />
       <div className="user-auth-background md:w-3/4 min-h-[700px] rounded-xl flex flex-col md:flex-row items-center justify-between py-16 px-4 lg:px-28 md:py-0">
         <div className="signup-note text-white text-center mb-8 md:mb-0">
           <Link href="/">
@@ -116,7 +142,7 @@ function UserSignUp() {
           <h4>Connecting You to Events, and Events to Connections.</h4>
         </div>
         <form
-        onSubmit={handleSubmit}
+          onSubmit={handleSubmit}
           className="auth-form min-h-[500px] w-full sm:w-[450px] p-7 text-white flex flex-col items-center rounded-lg change-transition"
         >
           <h2 className="mb-10 font-semibold text-2xl">Sign Up</h2>
@@ -135,7 +161,7 @@ function UserSignUp() {
                 className="placeholder:text-slate-300 border-amber-950 shadow-none focus-visible:ring-slate-300"
               />
               <i className="fa-regular fa-user"></i>
-              {errors.fullName && <Error error={errors.fullName} />}
+              {errors.fullName && <ErrorComponent error={errors.fullName} />}
             </div>
           </div>
           <div className="grid w-full max-w-sm items-center gap-1.5 mb-5">
@@ -153,7 +179,7 @@ function UserSignUp() {
                 className="placeholder:text-slate-300 border-amber-950 shadow-none focus-visible:ring-slate-300"
               />
               <i className="fa-regular fa-envelope"></i>
-              {errors.email && <Error error={errors.email} />}
+              {errors.email && <ErrorComponent error={errors.email} />}
             </div>
           </div>
           <div className="grid w-full max-w-sm items-center gap-1.5 mb-5">
@@ -181,7 +207,7 @@ function UserSignUp() {
                   className="fa-solid fa-eye-slash cursor-pointer"
                 ></i>
               )}
-              {errors.password && <Error error={errors.password} />}
+              {errors.password && <ErrorComponent error={errors.password} />}
             </div>
           </div>
           <div className="grid w-full max-w-sm items-center gap-1.5 mb-5">
@@ -210,12 +236,17 @@ function UserSignUp() {
                 ></i>
               )}
               {errors.confirmPassword && (
-                <Error error={errors.confirmPassword} />
+                <ErrorComponent error={errors.confirmPassword} />
               )}
             </div>
           </div>
           <div className="grid w-full max-w-sm items-center gap-1.5 mb-5">
-            <BrownButton label={"Signup"} type="submit" onclick={handleSubmit}/>
+            <BrownButton
+              label={"Signup"}
+              type="submit"
+              onclick={handleSubmit}
+              loading={loading}
+            />
           </div>
           <div>
             <p className="text-sm">

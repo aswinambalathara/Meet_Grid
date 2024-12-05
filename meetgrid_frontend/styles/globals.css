@@ -2,12 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+:root{
+  --hue: 223;
+	--bg: hsl(var(--hue),90%,95%);
+	--fg: hsl(var(--hue),90%,5%);
+	--trans-dur: 0.3s;
+}
+
 body{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     background-color: #1B1919;
-    @apply font-sans
+    /* @apply font-sans */
 }
 
 @layer base {
@@ -69,3 +76,75 @@ body{
   body {
     @apply bg-background text-foreground;}}
 
+/* Spinner styles */
+.spinner {
+  border: 2px solid rgba(255, 255, 255, 0.6); /* Light border */
+  border-top: 2px solid #ffffff; /* White spinner color */
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ip {
+	width: 4em;
+	height: 2em;
+}
+.ip__track {
+	stroke: hsl(var(--hue),90%,90%);
+	transition: stroke var(--trans-dur);
+}
+.ip__worm1,
+.ip__worm2 {
+	animation: worm1 2s linear infinite;
+}
+.ip__worm2 {
+	animation-name: worm2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg: hsl(var(--hue),90%,5%);
+		--fg: hsl(var(--hue),90%,95%);
+	}
+	.ip__track {
+		stroke: hsl(var(--hue),90%,15%);
+	}
+}
+
+@keyframes worm1 {
+	from {
+		stroke-dashoffset: 0;
+	}
+	50% {
+		animation-timing-function: steps(1);
+		stroke-dashoffset: -358;
+	}
+	50.01% {
+		animation-timing-function: linear;
+		stroke-dashoffset: 358;
+	}
+	to {
+		stroke-dashoffset: 0;
+	}
+}
+@keyframes worm2 {
+	from {
+		stroke-dashoffset: 358;
+	}
+	50% {
+		stroke-dashoffset: 0;
+	}
+	to {
+		stroke-dashoffset: -358;
+	}
+}

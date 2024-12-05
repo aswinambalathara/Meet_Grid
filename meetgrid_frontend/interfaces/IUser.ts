@@ -1,4 +1,5 @@
 export default interface IUser{
+    readonly _id?:string
     email:string,
     fullName?:string;
     password:string;
@@ -18,7 +19,9 @@ export default interface IUser{
         country:string;
         state:string;
         postalCode:string
-    }
+    },
+    isBlocked?:boolean,
+    isDeactivated?:boolean
 }
 
 export interface IUserError {
