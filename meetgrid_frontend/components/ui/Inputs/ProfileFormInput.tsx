@@ -7,7 +7,9 @@ interface ProfileFormInputProps {
   label: string;
   value: string;
   placeholder?: string;
-  inputType:string
+  inputType: string;
+  disabled?: boolean;
+  editIcon?: boolean;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -18,9 +20,11 @@ function ProfileFormInput({
   value,
   inputType,
   placeholder,
+  disabled = true,
+  editIcon = true,
   onChange,
 }: ProfileFormInputProps) {
-  const [isEditing, setEditing] = useState(false);
+  const [isEditing, setEditing] = useState(!disabled);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleEditButton = () => {
@@ -33,19 +37,21 @@ function ProfileFormInput({
   };
 
   return (
-    <div>
+    <div className="w-full">
       <label htmlFor={name} className="text-sm">
         {label}
       </label>
       <div className="input-wrap relative">
-        <i
-          className={`fa-regular ${
-            isEditing
-              ? "fa-square-check text-green-700"
-              : "fa-pen-to-square text-blue-900"
-          } absolute right-3 top-3 cursor-pointer`}
-          onClick={handleEditButton}
-        ></i>
+        {editIcon && (
+          <i
+            className={`fa-regular ${
+              isEditing
+                ? "fa-square-check text-green-700"
+                : "fa-pen-to-square text-blue-900"
+            } absolute right-3 top-3 cursor-pointer`}
+            onClick={handleEditButton}
+          ></i>
+        )}
         <input
           className="w-full h-10 bg-white/50 rounded-md px-2 text-sm"
           type={inputType}
@@ -54,7 +60,7 @@ function ProfileFormInput({
           name={name}
           value={value}
           ref={inputRef}
-          disabled={!isEditing}
+          disabled={disabled}
           onChange={onChange}
         />
       </div>
