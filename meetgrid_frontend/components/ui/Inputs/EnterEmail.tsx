@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import "@/styles/user.css";
 import { Input } from "@/components/ui/input";
-import BrownButton from "../buttons/BrownButton";
+import BrownButton from "../Buttons/BrownButton";
 
 function EnterEmail() {
   const [email, setEmail] = useState("");

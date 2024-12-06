@@ -101,7 +101,7 @@ function BasicDetails() {
           onChange={handleSetBasicDetails}
         />
         <ProfileFormInput
-          inputType="string"
+          inputType="email"
           label="Email Address"
           id="email"
           name="email"
