@@ -4,6 +4,7 @@ import Navbar from "@/components/pagecomponents/user/Layout/Navbar";
 import Footer from "@/components/pagecomponents/user/Layout/Footer";
 import {Poppins,Poltawski_Nowy,Alegreya_SC} from 'next/font/google';
 import { AuthProvider } from "@/lib/context/AuthProvider";
+
 export const metadata: Metadata = {
   title: "Meet Grid | Home",
   description: "Connecting You to Events, and Events to Connections",
