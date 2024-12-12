@@ -9,10 +9,52 @@ import {
   SelectValue,
 } from "../../select";
 
-function EventLocationDetails() {
+function EventLocationDetails({ eventType }: { eventType: string }) {
+  if (eventType === "online") {
+    return (
+      <div className="h-full p-16">
+        <h1 className="mb-5">Location & Venue Details</h1>
+        <div className="form-control flex flex-col mb-5 gap-2">
+          <Label htmlFor="virtual-platform">Virtual Meet Platform</Label>
+          <Input
+            type="text"
+            id="virtual-platform"
+            placeholder="Virtual Meet Platform"
+            className="bg-slate-100 h-10"
+          />
+        </div>
+        <div className="form-control flex flex-col mb-5 gap-2">
+          <Label htmlFor="virtual-link">Virtual Meet Link</Label>
+          <Input
+            type="text"
+            id="virtual-link"
+            placeholder="Virtual Meet Link"
+            className="bg-slate-100 h-10"
+          />
+        </div>
+        <div className="form-control flex flex-col mb-5 gap-2">
+          <Label htmlFor="time-zonge">Time Zone</Label>
+          <Input
+            type="text"
+            id="time-zonge"
+            placeholder="Time Zone"
+            className="bg-slate-100 h-10"
+          />
+        </div>
+        <div className="form-control flex flex-col mb-5 gap-2">
+          <Label htmlFor="access-instructions">Access Instructions</Label>
+          <Input
+            type="text"
+            id="access-instructions"
+            placeholder="Access Instructions"
+            className="bg-slate-100 h-10"
+          />
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="h-full p-16">
-
       <h1 className="mb-5">Location & Venue Details</h1>
       <div className="form-control flex flex-col mb-5 gap-2">
         <Label htmlFor="venue-name">Venue Name</Label>
@@ -74,7 +116,6 @@ function EventLocationDetails() {
       </div>
 
       <div className="location-section flex flex-col w-full">
-
         <div className="form-control flex flex-col gap-2 w-full mb-5">
           <Label htmlFor="location">Location</Label>
           <Input
@@ -86,7 +127,7 @@ function EventLocationDetails() {
         </div>
 
         <div className="text-white text-center rounded map-section h-96 w-full min-h-54 bg-green-800">
-            Map comes here
+          Map comes here
         </div>
       </div>
     </div>

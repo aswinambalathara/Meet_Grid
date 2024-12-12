@@ -7,8 +7,6 @@
   --bg: hsl(var(--hue), 90%, 95%);
   --fg: hsl(var(--hue), 90%, 5%);
   --trans-dur: 0.3s;
-  --font-alegreya: "Alegreya SC", serif;
-  --font-poltawski: "Poltawski Nowy", serif;
 }
 
 .alegreya {
