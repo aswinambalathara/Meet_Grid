@@ -3,6 +3,7 @@ import React from "react";
 
 function page() {
   return (
+
     <div className="min-h-screen px-5 flex gap-4 relative  ">
       <section className="main basis-3/4 rounded-lg overflow-y-auto bg-white/70">
         <div className="logo-nav bg-white w-full p-2 rounded-t-lg">
@@ -138,6 +139,8 @@ function page() {
       </section>
       
     </div>
+
+    
   );
 }
 
