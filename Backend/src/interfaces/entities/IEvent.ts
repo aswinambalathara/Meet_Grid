@@ -8,3 +8,11 @@ export default interface IEvent{
     eventTime:string,
     
 }
+
+export interface IEventCategory{
+    readonly _id?:string,
+    categoryName?:string,
+    categoryType?: 'professional' | 'general'
+    description?:string,
+    createdAt?:Date
+}
