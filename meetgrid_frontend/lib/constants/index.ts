@@ -11,7 +11,7 @@ type HeroProps = {
   description: string;
 };
 
-type TrendingEventsProps = {
+export type EventCardProps = {
   id: string;
   image?: string;
   title: string;
@@ -122,7 +122,57 @@ export const FeatureCards: { title: string; des: string }[] = [
   },
 ];
 
-export const TrendingEventsList: TrendingEventsProps[] = [
+export const TrendingEventsList: EventCardProps[] = [
+  {
+    id: "1",
+    date: "10/12/2024",
+    eventType: "Online",
+    ticketType: "Free",
+    title: "Google Hackathon bfgfdgssssssssssssssssssssssssssfahssdhfgkljasdflgjsdfkl;hjfdskl;ghjdkls;fgjkosdgjskl;",
+    image:
+      "https://images.unsplash.com/photo-1561347981-969c80cf4463?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    id: "2",
+    date: "10/12/2024",
+    eventType: "Online",
+    ticketType: "Free",
+    title: "Google Hackathon",
+    image:
+      "https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    id: "3",
+    date: "10/12/2024",
+    eventType: "Online",
+    ticketType: "Free",
+    title: "Google Hackathon",
+    image:
+      "https://images.unsplash.com/photo-1578909196400-59f8f8156a05?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    id: "6",
+    date: "10/12/2024",
+    eventType: "Online",
+    ticketType: "Free",
+    title: "Google Hackathon",
+    image:
+      "https://images.unsplash.com/photo-1628258334105-2a0b3d6efee1?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  },
+  {
+    id: "4",
+    date: "10/12/2024",
+    eventType: "Online",
+    ticketType: "Free",
+    title: "Google Hackathon",
+  },
+  {
+    id: "5",
+    date: "10/12/2024",
+    eventType: "Online",
+    ticketType: "Free",
+    title: "Google Hackathon",
+  },
   {
     id: "1",
     date: "10/12/2024",
