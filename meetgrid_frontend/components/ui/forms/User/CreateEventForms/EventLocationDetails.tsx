@@ -1,13 +1,13 @@
 import React from "react";
-import { Label } from "../../label";
-import { Input } from "../../input";
+import { Label } from "../../../label";
+import { Input } from "../../../input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../select";
+} from "../../../select";
 
 function EventLocationDetails({ eventType }: { eventType: string }) {
   if (eventType === "online") {
