@@ -1,9 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import AdminUserService from "../../services/admin/AdminUserService";
 import { StatusCode } from "../../types";
+import AdminEventCategoryService from "../../services/admin/AdminEventCategoryService";
+import { log } from "console";
 
 export default class AdminController {
-  constructor(private adminUserService: AdminUserService) {}
+  constructor(
+    private adminUserService: AdminUserService,
+    private adminEventCategoryService: AdminEventCategoryService
+  ) {}
 
   async handleGetUsers(
     req: Request,
@@ -86,4 +91,48 @@ export default class AdminController {
       next(error);
     }
   }
+
+  async handleCreateEventCategory(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const eventCategoryData = req.body;
+      const result = await this.adminEventCategoryService.create(
+        eventCategoryData
+      );
+      res.status(StatusCode.Created).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async handleGetEventCategories(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const result = await this.adminEventCategoryService.getAllCategories();
+      res.status(StatusCode.Success).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async handleDeleteEventCategory(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const {id} = req.params
+      const result = await this.adminEventCategoryService.delete(id);
+      res.status(StatusCode.Success).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
 }

@@ -10,7 +10,7 @@ const eventCategorySchema = new Schema<IEventCategory>(
     },
     categoryType: {
       type: String,
-      enum: ["general", "professional"],
+      enum: ["General", "Professional"],
       required: true,
     },
     description: {

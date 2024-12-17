@@ -2,14 +2,12 @@ import IAdmin from "../../interfaces/entities/IAdmin";
 import IAdminRepository from "../../interfaces/repository/IAdminRepository";
 import IJWTService from "../../interfaces/utilServices/IJWTService";
 import { StatusCode, TokenResponse } from "../../types";
-import BcryptService from "../../utils/bcryptService";
 import CustomError from "../../utils/CustomError";
 
 export default class AdminAuthService {
   constructor(
     private adminRepository: IAdminRepository,
     private jwtService: IJWTService,
-    private bcryptService: BcryptService
   ) {}
 
   async doAdminLogin(admin: IAdmin): Promise<TokenResponse> {
@@ -25,11 +23,11 @@ export default class AdminAuthService {
 
     const accessToken = this.jwtService.createAccessToken(
       foundAdmin.email,
-      foundAdmin._id!
+      foundAdmin.id!
     );
     const refreshToken = this.jwtService.createRefreshToken(
       foundAdmin.email,
-      foundAdmin._id!
+      foundAdmin.id!
     );
 
     return {
@@ -44,7 +42,7 @@ export default class AdminAuthService {
     const { email } = this.jwtService.verifyRefreshToken(token);
     const admin = await this.adminRepository.findByEmail(email);
     if (!admin) throw new CustomError("Unauthorised", StatusCode.Unauthorized);
-    const accessToken = this.jwtService.createAccessToken(email, admin._id!);
+    const accessToken = this.jwtService.createAccessToken(email, admin.id!);
     return { accessToken };
   }
 }

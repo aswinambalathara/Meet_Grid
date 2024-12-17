@@ -9,7 +9,7 @@ const eventSchema = new Schema<IEvent>(
     },
     description: { type: String, required: true },
     category: { type: Schema.Types.ObjectId, ref: "Category", required: true },
-    subCategory: { type: String, required: true },
+    subCategory: { type: String},
     date: {
       startDate: { type: Date, required: true },
       endDate: { type: Date, required: true },

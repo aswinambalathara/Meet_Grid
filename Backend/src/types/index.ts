@@ -45,3 +45,10 @@ export interface CustomRequest extends Request {
     id: string;
   };
 }
+
+
+export type EventFilter = {
+  category: string;
+  coordinates?: string[];
+  [key: string]: string | string[] | undefined;
+}

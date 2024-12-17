@@ -46,7 +46,7 @@ export default interface IEvent extends Document {
 
 export interface IEventCategory extends Document {
   categoryName?: string;
-  categoryType?: "professional" | "general";
+  categoryType?: "Professional" | "General";
   description?: string;
   createdAt?: Date;
 }
