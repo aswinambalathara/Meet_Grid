@@ -65,7 +65,7 @@ export default class UserAuthService {
         StatusCode.Unauthorized
       );
     foundUser.isVerified = true;
-    await this.userRepository.update(foundUser._id!, foundUser);
+    await this.userRepository.update(foundUser.id, foundUser);
   }
 
   async doUserLogin(email: string, password: string): Promise<TokenResponse> {
@@ -88,7 +88,7 @@ export default class UserAuthService {
 
       foundUser.verificationToken = verificationToken;
 
-      await this.userRepository.update(foundUser._id!, foundUser);
+      await this.userRepository.update(foundUser.id, foundUser);
 
       await this.emailService.sendMail({
         email: foundUser.email,
@@ -97,7 +97,7 @@ export default class UserAuthService {
         subject: "Verification Mail",
         link: `${SERVER_URL}/api/user/auth/verify-user?token=${token}`,
       });
-      console.log(`${SERVER_URL}/api/user/auth/verify-user?token=${token}`)
+      console.log(`${SERVER_URL}/api/user/auth/verify-user?token=${token}`);
       throw new CustomError(
         `User not verified. Verification email sent to ${foundUser.email}.`,
         StatusCode.Forbidden
@@ -112,11 +112,11 @@ export default class UserAuthService {
 
     const accessToken = this.jwtService.createAccessToken(
       foundUser.email,
-      foundUser._id!
+      foundUser.id
     );
     const refreshToken = this.jwtService.createRefreshToken(
       foundUser.email,
-      foundUser._id!
+      foundUser.id
     );
 
     return {
@@ -153,7 +153,7 @@ export default class UserAuthService {
 
       foundUser.verificationToken = verificationToken;
 
-      await this.userRepository.update(foundUser._id!, foundUser);
+      await this.userRepository.update(foundUser.id, foundUser);
 
       await this.emailService.sendMail({
         email: foundUser.email,
@@ -211,11 +211,11 @@ export default class UserAuthService {
 
     const accessToken = this.jwtService.createAccessToken(
       foundUser.email,
-      foundUser._id!
+      foundUser.id
     );
     const refreshToken = this.jwtService.createRefreshToken(
       foundUser.email,
-      foundUser._id!
+      foundUser.id
     );
 
     return {
@@ -241,7 +241,7 @@ export default class UserAuthService {
       token: resetToken,
       expiry: new Date(Date.now() + 10 * 60 * 1000),
     };
-    await this.userRepository.update(foundUser._id!, foundUser);
+    await this.userRepository.update(foundUser.id, foundUser);
 
     await this.emailService.sendMail({
       email: foundUser.email,
@@ -285,7 +285,7 @@ export default class UserAuthService {
     }
     password = await this.bcryptService.hash(password);
     foundUser.password = password;
-    await this.userRepository.update(foundUser._id!, foundUser);
+    await this.userRepository.update(foundUser.id, foundUser);
     return { status: true, message: "Reset Password Successfull" };
   }
 
@@ -294,10 +294,7 @@ export default class UserAuthService {
     const foundUser = await this.userRepository.findByEmail(email);
     if (!foundUser)
       throw new CustomError("Unauthorized", StatusCode.Unauthorized);
-    const accessToken = this.jwtService.createAccessToken(
-      email,
-      foundUser._id!
-    );
+    const accessToken = this.jwtService.createAccessToken(email, foundUser.id);
     return { accessToken };
   }
 
@@ -309,7 +306,7 @@ export default class UserAuthService {
     };
     user.otp = otp;
 
-    await this.userRepository.update(user._id!, user);
+    await this.userRepository.update(user.id, user);
 
     await this.emailService.sendMail({
       email: user.email,

@@ -1,7 +1,8 @@
-export default interface IUser{
-    readonly _id?:string;
-    readonly createdAt?:string;
-    readonly updatedAt?:string;
+import { Document } from "mongoose";
+
+export default interface IUser extends Document{
+    readonly createdAt?:Date;
+    readonly updatedAt?:Date;
     readonly email:string
     fullName:string;
     password:string;

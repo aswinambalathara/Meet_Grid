@@ -47,9 +47,8 @@ const userSchema = new Schema<IUser>({
   isBlocked: { type: Boolean, required: true, default: false },
   isDeactivated: { type: Boolean, required: true, default: false },
   isVerified: { type: Boolean, required: true, default: false },
-  createdAt: { type: Date, default: Date.now() },
-  updatedAt: { type: Date, default: Date.now() },
-});
+
+},{timestamps:true});
 
 const userModel = model<IUser>("user", userSchema);
 export default userModel;

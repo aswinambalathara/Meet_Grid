@@ -1,5 +1,6 @@
-export default interface IAdmin {
-  readonly _id?: string;
+import { Document } from "mongoose";
+
+export default interface IAdmin extends Document {
   readonly email: string;
   password: string;
 }

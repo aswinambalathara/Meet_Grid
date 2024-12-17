@@ -1,29 +1,28 @@
 import { model, Schema } from "mongoose";
 import { IEventCategory } from "../interfaces/entities/IEvent";
 
-const eventCategorySchema = new Schema<IEventCategory>({
-  categoryName: {
-    type: String,
-    required: true,
-    trim: true,
+const eventCategorySchema = new Schema<IEventCategory>(
+  {
+    categoryName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    categoryType: {
+      type: String,
+      enum: ["general", "professional"],
+      required: true,
+    },
+    description: {
+      type: String,
+      trim: true,
+    },
   },
-  categoryType: {
-    type: String,
-    enum: ["general", "professional"],
-    required: true,
-  },
+  { timestamps: true }
+);
 
-  createdAt: {
-    type: Date,
-    required: true,
-    default: Date.now(),
-  },
-
-  description: {
-    type: String,
-    trim: true,
-  },
-});
-
-const eventCategoryModel = model<IEventCategory>("admin", eventCategorySchema);
-export default eventCategoryModel;
+const EventCategoryModel = model<IEventCategory>(
+  "eventCategory",
+  eventCategorySchema
+);
+export default EventCategoryModel;
