@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import AdminUserService from "../../services/admin/AdminUserService";
 import { StatusCode } from "../../types";
 import AdminEventCategoryService from "../../services/admin/AdminEventCategoryService";
-import { log } from "console";
 
 export default class AdminController {
   constructor(
