@@ -35,6 +35,12 @@ export type response = {
   message: string;
 };
 
+export type payloadResponse = {
+  status:boolean,
+  message:string,
+  data:object
+}
+
 export interface CustomRequest extends Request {
   user?: {
     email: string;
@@ -51,4 +57,11 @@ export type EventFilter = {
   category: string;
   coordinates?: string[];
   [key: string]: string | string[] | undefined;
+}
+
+export type professionalInfoProps = {
+  companyName: string;
+    jobTitle: string;
+    linkedinUrl: string;
+    skills: string[];
 }
