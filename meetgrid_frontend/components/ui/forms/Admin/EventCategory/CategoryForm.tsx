@@ -8,50 +8,44 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { createEventCategory } from "@/lib/api/admin/EventCategoryRoutes";
 import toast, { Toaster } from "react-hot-toast";
+import { adminCategorySchema } from "@/lib/utility/schemas";
 
-const schema = z.object({
-  categoryName: z.string().trim().nonempty("This field is required"),
-  categoryType: z.enum(["Professional", "General"], {
-    required_error: "This field is required",
-    invalid_type_error: "Invalid category type",
-  }),
-  description: z.string().optional(),
-});
+export type FormData = z.infer<typeof adminCategorySchema>;
 
-type FormData = z.infer<typeof schema>;
+export type AdminCategoryFormProps = {
+  onSubmit: (data: FormData) => Promise<string>;
+  initialValues?: Partial<FormData>;
+  buttonText?: string;
+};
 
-function AddCategoryForm({
-  refresh,
-  closeAccordion
-}: {
-  refresh: React.Dispatch<React.SetStateAction<boolean>>;
-  closeAccordion:()=>void
-}) {
+function CategoryForm({
+  onSubmit,
+  initialValues = {},
+  buttonText = "Submit",
+}: AdminCategoryFormProps) {
   const {
     reset,
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(adminCategorySchema),
+    defaultValues: initialValues,
     mode: "onBlur",
     reValidateMode: "onSubmit",
   });
 
   const handleOnSubmit = async (data: FormData) => {
     try {
-      const result = await createEventCategory(data);
-      if (result?.status) toast.success(result.message);
-      refresh((prev) => !prev);
+      const result = await onSubmit(data);
+      toast.success(result)
     } catch (error) {
       if (error instanceof Error) {
-        toast.error(error.message);
+        toast.error(error.message)
       }
-    } finally {
-      reset();
-      closeAccordion()
     }
   };
+
   return (
     <>
       <form onSubmit={handleSubmit(handleOnSubmit)}>
@@ -77,7 +71,7 @@ function AddCategoryForm({
           </Label>
           <select
             id="categoryType"
-            defaultValue={""}
+            defaultValue=""
             {...register("categoryType")}
             className="border rounded-sm p-2 shadow-sm"
           >
@@ -108,10 +102,10 @@ function AddCategoryForm({
           )}
         </div>
 
-        <Button type="submit">Add New Category</Button>
+        <Button type="submit">{buttonText}</Button>
       </form>
     </>
   );
 }
 
-export default AddCategoryForm;
+export default CategoryForm;

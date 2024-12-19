@@ -8,37 +8,45 @@ import {
 import { Button } from "@/components/ui/button";
 import ProfileFormInput from "@/components/ui/Inputs/ProfileFormInput";
 import IUser from "@/interfaces/IUser";
-import React, { useRef, useState } from "react";
+import { getUserProfile } from "@/lib/api/user/AuthorisedRoutes";
+import React, { useEffect, useRef, useState } from "react";
+import { basicDetailsSchema } from "@/lib/utility/schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 function BasicDetails() {
   const editBioRef = useRef<HTMLTextAreaElement>(null);
   const [isBioEditing, setBioEditing] = useState(false);
-  const [basicDetails, setBasicDetails] = useState<IUser>({
-    fullName: "",
-    email: "",
-    phone: "",
-    location: {
-      addressLine: "",
-      city: "",
-      country: "",
-      postalCode: "",
-      state: "",
-    },
-    image: "",
-    bio: "",
+  const [bio, setBio] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [isEmailVerified, setVerification] = useState(true);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    reset,
+    getValues,
+  } = useForm({
+    resolver: zodResolver(basicDetailsSchema),
   });
 
-  const handleSetBasicDetails = (
-    e:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    const { value, name } = e.target;
-    setBasicDetails((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  useEffect(() => {
+    async function fetchUserProfile() {
+      try {
+        const data = await getUserProfile();
+        reset(data.data);
+        if (data.data.bio) {
+          setBio(data.data.bio);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchUserProfile();
+  }, [reset]);
 
   const handleSetLocation = () => {};
 
@@ -50,6 +58,8 @@ function BasicDetails() {
     }
     setBioEditing(!isBioEditing);
   };
+  const displayValues = getValues();
+  if (loading) return null;
 
   return (
     <div className="container overflow-y-auto h-full p-10 text-black flex flex-col">
@@ -60,7 +70,9 @@ function BasicDetails() {
         </div>
 
         <div className="right basis-5/6">
-          <h3 className="font-semibold text-black text-lg">Aswin Nair T M </h3>
+          <h3 className="font-semibold text-black text-lg">
+            {displayValues.fullName}
+          </h3>
           <div className="bio w-full mt-2">
             <label htmlFor="bio" className="text-sm">
               Bio
@@ -69,8 +81,8 @@ function BasicDetails() {
               <textarea
                 ref={editBioRef}
                 disabled
-                onChange={handleSetBasicDetails}
-                value={basicDetails.bio}
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
                 name="bio"
                 id="bio"
                 placeholder="enter something about you"
@@ -79,9 +91,7 @@ function BasicDetails() {
               />
               <i
                 className={`fa-regular ${
-                  isBioEditing
-                    ? "fa-square-check text-green-700"
-                    : "fa-pen-to-square text-blue-900"
+                  !isBioEditing && "fa-pen-to-square text-blue-900"
                 } absolute right-3 top-3 cursor-pointer`}
                 onClick={handleBioEdit}
               ></i>
@@ -94,28 +104,25 @@ function BasicDetails() {
         <ProfileFormInput
           label="Full Name"
           id="fullName"
-          value={basicDetails.fullName!}
+          value={displayValues.fullName}
           inputType="text"
-          name="fullName"
           placeholder="Full Name"
-          onChange={handleSetBasicDetails}
+          {...register("fullName")}
         />
         <ProfileFormInput
           inputType="email"
           label="Email Address"
           id="email"
-          name="email"
           placeholder="Email"
-          onChange={handleSetBasicDetails}
-          value={basicDetails.email}
+          value={displayValues.email}
+          {...register("email")}
         />
         <ProfileFormInput
           id="phone"
-          name="phone"
           inputType="text"
           label="Phone Number"
-          onChange={handleSetBasicDetails}
-          value={basicDetails.phone!}
+          {...register("phone")}
+          value={displayValues.phone}
           placeholder="Phone Number"
         />
 
@@ -128,56 +135,51 @@ function BasicDetails() {
             <AccordionTrigger>Location</AccordionTrigger>
             <AccordionContent className="bg-slate-300/75 rounded mb-2 p-4 flex flex-col gap-4">
               <ProfileFormInput
-                value={basicDetails.location?.addressLine!}
+                value={displayValues.location?.addressLine || ""}
                 id="location.addressLine"
-                name="location.addressLine"
                 label="Address Line"
                 inputType="text"
                 disabled={true}
-                onChange={handleSetBasicDetails}
+                {...register("location.addressLine")}
                 placeholder="Address Line"
               />
               <div className="address-row-2 flex items-center justify-between gap-2">
                 <ProfileFormInput
-                  value={basicDetails.location?.city!}
-                  id="location.addressLine"
-                  name="location.addressLine"
+                  value={displayValues.location?.city || ""}
+                  id="location.city"
                   label="City"
                   inputType="text"
                   disabled={true}
-                  onChange={handleSetBasicDetails}
+                  {...register("location.city")}
                   placeholder="City"
                 />
-                                <ProfileFormInput
-                  value={basicDetails.location?.state!}
-                  id="location.addressLine"
-                  name="location.addressLine"
+                <ProfileFormInput
+                  value={displayValues.location?.state || ""}
+                  id="location.state"
                   label="State"
                   inputType="text"
                   disabled={true}
-                  onChange={handleSetBasicDetails}
+                  {...register("location.state")}
                   placeholder="State"
                 />
               </div>
               <div className="address-row-3 flex items-center justify-between gap-2">
                 <ProfileFormInput
-                  value={basicDetails.location?.country!}
-                  id="location.addressLine"
-                  name="location.addressLine"
+                  value={displayValues.location?.country || ""}
+                  id="location.country"
                   label="Country"
                   inputType="text"
                   disabled={true}
-                  onChange={handleSetBasicDetails}
+                  {...register("location.country")}
                   placeholder="Country"
                 />
-                                <ProfileFormInput
-                  value={basicDetails.location?.postalCode!}
-                  id="location.addressLine"
-                  name="location.addressLine"
+                <ProfileFormInput
+                  value={displayValues.location?.postalCode}
+                  id="location.postalCode"
                   label="Postal Code"
                   inputType="text"
                   disabled={true}
-                  onChange={handleSetBasicDetails}
+                  {...register("location.postalCode")}
                   placeholder="Postal Code"
                 />
               </div>
@@ -185,7 +187,9 @@ function BasicDetails() {
           </AccordionItem>
         </Accordion>
         <div className="flex items-center justify-center mt-3">
-        <Button size={"lg"} className="bg-violet-700 text-white ">Update Basic Details</Button>
+          <Button size={"lg"} className="bg-violet-700 text-white ">
+            Update Basic Details
+          </Button>
         </div>
       </form>
     </div>

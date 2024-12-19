@@ -1,23 +1,30 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import { Input } from "../../../input";
 import { Label } from "../../../label";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useFormContext } from "react-hook-form";
 
 function BasicEventDetails() {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
+
   return (
     <div className="h-full p-16">
       <h1 className="mb-5">Basic Event Details</h1>
       <div className="form-control flex flex-col mb-5 gap-2">
         <Label htmlFor="event-title">Event Title</Label>
         <Input
+          {...register("title")}
           type="text"
           id="event-title"
           placeholder="Event title"
@@ -28,6 +35,7 @@ function BasicEventDetails() {
         <Label htmlFor="event-description">Event Description</Label>
         <Input
           type="text"
+          {...register('description')}
           id="event-description"
           placeholder="Event description"
           className="bg-slate-100 h-10"
@@ -37,6 +45,7 @@ function BasicEventDetails() {
         <div className="form-control flex flex-col gap-2 w-full">
           <Label htmlFor="event-category">Event Category</Label>
           <Input
+          
             type="text"
             id="event-category"
             placeholder="Event category"
@@ -64,20 +73,20 @@ function BasicEventDetails() {
       </div>
       <div className="row flex gap-2">
         <div className="form-control flex flex-col gap-2 w-2/4">
-          <Label htmlFor="event-date">Event Date</Label>
+          <Label htmlFor="event-startDate">Event Start Date & Time</Label>
           <input
-            type="date"
-            id="event-date"
-            placeholder="Event Date"
+            type="datetime-local"
+            id="event-startDate"
+            placeholder="Event Start Date"
             className="bg-slate-100 h-10 px-3 rounded text-sm"
           />
         </div>
         <div className="form-control flex flex-col gap-2 w-2/4">
-          <Label htmlFor="event-time">Event Time</Label>
+          <Label htmlFor="event-endDate">Event End Date & Time</Label>
           <input
-            type="time"
-            id="event-time"
-            placeholder="Event Time"
+            type="datetime-local"
+            id="event-endDate"
+            placeholder="Event End Date"
             className="bg-slate-100 h-10 px-3 rounded text-sm"
           />
         </div>

@@ -8,9 +8,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../select";
+import IEvent from "@/interfaces/IEvent";
 
-function EventLocationDetails({ eventType }: { eventType: string }) {
-  if (eventType === "online") {
+type EventLocationDetailsProps = {
+  eventType: IEvent['eventType'];
+};
+function EventLocationDetails({ eventType }: EventLocationDetailsProps) {
+  if (eventType === 'Online') {
     return (
       <div className="h-full p-16">
         <h1 className="mb-5">Location & Venue Details</h1>

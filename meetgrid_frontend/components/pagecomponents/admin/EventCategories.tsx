@@ -1,16 +1,10 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Card, CardContent } from "@/components/ui/card";
-import AddCategoryForm from "@/components/ui/forms/Admin/EventCategory/AddCategoryForm";
+import React, { useEffect, useState } from "react";
+import CategoryForm, { AdminCategoryFormProps, FormData } from "@/components/ui/forms/Admin/EventCategory/CategoryForm";
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -22,12 +16,17 @@ import {
   getEventCategories,
 } from "@/lib/api/admin/EventCategoryRoutes";
 import toast, { Toaster } from "react-hot-toast";
+import { Button } from "@/components/ui/button";
+import { Dialog ,DialogContent, DialogHeader} from "@/components/ui/dialog";
+import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 
-function EventCategories() {
+ function EventCategories() {
   const [loading, setLoading] = useState(false);
   const [eventCategories, setEventCategories] = useState<IEventCategory[]>([]);
-  const [refresh,setRefresh] = useState(false)
-  const accordionRef = useRef<HTMLDivElement | null>(null);
+  const [refresh, setRefresh] = useState(false);
+  const [isOpen, setOpen] = useState(false);
+  const [formMode,setFormMode] = useState<'edit'|'add'> ('add');
+  const [selectedCategory,setEditCategory] = useState<IEventCategory | null> (null)
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -43,10 +42,25 @@ function EventCategories() {
     fetchCategories();
   }, [refresh]);
 
-  const handleEditCategory = (id: string) => {
-    const eventCategory = eventCategories.find((event) => event._id === id);
-    console.log(eventCategory);
-  };
+  const handleAddCategory = async (data:FormData):Promise<string> =>{
+    return 'success'
+  }
+
+  const handleEditCategory = async (data:FormData):Promise<string> =>{
+    return 'edit success'
+  }
+
+  const handleModalOpen = (id?:string) =>{
+    if(id){
+    const editCategory = eventCategories.find((cat)=>cat._id === id);
+    setEditCategory(editCategory!);
+    setFormMode('edit');
+    setOpen(true)
+    }else{
+      setFormMode('add');
+      setOpen(true)
+    }
+  }
 
   const handleDelete = async (id: string) => {
     const confirm = window.confirm(
@@ -68,22 +82,30 @@ function EventCategories() {
     }
   };
 
-  const toggleAccordion = () =>{
-    const accordionItem = accordionRef.current?.querySelector('.accordion-item')
-    if(accordionItem){
-        accordionItem.classList.toggle('open')
-    }
-  }
+const formProps:AdminCategoryFormProps = {
+  initialValues:formMode === 'edit' && selectedCategory? {
+    categoryName:selectedCategory.categoryName,
+    categoryType:selectedCategory.categoryType,
+    description:selectedCategory.description
+  }:{},
+  buttonText: formMode === "edit"? 'Save Changes' : "Submit Category",
+  onSubmit:formMode === 'edit'? handleEditCategory : handleAddCategory
+}
 
   return (
-    <div className="container bg-slate-600/50 rounded min-h-[400px] w-full p-5">
+    <div className="container bg-slate-600/50 rounded min-h-screen w-full p-5">
       <Toaster />
-      <section className="category-table mb-5">
-        <h1 className="font-bold text-2xl ms-2 text-blue-900">
-          Event Categories
-        </h1>
-        <Table className="mt-5 bg-white/70 rounded">
-          {/* <TableCaption>List of Users</TableCaption> */}
+      <section className="category-table">
+        <div className="flex items-start justify-between pe-5">
+          <div>
+          <h1 className="font-bold text-2xl text-blue-900">
+            Event Categories
+          </h1>
+          <small>List of event categories</small>
+          </div>
+          <Button onClick={()=>handleModalOpen()}>Add New Category</Button>
+        </div>
+        <Table className="mt-5 bg-white/70 rounded border-spacing-5">
           <TableHeader>
             <TableRow>
               <TableHead className="text-slate-900">Category Name</TableHead>
@@ -94,7 +116,7 @@ function EventCategories() {
           </TableHeader>
           <TableBody className="overflow-y-auto">
             {loading ? (
-              <TableRow>
+              <TableRow >
                 <TableCell
                   rowSpan={4}
                   colSpan={4}
@@ -116,16 +138,16 @@ function EventCategories() {
             ) : (
               eventCategories.map((category) => (
                 <TableRow key={category._id}>
-                  <TableCell>{category.categoryName}</TableCell>
+                  <TableCell className="capitalize">{category.categoryName}</TableCell>
                   <TableCell>{category.categoryType}</TableCell>
-                  <TableCell className="truncate basis-1/4">
+                  <TableCell className="truncate basis-1/4 capitalize">
                     {category.description ? category.description : "nil"}
                   </TableCell>
                   <TableCell className="flex gap-2">
                     <i className="fa-solid fa-eye text-blue-600 cursor-pointer"></i>
                     <i
                       className="fa-solid fa-pen-to-square text-orange-700 cursor-pointer"
-                      onClick={() => handleEditCategory(category._id!)}
+                      onClick={() => handleModalOpen(category._id!)}
                     ></i>
                     <i
                       className="fa-solid fa-trash text-red-700 cursor-pointer"
@@ -138,23 +160,22 @@ function EventCategories() {
           </TableBody>
         </Table>
       </section>
+        <Dialog open={isOpen} onOpenChange={setOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="font-semibold">
+                {formMode === 'edit'? 'Edit Category' : 'Add Category'}
+              </DialogTitle>
+              <DialogDescription className="text-sm text-blue-500">
+              {formMode === 'edit'? 'Make changes in event category' : 'Create you new category'}
+          </DialogDescription>
+            </DialogHeader>
+          <CategoryForm {...formProps}/>
+          </DialogContent>
+        </Dialog>
+        <div className="pagination">
 
-      <section className="add-category">
-        <Accordion type="single" collapsible ref={accordionRef}>
-          <AccordionItem value="item-1" className="accordion-item">
-            <AccordionTrigger className="text-lg font-bold text-blue-950 px-5 rounded">
-              Add Event Category
-            </AccordionTrigger>
-            <AccordionContent className="p-5">
-              <Card className="bg-white py-4">
-                <CardContent>
-                  <AddCategoryForm refresh={setRefresh} closeAccordion={toggleAccordion}/>
-                </CardContent>
-              </Card>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </section>
+        </div>
     </div>
   );
 }
