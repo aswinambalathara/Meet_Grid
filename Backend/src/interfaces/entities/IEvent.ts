@@ -13,6 +13,7 @@ export default interface IEvent extends Document {
     startTime: string;
     endTime: string;
   };
+  registrationDeadline: Date;
   eventType: "Online" | "In-Person";
   meetLink?: string;
   timeZone?: string;

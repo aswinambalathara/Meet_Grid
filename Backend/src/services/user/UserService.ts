@@ -20,13 +20,13 @@ export default class UserService {
     private emailService: EmailService
   ) {}
 
-  async getProfile(userId: string): Promise<IUser> {
+  async getProfile(userId: string): Promise<payloadResponse> {
     this.validatorService.validateIdFormat(userId);
     const user = await this.userRepository.findById(userId);
     if (!user) {
       throw new CustomError("User not found", StatusCode.NotFound);
     }
-    return user;
+    return {data:user,status:true,message:"Found User"};
   }
 
   async updateBasicDetails(

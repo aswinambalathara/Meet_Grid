@@ -8,7 +8,6 @@ const userSchema = new Schema<IUser>({
   phone: { type: String },
   image: { type: String },
   bio: { type: String },
-  gender: { type: String, enum: ["Male", "Female", "Other"] },
   professionalInfo: {
     type: {
       companyName: { type: String, required: true },
