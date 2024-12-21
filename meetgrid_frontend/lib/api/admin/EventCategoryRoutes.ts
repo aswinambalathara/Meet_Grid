@@ -27,8 +27,20 @@ export const getEventCategories = async () => {
 
 export const deleteEventCategory = async (id: string) => {
   try {
-    const response = await adminAxiosInstance.delete(
+    const response = await adminAxiosInstance.patch(
       `/event-categories/delete/${id}`
+    );
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const editEventCategory = async (formData: IEventCategory) => {
+  try {
+    const response = await adminAxiosInstance.patch(
+      "/event-categories/edit",
+      formData
     );
     return response.data;
   } catch (error) {

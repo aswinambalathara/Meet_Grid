@@ -5,43 +5,42 @@ import { Label } from "@/components/ui/label";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { createEventCategory } from "@/lib/api/admin/EventCategoryRoutes";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { adminCategorySchema } from "@/lib/utility/schemas";
-
-export type FormData = z.infer<typeof adminCategorySchema>;
+import { AdminCategoryFormData } from "@/lib/utility/types";
 
 export type AdminCategoryFormProps = {
-  onSubmit: (data: FormData) => Promise<string>;
-  initialValues?: Partial<FormData>;
+  onSubmit: (data: AdminCategoryFormData) => Promise<string>;
+  initialValues?: Partial<AdminCategoryFormData>;
   buttonText?: string;
+  modalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 function CategoryForm({
   onSubmit,
+  modalOpen,
   initialValues = {},
   buttonText = "Submit",
 }: AdminCategoryFormProps) {
   const {
-    reset,
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm<AdminCategoryFormData>({
     resolver: zodResolver(adminCategorySchema),
     defaultValues: initialValues,
     mode: "onBlur",
     reValidateMode: "onSubmit",
   });
 
-  const handleOnSubmit = async (data: FormData) => {
+  const handleOnSubmit = async (data: AdminCategoryFormData) => {
     try {
       const result = await onSubmit(data);
-      toast.success(result)
+      toast.success(result);
+      modalOpen(false);
     } catch (error) {
       if (error instanceof Error) {
-        toast.error(error.message)
+        toast.error(error.message);
       }
     }
   };

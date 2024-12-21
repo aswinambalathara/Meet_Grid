@@ -1,42 +1,35 @@
 import React, { useState, forwardRef, useImperativeHandle } from "react";
 
-interface ProfileFormInputProps {
-  name: string;
-  id: string;
-  label: string;
-  value: string;
-  placeholder?: string;
-  inputType: string;
-  disabled?: boolean;
+interface ProfileFormInputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
   editIcon?: boolean;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  error?: string;
+  mandatory?: boolean;
 }
 
 const ProfileFormInput = forwardRef<HTMLInputElement, ProfileFormInputProps>(
   (
     {
-      name,
-      id,
       label,
-      value,
-      inputType,
-      placeholder,
-      disabled = true,
       editIcon = true,
-      onChange,
+      mandatory = false,
+      error,
+      disabled = true,
+      ...props
     },
     ref
   ) => {
     const [isEditing, setEditing] = useState(!disabled);
 
     const handleEditButton = () => {
-      setEditing(!isEditing); // Toggle the editing state
+      setEditing(!isEditing);
     };
 
     return (
       <div className="w-full">
-        <label htmlFor={name} className="text-sm">
-          {label}
+        <label htmlFor={props.id} className="text-sm">
+          {label} {mandatory && <span className="text-red-600">*</span>}
         </label>
         <div className="input-wrap relative">
           {editIcon && (
@@ -49,15 +42,11 @@ const ProfileFormInput = forwardRef<HTMLInputElement, ProfileFormInputProps>(
           )}
           <input
             className="w-full h-10 bg-white/50 rounded-md px-2 text-sm"
-            type={inputType}
-            placeholder={placeholder}
-            id={id}
-            name={name}
-            value={value}
             ref={ref}
-            disabled={!isEditing} // Control disabled state with React state
-            onChange={onChange}
+            disabled={!isEditing}
+            {...props}
           />
+          <small className="ms-2 text-red-600">{error || ""}</small>
         </div>
       </div>
     );
