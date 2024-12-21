@@ -9,9 +9,10 @@ function EventCard({
   eventType,
   ticketType,
   title,
-}: EventCardProps) {
+  ...props
+}: EventCardProps & React.ComponentPropsWithoutRef<"div">) {
   return (
-    <Card key={id} >
+    <Card key={id} {...props}>
       <CardContent className="flex min-h-52 justify-center p-3 flex-col">
         {image ? (
           <img

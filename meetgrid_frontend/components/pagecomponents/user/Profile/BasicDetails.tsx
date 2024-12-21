@@ -34,6 +34,7 @@ import "react-country-state-city/dist/react-country-state-city.css";
 import { Label } from "@/components/ui/label";
 import { z } from "zod";
 import { ProfileBasicFormData } from "@/lib/utility/types";
+import IUser from "@/interfaces/IUser";
 
 type LocationList = {
   phoneCodeList: Phonecodes[];
@@ -43,11 +44,12 @@ type LocationList = {
   countryId: number;
   stateId: number;
   cityId: number;
+  phoneCodeId:number;
 };
 
 type FormData = z.infer<typeof basicDetailsSchema>;
 
-function BasicDetails() {
+function BasicDetails({data}:{data:IUser}) {
   const {
     register,
     handleSubmit,
@@ -71,11 +73,11 @@ function BasicDetails() {
       phoneCode: "",
     },
     mode: "onChange",
+    reValidateMode:'onSubmit',
   });
 
   const editBioRef = useRef<HTMLTextAreaElement | null>(null);
   const [isBioEditing, setBioEditing] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [locationList, setLocationList] = useState<LocationList>({
     phoneCodeList: [],
     countriesList: [],
@@ -84,6 +86,7 @@ function BasicDetails() {
     countryId: 0,
     stateId: 0,
     cityId: 0,
+    phoneCodeId:0
   });
   const [location, setLocation] = useState({
     addressLine: "",
@@ -92,23 +95,11 @@ function BasicDetails() {
     country: "",
     postalCode: 0,
   });
+  const [phoneCode,setPhoneCode] = useState('')
   const [isEmailVerified, setVerification] = useState(true);
-
   const { ref, ...restBio } = register("bio");
 
-  useEffect(() => {
-    async function fetchUserProfile() {
-      try {
-        const data = await getUserProfile();
-        reset(data.data);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchUserProfile();
-  }, [reset]);
+  
 
   useEffect(() => {
     GetPhonecodes().then((result) => {
@@ -124,6 +115,7 @@ function BasicDetails() {
         countriesList: result,
       }));
     });
+    reset(data)
   }, []);
 
   const handleCountrySelect = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -170,6 +162,17 @@ function BasicDetails() {
     }
   };
 
+  const handlePhoneCodeSelect = (e:ChangeEvent<HTMLSelectElement>)=>{
+    const phoneCodeId = Number(e.target.value);
+    const phoneCode = locationList.phoneCodeList.find((p)=>p.id === phoneCodeId)
+    if(phoneCode){
+      setLocationList((prev)=>({
+        ...prev,phoneCodeId:phoneCode.id
+      }))
+      setPhoneCode(phoneCode.phone_code)
+    }
+  }
+
   const handleBioEdit = () => {
     const elem = editBioRef.current;
     if (elem) {
@@ -179,22 +182,20 @@ function BasicDetails() {
     setBioEditing(!isBioEditing);
   };
 
-  const handleBio = () => {
-    //validte bio value and set it to the bio state as well as set it bio error
-  };
-
   const handleFormSubmit = (data: FormData) => {
     console.log(data);
   };
 
-  if (loading) return null;
-  console.log(errors);
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="container overflow-y-auto h-full p-10 text-black flex flex-col">
+    <form
+      onSubmit={handleSubmit(handleFormSubmit)}
+      className="container overflow-y-auto h-full p-10 text-black flex flex-col"
+    >
       <div className="top-part flex items-start">
         <div className="left basis-1/6">
           <div className="image-container bg-gray-600 h-24 w-24 rounded-full"></div>
-          <small>Upload Image</small>
+          <label className="text-sm cursor-pointer text-blue-800" htmlFor="profile-pic">Upload Image</label>
+          <input type="file" id="profile-pic" hidden />
         </div>
 
         <div className="right basis-5/6">
@@ -212,7 +213,6 @@ function BasicDetails() {
                   editBioRef.current = e;
                 }}
                 id="bio"
-                onBlur={handleBio}
                 placeholder="enter something about you"
                 rows={5}
                 className="text-black rounded-lg w-full p-1 px-2 text-sm bg-white/50"
@@ -257,10 +257,12 @@ function BasicDetails() {
           <div className="flex items-center justify-between gap-2">
             <select
               {...register("phoneCode")}
+              value={locationList.phoneCodeId || ''}
+              onChange={handlePhoneCodeSelect}
               className="w-1/12 max-w-[100px] overflow-x-auto bg-white/50 rounded p-2 cursor-pointer"
             >
-              {locationList.phoneCodeList.map((item, index) => (
-                <option key={index} value={item.phone_code || ""}>
+              {locationList.phoneCodeList.map((item) => (
+                <option key={item.id} value={item.id}>
                   + {item.phone_code}
                 </option>
               ))}
@@ -293,74 +295,111 @@ function BasicDetails() {
                 id="location.addressLine"
                 label="Address Line"
                 type="text"
+                {...register("location.addressLine")}
                 disabled={true}
                 placeholder="Address Line"
                 mandatory
+                error={
+                  errors.location?.addressLine
+                    ? errors.location.addressLine.message
+                    : ""
+                }
               />
               <div className="address-row-2 flex items-center justify-between gap-2">
                 <div className="w-full">
-                  <Label className="text-sm">
-                    Country<span className="text-red-600">*</span>
-                  </Label>
-                  <select
-                    value={locationList.countryId || ""}
-                    id="country-select"
-                    onChange={handleCountrySelect}
-                    className=" w-full bg-white/50 rounded p-2"
-                  >
-                    {locationList.countriesList.map((item, idx) => (
-                      <option key={item.id} value={item.id}>
-                        {item.name}
-                      </option>
-                    ))}
-                  </select>
+                  <div>
+                    <Label className="text-sm">
+                      Country<span className="text-red-600">*</span>
+                    </Label>
+                    <select
+                      {...register("location.country")}
+                      value={locationList.countryId || ''}
+                      id="country-select"
+                      onChange={handleCountrySelect}
+                      className=" w-full bg-white/50 rounded p-2"
+                    >
+                      {locationList.countriesList.map((item) => (
+                        <option key={item.id} value={item.id}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <small className="ms-2 text-red-600">
+                    {errors.location?.country
+                      ? errors.location.country.message
+                      : ""}
+                  </small>
                 </div>
 
                 <div className="w-full">
-                  <Label className="text-sm">
-                    State<span className="text-red-600">*</span>
-                  </Label>
-                  <select
-                    id="state-select"
-                    onChange={handleStateSelect}
-                    className="w-full bg-white/50 rounded p-2"
-                    value={locationList.stateId || ""}
-                  >
-                    {locationList.stateList.map((item, idx) => (
-                      <option key={item.id} value={item.id}>
-                        {item.name}
-                      </option>
-                    ))}
-                  </select>
+                  <div>
+                    <Label className="text-sm">
+                      State<span className="text-red-600">*</span>
+                    </Label>
+                    <select
+                      id="state-select"
+                      {...register("location.state")}
+                      onChange={handleStateSelect}
+                      className="w-full bg-white/50 rounded p-2"
+                      value={locationList.stateId || ""}
+                    >
+                      {locationList.stateList.map((item, idx) => (
+                        <option key={item.id} value={item.id}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <small className="ms-2 text-red-600">
+                    {errors.location?.state
+                      ? errors.location.state.message
+                      : ""}
+                  </small>
                 </div>
               </div>
 
-              <div className="address-row-3 flex items-center justify-between gap-2">
+              <div className="address-row-3 flex items-start justify-between gap-2">
                 <div className="w-full">
-                  <Label className="text-sm">
-                    City<span className="text-red-600">*</span>
-                  </Label>
-                  <select
-                    id="city-select"
-                    onChange={handleCitySelect}
-                    className="w-full bg-white/50 rounded h-10 px-2"
-                    value={locationList.cityId || ""}
-                  >
-                    {locationList.cityList.map((item, idx) => (
-                      <option key={item.id} value={item.id}>
-                        {item.name}
-                      </option>
-                    ))}
-                  </select>
+                  <div>
+                    <Label className="text-sm">
+                      City<span className="text-red-600">*</span>
+                    </Label>
+                    <select
+                      id="city-select"
+                      {...register("location.city")}
+                      onChange={handleCitySelect}
+                      className="w-full bg-white/50 rounded h-10 px-2"
+                      value={locationList.cityId || ""}
+                    >
+                      {locationList.cityList.map((item, idx) => (
+                        <option key={item.id} value={item.id}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <small className="ms-2 text-red-600">
+                    {errors.location?.city
+                      ? errors.location.city.message
+                      : ""}
+                  </small>
                 </div>
 
                 <ProfileFormInput
                   id="location.postalCode"
+                  {...register("location.postalCode")}
                   label="Postal Code"
                   mandatory
                   type="text"
                   disabled={true}
                   placeholder="Postal Code"
+                  error={
+                    errors.location?.postalCode
+                      ? errors.location.postalCode.message
+                      : ""
+                  }
                 />
               </div>
             </AccordionContent>

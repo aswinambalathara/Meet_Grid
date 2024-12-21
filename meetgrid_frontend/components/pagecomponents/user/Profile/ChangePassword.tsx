@@ -11,9 +11,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import ProfileFormInput from "@/components/ui/Inputs/ProfileFormInput";
+import IUser from "@/interfaces/IUser";
 import React, { useState } from "react";
 
-function ChangePassword() {
+function ChangePassword({userData}:{userData:IUser}) {
   const [currentPassoword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -29,10 +30,9 @@ function ChangePassword() {
             label="Current Password"
             id="currentPassword"
             value={currentPassoword}
-            inputType="text"
+            type="text"
             name="currentPassword"
             placeholder="Current Password"
-            onChange={() => {}}
             disabled={false}
             editIcon={false}
           />
@@ -44,12 +44,11 @@ function ChangePassword() {
           </small>
         </div>
         <ProfileFormInput
-          inputType="text"
+          type="text"
           label="New Password"
           id="newPassword"
           name="newPassword"
           placeholder="New Password"
-          onChange={() => {}}
           value={newPassword}
           disabled={false}
           editIcon={false}
@@ -57,9 +56,8 @@ function ChangePassword() {
         <ProfileFormInput
           id="confirmPassword"
           name="confirmPassword"
-          inputType="text"
+          type="text"
           label="Confirm Password"
-          onChange={() => {}}
           value={confirmPassword}
           disabled={false}
           placeholder="Confirm Password"

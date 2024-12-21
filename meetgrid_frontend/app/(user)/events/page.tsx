@@ -52,6 +52,7 @@ function page() {
         <div className="events-list grid grid-cols-6 gap-4 p-5 mb-5">
           {TrendingEventsList.map((event, idx) => (
             <EventCard
+            className="hover:scale-95 transition-all ease-out duration-200"
               date={event.date}
               eventType={event.eventType}
               id={event.id}

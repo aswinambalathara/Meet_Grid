@@ -75,16 +75,41 @@ export const eventFormSchema = z.object({
   }),
 });
 
+export const professionalDetailsSchema = z.object({
+  companyName: z
+    .string()
+    .regex(/^[a-zA-Z]+$/, "Only text allowed")
+    .max(50, "Company Name cannot exceed 50 characters")
+    .nonempty("This field is required"),
+  jobTitle: z
+    .string()
+    .regex(/^[a-zA-Z]+$/, "Only text allowed")
+    .max(50, "Job Title cannot exceed 50 characters")
+    .nonempty("This field is required"),
+  linkedinUrl: z
+    .string()
+    .regex(
+      /^(https?:\/\/)?(www\.)?linkedin\.com\/(in|company)\/[a-zA-Z0-9-_%]+\/?$/,
+      "Invalid URL"
+    )
+    .optional(),
+  skill: z
+    .string()
+    .regex(/^[a-zA-Z]+$/, "Only text allowed").max(20,'Skill cannot excedd 20 characters')
+    .optional(),
+});
+
 const locationSchema = z.object({
   addressLine: z
     .string()
-    .max(10, "Address cannot be longer than 100 characters"),
-  city: z.string().max(50, "City cannot be longer than 50 characters"),
-  state: z.string().max(50, "State cannot be longer than 50 characters"),
-  country: z.string().max(50, "Country cannot be longer than 50 characters"),
+    .nonempty("This field is required")
+    .max(100, "Address cannot be longer than 100 characters"),
+  city: z.string().nonempty("This field is required"),
+  state: z.string().nonempty("This field is required"),
+  country: z.string().nonempty("This field is required"),
   postalCode: z
     .string()
-    .regex(/^\d{5}$/, "Postal code must be a 5-digit number"),
+    .regex(/^\d{6}$/, "Postal code must be a 6-digit number"),
 });
 
 export const basicDetailsSchema = z.object({
@@ -96,12 +121,8 @@ export const basicDetailsSchema = z.object({
     .string()
     .nonempty("Email is required")
     .email("Invalid email address"),
-  bio: z.string().max(500, "Bio cannot excedd 500 characters"),
-  phoneCode: z
-    .string()
-    .regex(/^\+?[0-9]{1,3}$/, "Invalid phone code format")
-    .min(1, "Phone code cannot be empty")
-    .max(4, "Phone code must be at most 4 characters"),
+  bio: z.string().max(500, "Bio cannot excedd 500 characters").optional(),
+  phoneCode: z.string().nonempty("Phone code required"),
   phone: z.string().regex(/^\d{10,15}$/, "Invalid Phone Number"),
   location: locationSchema.optional(),
 });

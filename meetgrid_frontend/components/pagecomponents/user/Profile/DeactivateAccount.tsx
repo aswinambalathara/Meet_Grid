@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import IUser from "@/interfaces/IUser";
 import React from "react";
 
-function DeactivateAccount() {
+function DeactivateAccount({userData}:{userData:IUser}) {
   return (
     <div className="container overflow-y-auto h-full p-10 text-black flex flex-col">
       <h1 className="font-bold text-red-700">Deactivating Account</h1>

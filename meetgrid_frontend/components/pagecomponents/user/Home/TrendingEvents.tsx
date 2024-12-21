@@ -27,7 +27,7 @@ function TrendingEvents() {
                 className="pl-1 md:basis-1/3 lg:basis-1/4"
               >
                 <div className="p-1">
-                  <Card>
+                  <Card className="hover:scale-95 transition-all ease duration-300 cursor-pointer">
                     <CardContent className="flex min-h-52 justify-center p-3 flex-col">
                       {event.image ? (
                         <img
