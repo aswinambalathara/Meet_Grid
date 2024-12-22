@@ -120,18 +120,31 @@ export default class AdminController {
     }
   }
 
-  async handleDeleteEventCategory(
+  async handleEditEventCategory(
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<void> {
     try {
-      const {id} = req.params
-      const result = await this.adminEventCategoryService.delete(id);
+      const categoryData = req.body;
+      const result = await this.adminEventCategoryService.update(categoryData);
       res.status(StatusCode.Success).json(result);
     } catch (error) {
       next(error);
     }
   }
 
+  async handleDeleteEventCategory(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { id } = req.params;
+      const result = await this.adminEventCategoryService.delete(id);
+      res.status(StatusCode.Success).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
 }

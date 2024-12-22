@@ -1,6 +1,6 @@
 import { IEventCategory } from "../../interfaces/entities/IEvent";
 import IEventCategoryRepository from "../../interfaces/repository/IEventCategoryRepository";
-import { response, StatusCode } from "../../types/index";
+import { payloadResponse, response, StatusCode } from "../../types/index";
 import CustomError from "../../utils/CustomError";
 import JoiService from "../../utils/validatorService";
 
@@ -10,7 +10,7 @@ export default class AdminEventCategoryService {
     private validatorService: JoiService
   ) {}
 
-  async create(eventCategory: IEventCategory): Promise<response> {
+  async create(eventCategory: IEventCategory): Promise<payloadResponse> {
     this.validatorService.validateRequiredFields({
       categoryName: eventCategory.categoryName,
       categoryType: eventCategory.categoryType,
@@ -19,20 +19,35 @@ export default class AdminEventCategoryService {
     const isExist = await this.categoryRepository.findByName(
       eventCategory.categoryName!
     );
-    if (isExist) {
+
+    if (isExist && !isExist.isDeleted) {
       throw new CustomError(
         "Category already exist with same name",
         StatusCode.Conflict
       );
     }
-    await this.categoryRepository.create(eventCategory);
-    return { status: true, message: "event Category created" };
+
+    if (isExist?.isDeleted) {
+      eventCategory.isDeleted = false;
+      const result = await this.categoryRepository.update(
+        isExist.id,
+        eventCategory
+      );
+      return {
+        status: true,
+        message: "event Category reactivated",
+        data: result!,
+      };
+    }
+
+    const result = await this.categoryRepository.create(eventCategory);
+    return { status: true, message: "event Category created", data: result };
   }
 
   async getEventCategory(categoryId: string): Promise<IEventCategory> {
     this.validatorService.validateIdFormat(categoryId);
     const eventCategory = await this.categoryRepository.findById(categoryId);
-    if (!eventCategory) {
+    if (!eventCategory || eventCategory.isDeleted) {
       throw new CustomError("Event category not found", StatusCode.NotFound);
     }
     return eventCategory;
@@ -42,28 +57,32 @@ export default class AdminEventCategoryService {
     return await this.categoryRepository.findAll();
   }
 
-  async update(
-    categoryId: string,
-    eventCategory: Partial<IEventCategory>
-  ): Promise<response> {
-    this.validatorService.validateIdFormat(categoryId);
-    const category = await this.categoryRepository.findById(categoryId);
-    if (!category) {
-      throw new CustomError("Category not found", StatusCode.NotFound);
+  async update(eventCategory: Partial<IEventCategory>): Promise<response> {
+    console.log(eventCategory);
+    const { _id, categoryName } = eventCategory;
+    this.validatorService.validateIdFormat(_id as string);
+    const category = await this.categoryRepository.findByName(categoryName!);
+
+    if (category && category.id !== _id && !category.isDeleted) {
+      throw new CustomError("Category already exist", StatusCode.Conflict);
     }
-    await this.categoryRepository.update(categoryId, eventCategory);
+
+    if (category?.isDeleted && category.id !== _id) {
+      await this.categoryRepository.delete(category.id);
+    }
+    await this.categoryRepository.update(_id as string, eventCategory);
 
     return { status: true, message: "Event Category Updated" };
   }
 
   async delete(categoryId: string): Promise<response> {
     this.validatorService.validateIdFormat(categoryId);
-    const isExist = await this.categoryRepository.findById(categoryId);
-    if (!isExist) {
+    const category = await this.categoryRepository.findById(categoryId);
+    if (!category) {
       throw new CustomError("Category not found", StatusCode.NotFound);
     }
-    await this.categoryRepository.delete(categoryId);
-    return { message: "Event category deleted", status: true };
+    category.isDeleted = true;
+    await category.save();
+    return { message: "Event category soft deleted", status: true };
   }
-  
 }

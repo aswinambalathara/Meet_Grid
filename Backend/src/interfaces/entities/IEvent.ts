@@ -50,4 +50,5 @@ export interface IEventCategory extends Document {
   categoryType?: "Professional" | "General";
   description?: string;
   createdAt?: Date;
+  isDeleted?:boolean
 }

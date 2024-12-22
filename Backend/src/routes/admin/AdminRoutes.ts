@@ -42,8 +42,13 @@ router.get(
   adminController.handleGetEventCategories.bind(adminController)
 );
 
-router.delete(
+router.patch(
   "/event-categories/delete/:id",
   adminController.handleDeleteEventCategory.bind(adminController)
+);
+
+router.patch(
+  "/event-categories/edit",
+  adminController.handleEditEventCategory.bind(adminController)
 );
 export default router;

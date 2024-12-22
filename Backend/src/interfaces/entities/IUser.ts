@@ -14,6 +14,7 @@ export default interface IUser extends Document {
     jobTitle?: string;
     linkedinUrl?: string;
     skills?: string[];
+    experience?:string
   };
   verificationToken?: {
     token: string;

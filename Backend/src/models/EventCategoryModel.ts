@@ -7,6 +7,7 @@ const eventCategorySchema = new Schema<IEventCategory>(
       type: String,
       required: true,
       trim: true,
+      lowercase:true
     },
     categoryType: {
       type: String,
@@ -16,6 +17,11 @@ const eventCategorySchema = new Schema<IEventCategory>(
     description: {
       type: String,
       trim: true,
+    },
+    isDeleted: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
   },
   { timestamps: true }

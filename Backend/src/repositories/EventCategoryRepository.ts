@@ -21,7 +21,7 @@ export default class EventCategoryRepository
   }
 
   async findAll(): Promise<IEventCategory[]> {
-    return await this.model.find();
+    return (await this.model.find()).filter((cat)=>!cat.isDeleted)
   }
 
   async update(
