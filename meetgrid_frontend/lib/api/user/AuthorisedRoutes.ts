@@ -99,6 +99,15 @@ export const changePasswordSendOTP = async () =>{
   }
 }
 
+export const verifyChangePasswordOTP = async (otp:number) =>{
+  try {
+    const response = await axiosUserInstance.post('/profile/change-password/verify-otp',{otp});
+    return response.data
+  } catch (error) {
+    handleError(error)
+  }
+}
+
 export const changePassword = async (data:ProfilePasswordFormData) =>{
   try {
     const response = await axiosUserInstance.patch('/profile/change-password',data)
@@ -110,7 +119,7 @@ export const changePassword = async (data:ProfilePasswordFormData) =>{
 
 export const deactivateAccount = async (password:string)=>{
   try {
-    const response = await axiosUserInstance.patch('/profile/deactivate-account',password)
+    const response = await axiosUserInstance.patch('/profile/deactivate-account',{password})
     return response.data
   } catch (error) {
     handleError(error)

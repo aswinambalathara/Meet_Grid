@@ -22,7 +22,6 @@ function ProfessionalDetails({ userData }: { userData: IUser }) {
       companyName: "",
       jobTitle: "",
       linkedinUrl: "",
-      skill: "",
     },
     mode: "onChange",
     reValidateMode: "onSubmit",
@@ -60,6 +59,16 @@ function ProfessionalDetails({ userData }: { userData: IUser }) {
           disabled={false}
           error={errors.jobTitle ? errors.jobTitle.message : ""}
           placeholder="Job Title"
+        />
+        <ProfileFormInput
+          type="number"
+          label="Experience"
+          id="experience"
+          {...register("experience")}
+          disabled={false}
+          min={0}
+          error={errors.jobTitle ? errors.jobTitle.message : ""}
+          placeholder="Years of Experience"
         />
         <ProfileFormInput
           id="linkedinUrl"

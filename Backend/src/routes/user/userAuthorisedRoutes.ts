@@ -46,6 +46,12 @@ router.get(
   "/profile/change-password/send-otp",
   userController.handleSendPasswordChangeOTP.bind(userController)
 );
+
+router.post(
+  "/profile/change-password/verify-otp",
+  userController.handlePasswordChangeOTPVerfication.bind(userController)
+);
+
 router.patch(
   "/profile/deactivate-account",
   userController.handleDeactivateAccount.bind(userController)

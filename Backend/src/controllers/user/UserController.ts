@@ -89,12 +89,12 @@ export default class UserController {
   ): Promise<void> {
     try {
       const { id } = req.user!;
-      const { currentPassword, newPassword, otp } = req.body;
+      const { currentPassword, newPassword } = req.body;
+
       const result = await this.userService.changePassword(
         id,
         newPassword,
-        currentPassword,
-        otp
+        currentPassword
       );
       res.status(StatusCode.Success).json(result);
     } catch (error) {
@@ -116,6 +116,21 @@ export default class UserController {
     }
   }
 
+  async handlePasswordChangeOTPVerfication(
+    req: CustomRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { id } = req.user!;
+      const { otp } = req.body;
+      const result = await this.userService.verifyPasswordChangeOTP(id, otp);
+      res.status(StatusCode.Accepted).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async handleDeactivateAccount(
     req: CustomRequest,
     res: Response,
@@ -130,4 +145,5 @@ export default class UserController {
       next(error);
     }
   }
+
 }

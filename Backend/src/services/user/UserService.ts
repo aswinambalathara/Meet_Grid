@@ -26,7 +26,7 @@ export default class UserService {
     if (!user) {
       throw new CustomError("User not found", StatusCode.NotFound);
     }
-    return {data:user,status:true,message:"Found User"};
+    return { data: user, status: true, message: "Found User" };
   }
 
   async updateBasicDetails(
@@ -131,20 +131,12 @@ export default class UserService {
   async changePassword(
     userId: string,
     newPassword: string,
-    currentPassword?: string,
-    otpInput?: number
+    currentPassword?: string
   ): Promise<response> {
     this.validatorService.validateIdFormat(userId);
     const foundUser = await this.userRepository.findById(userId);
     if (!foundUser) {
       throw new CustomError("User not found", StatusCode.NotFound);
-    }
-
-    if (!currentPassword && !otpInput) {
-      throw new CustomError(
-        "Either current password or OTP must be provided",
-        StatusCode.BadRequest
-      );
     }
 
     if (currentPassword) {
@@ -158,15 +150,19 @@ export default class UserService {
           StatusCode.Unauthorized
         );
       }
-    } else if (otpInput) {
-      const { otp } = foundUser;
-      if (otp?.otp !== otpInput || otp.expiry < new Date(Date.now())) {
-        throw new CustomError(
-          "Invalid OTP or OTP expired",
-          StatusCode.BadRequest
-        );
-      }
     }
+
+    const isSame = await this.bcryptService.compare(
+      newPassword,
+      foundUser.password
+    );
+    if (isSame) {
+      throw new CustomError(
+        "New Password Cannot be Old Password",
+        StatusCode.BadRequest
+      );
+    }
+
     foundUser.password = await this.bcryptService.hash(newPassword);
     await foundUser.save();
     return { status: true, message: "Password changed successfully" };
@@ -194,6 +190,26 @@ export default class UserService {
       status: true,
       message: `OTP verification mail sent to ${foundUser.email}`,
     };
+  }
+
+  async verifyPasswordChangeOTP(
+    userId: string,
+    otpInput: number
+  ): Promise<response> {
+    this.validatorService.validateLength(String(otpInput), 6, 6);
+    const foundUser = await this.userRepository.findById(userId);
+    if (!foundUser) {
+      throw new CustomError("User Not Found", StatusCode.NotFound);
+    }
+    const { otp } = foundUser;
+    if (otp?.otp !== otpInput || otp.expiry < new Date(Date.now())) {
+      throw new CustomError(
+        "Invalid OTP or OTP expired",
+        StatusCode.BadRequest
+      );
+    }
+
+    return { status: true, message: "OTP verified" };
   }
 
   async deactivateAccount(userId: string, password: string): Promise<response> {

@@ -20,14 +20,14 @@ const ProfileFormInput = forwardRef<HTMLInputElement, ProfileFormInputProps>(
     },
     ref
   ) => {
-    const [isEditing, setEditing] = useState(!disabled);
+    const [Editable, setEditable] = useState(disabled);
 
     const handleEditButton = () => {
-      setEditing(!isEditing);
+      setEditable(!Editable);
     };
 
     return (
-      <div className="w-full">
+      <div className="w-full" {...props}>
         <label htmlFor={props.id} className="text-sm">
           {label} {mandatory && <span className="text-red-600">*</span>}
         </label>
@@ -35,7 +35,7 @@ const ProfileFormInput = forwardRef<HTMLInputElement, ProfileFormInputProps>(
           {editIcon && (
             <i
               className={`fa-regular ${
-                !isEditing && "fa-pen-to-square text-blue-900"
+                Editable && "fa-pen-to-square text-blue-900"
               } absolute right-3 top-3 cursor-pointer`}
               onClick={handleEditButton}
             ></i>
@@ -43,7 +43,7 @@ const ProfileFormInput = forwardRef<HTMLInputElement, ProfileFormInputProps>(
           <input
             className="w-full h-10 bg-white/50 rounded-md px-2 text-sm"
             ref={ref}
-            disabled={!isEditing}
+            disabled={Editable}
             {...props}
           />
           <small className="ms-2 text-red-600">{error || ""}</small>

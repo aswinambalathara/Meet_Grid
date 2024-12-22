@@ -58,9 +58,9 @@ function TagInput({
         {skills.map((skill, idx) => (
           <div
             key={idx}
-            className="bg-blue-600 text-white px-3 py-1 rounded text-sm mb-1 capitalize"
+            className=" text-black border border-black shadow-sm shadow-black px-3 py-1 rounded text-sm mb-1 capitalize"
           >
-            {skill}<i className="fa-regular fa-circle-xmark ms-2 text-red-950 cursor-pointer" onClick={()=>handleRemoveSkill(skill)}></i>
+            {skill}<i className="fa-regular fa-circle-xmark ms-2 text-red-600 cursor-pointer" onClick={()=>handleRemoveSkill(skill)}></i>
           </div>
         ))}
       </div>

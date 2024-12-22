@@ -78,14 +78,14 @@ export const eventFormSchema = z.object({
 export const professionalDetailsSchema = z.object({
   companyName: z
     .string()
+    .nonempty("This field is required")
     .regex(/^[a-zA-Z]+$/, "Only text allowed")
-    .max(50, "Company Name cannot exceed 50 characters")
-    .nonempty("This field is required"),
+    .max(50, "Company Name cannot exceed 50 characters"),
   jobTitle: z
     .string()
+    .nonempty("This field is required")
     .regex(/^[a-zA-Z]+$/, "Only text allowed")
-    .max(50, "Job Title cannot exceed 50 characters")
-    .nonempty("This field is required"),
+    .max(50, "Job Title cannot exceed 50 characters"),
   linkedinUrl: z
     .string()
     .regex(
@@ -93,9 +93,11 @@ export const professionalDetailsSchema = z.object({
       "Invalid URL"
     )
     .optional(),
+  experience: z.string(),
   skill: z
     .string()
-    .regex(/^[a-zA-Z]+$/, "Only text allowed").max(20,'Skill cannot excedd 20 characters')
+    .regex(/^[a-zA-Z]+$/, "Only text allowed")
+    .max(20, "Skill cannot excedd 20 characters")
     .optional(),
 });
 
@@ -139,22 +141,34 @@ export const adminCategorySchema = z.object({
   description: z.string().optional(),
 });
 
-export const changePasswordSchema = z.object({
-  currentpassword:z.string().min(6,"Password must minimum 6 characters").optional(),
-  newPassword:z.string()
-  .nonempty("Password is required") 
-  .min(6, "Password must be at least 6 characters long.") 
-  .refine((password) => /[A-Z]/.test(password), {
-    message: "Password must contain at least one uppercase letter.",
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().optional(),
+    newPassword: z
+      .string()
+      .nonempty("Password is required")
+      .min(6, "Password must be at least 6 characters long.")
+      .refine((password) => /[A-Z]/.test(password), {
+        message: "Password must contain at least one uppercase letter.",
+      })
+      .refine((password) => /\d/.test(password), {
+        message: "Password must contain at least one number.",
+      })
+      .refine((password) => /[@$!%*?&]/.test(password), {
+        message:
+          "Password must contain at least one special character (e.g., @$!%*?&).",
+      }),
+    confirmPassword: z.string().nonempty("This field is required"),
   })
-  .refine((password) => /\d/.test(password), {
-    message: "Password must contain at least one number.",
-  })
-  .refine((password) => /[@$!%*?&]/.test(password), {
-    message: "Password must contain at least one special character (e.g., @$!%*?&).",
-  }),
-  confirmPassword:z.string().nonempty()
-}).refine((data)=>data.newPassword === data.confirmPassword,{
-  message:'Passwords does not matching',
-  path:['confirmPassword']
-})
+  .refine(
+    (data) =>
+      !data.currentPassword || data.currentPassword !== data.newPassword,
+    {
+      message: "New Password cannot be current password",
+      path: ["newPassword"],
+    }
+  )
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords does not matching",
+    path: ["confirmPassword"],
+  });
