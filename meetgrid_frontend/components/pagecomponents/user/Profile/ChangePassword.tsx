@@ -12,60 +12,101 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import ProfileFormInput from "@/components/ui/Inputs/ProfileFormInput";
 import IUser from "@/interfaces/IUser";
+import { changePasswordSendOTP } from "@/lib/api/user/AuthorisedRoutes";
+import { changePasswordSchema } from "@/lib/utility/schemas";
+import { ProfilePasswordFormData } from "@/lib/utility/types";
+import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
-function ChangePassword({userData}:{userData:IUser}) {
-  const [currentPassoword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+function ChangePassword({ userData }: { userData: IUser }) {
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    setError,
+  } = useForm<ProfilePasswordFormData>({
+    resolver: zodResolver(changePasswordSchema),
+    mode:'onChange',
+    reValidateMode:'onSubmit'
+  });
+  const [forgotPassword, setForgotPassword] = useState<{
+    flag: boolean;
+    otp: number | null;
+  }>({
+    flag: false,
+    otp: null,
+  });
   const [isModalOpen, setModalOpen] = useState(false);
 
-  const handleInputChange = () => {};
+  const handleForgotPassword = async () => {
+    try {
+      const result = await changePasswordSendOTP()
+      console.log(result)
+    } catch (error) {
+      if(error instanceof Error){
+        toast.error(error.message)
+      }
+      
+    }
+  };
+
+  const handleFormSubmit = () => {};
 
   return (
     <div className="container overflow-y-auto h-full p-10 text-black flex flex-col">
-      <form className="form-section flex flex-col gap-3">
+      <form
+        className="form-section flex flex-col gap-3"
+        onSubmit={handleSubmit(handleFormSubmit)}
+      >
         <div className="currentPwordWrap relative">
           <ProfileFormInput
+            {...register("currentpassword")}
             label="Current Password"
             id="currentPassword"
-            value={currentPassoword}
-            type="text"
-            name="currentPassword"
+            type="password"
             placeholder="Current Password"
             disabled={false}
             editIcon={false}
+            error={errors.currentpassword ? errors.currentpassword.message : ""}
           />
           <small
             className="absolute right-0 text-xs mt-1 text-violet-800 cursor-pointer"
-            onClick={() => setModalOpen(true)}
+            onClick={handleForgotPassword}
           >
             Forgot Password ?
           </small>
         </div>
         <ProfileFormInput
-          type="text"
+          {...register("newPassword")}
+          type="password"
           label="New Password"
           id="newPassword"
-          name="newPassword"
           placeholder="New Password"
-          value={newPassword}
+          mandatory
+          error={errors.newPassword ? errors.newPassword.message : ""}
           disabled={false}
           editIcon={false}
         />
         <ProfileFormInput
+          {...register("confirmPassword")}
           id="confirmPassword"
-          name="confirmPassword"
-          type="text"
+          type="password"
           label="Confirm Password"
-          value={confirmPassword}
           disabled={false}
           placeholder="Confirm Password"
+          mandatory
           editIcon={false}
+          error={errors.confirmPassword ? errors.confirmPassword.message : ""}
         />
 
         <div className="flex items-center justify-center mt-3">
-          <Button size={"lg"} className="bg-violet-700 text-white ">
+          <Button
+            size={"lg"}
+            type="submit"
+            className="bg-violet-700 text-white "
+          >
             Update Password
           </Button>
         </div>

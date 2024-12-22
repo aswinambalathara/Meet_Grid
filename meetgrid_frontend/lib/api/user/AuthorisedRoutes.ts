@@ -5,6 +5,7 @@ import axios, {
 } from "axios";
 import apiURLs from "@/config/apiConfig";
 import handleError from "@/lib/utility/errorHandler";
+import { ProfilePasswordFormData } from "@/lib/utility/types";
 const { USER_URL } = apiURLs;
 
 const axiosUserInstance = axios.create({
@@ -88,3 +89,30 @@ export const getUserProfile = async () => {
     handleError(error);
   }
 };
+
+export const changePasswordSendOTP = async () =>{
+  try {
+    const response = await axiosUserInstance.get('/profile/change-password/send-otp');
+    return response.data
+  } catch (error) {
+    handleError(error)
+  }
+}
+
+export const changePassword = async (data:ProfilePasswordFormData) =>{
+  try {
+    const response = await axiosUserInstance.patch('/profile/change-password',data)
+    return response.data
+  } catch (error) {
+    handleError(error)
+  }
+}
+
+export const deactivateAccount = async (password:string)=>{
+  try {
+    const response = await axiosUserInstance.patch('/profile/deactivate-account',password)
+    return response.data
+  } catch (error) {
+    handleError(error)
+  }
+}

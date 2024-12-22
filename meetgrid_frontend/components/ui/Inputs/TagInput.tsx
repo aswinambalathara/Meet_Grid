@@ -39,7 +39,13 @@ function TagInput({
     }
   };
 
-  const handleRemoveSkill = ()
+  const handleRemoveSkill = (skill:string) =>{
+    if(skill){
+      const filtered = skills.filter(skl=> skl !== skill)
+      console.log(filtered);
+      setSkills(filtered)
+    }
+  }
 
   return (
     <div className="container w-full  bg-white/50 p-3 flex flex-col gap-2 rounded">
@@ -54,7 +60,7 @@ function TagInput({
             key={idx}
             className="bg-blue-600 text-white px-3 py-1 rounded text-sm mb-1 capitalize"
           >
-            {skill}<i className="fa-regular fa-circle-xmark ms-2 text-red-950" onClick={}></i>
+            {skill}<i className="fa-regular fa-circle-xmark ms-2 text-red-950 cursor-pointer" onClick={()=>handleRemoveSkill(skill)}></i>
           </div>
         ))}
       </div>

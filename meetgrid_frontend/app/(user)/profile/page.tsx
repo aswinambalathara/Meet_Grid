@@ -9,17 +9,18 @@ import Events from "@/components/pagecomponents/user/Profile/EventsPage";
 import ChangePassword from "@/components/pagecomponents/user/Profile/ChangePassword";
 import { getUserProfile } from "@/lib/api/user/AuthorisedRoutes";
 import IUser from "@/interfaces/IUser";
+import { Toaster } from "react-hot-toast";
 
 function page() {
   const [activeSection, setActiveSection] = useState("basic");
-  const [loading,setLoading] = useState(true)
-  const [userData,setUserData] = useState<IUser>({email:''})
+  const [loading, setLoading] = useState(true);
+  const [userData, setUserData] = useState<IUser>({ email: "" });
 
   useEffect(() => {
     async function fetchUserProfile() {
       try {
         const data = await getUserProfile();
-        setUserData(data.data)
+        setUserData(data.data);
       } catch (error) {
         console.error(error);
       } finally {
@@ -28,24 +29,25 @@ function page() {
     }
     fetchUserProfile();
   }, []);
-  
+
   const renderContent = () => {
     switch (activeSection) {
       case "basic":
-        return <BasicDetails data={userData}/>;
+        return <BasicDetails data={userData} />;
       case "professional-details":
-        return <ProfessionalDetails userData={userData}/>;
+        return <ProfessionalDetails userData={userData} />;
       case "events":
         return <Events />;
       case "change-password":
-        return <ChangePassword userData={userData}/>;
+        return <ChangePassword userData={userData} />;
       case "deactivate-account":
-        return <DeactivateAccount userData={userData}/>;
+        return <DeactivateAccount userData={userData} />;
     }
   };
 
   return (
     <div className="min-h-screen text-white flex items-center justify-center">
+      <Toaster />
       <div className="profile-container bg-slate-300 w-[1350px] h-[600px] rounded-lg flex">
         <div className="side-bar bg-slate-500 w-64 h-full rounded-l-lg flex flex-col items-center py-5">
           <h3 className="text-xl font-semibold">Profile Settings</h3>

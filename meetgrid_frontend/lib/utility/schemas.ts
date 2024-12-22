@@ -138,3 +138,23 @@ export const adminCategorySchema = z.object({
   ),
   description: z.string().optional(),
 });
+
+export const changePasswordSchema = z.object({
+  currentpassword:z.string().min(6,"Password must minimum 6 characters").optional(),
+  newPassword:z.string()
+  .nonempty("Password is required") 
+  .min(6, "Password must be at least 6 characters long.") 
+  .refine((password) => /[A-Z]/.test(password), {
+    message: "Password must contain at least one uppercase letter.",
+  })
+  .refine((password) => /\d/.test(password), {
+    message: "Password must contain at least one number.",
+  })
+  .refine((password) => /[@$!%*?&]/.test(password), {
+    message: "Password must contain at least one special character (e.g., @$!%*?&).",
+  }),
+  confirmPassword:z.string().nonempty()
+}).refine((data)=>data.newPassword === data.confirmPassword,{
+  message:'Passwords does not matching',
+  path:['confirmPassword']
+})
