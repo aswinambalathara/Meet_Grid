@@ -22,7 +22,7 @@ export default class UserService {
 
   async getProfile(userId: string): Promise<payloadResponse> {
     this.validatorService.validateIdFormat(userId);
-    const user = await this.userRepository.findById(userId);
+    const user = await this.userRepository.findById(userId)
     if (!user) {
       throw new CustomError("User not found", StatusCode.NotFound);
     }
@@ -32,7 +32,7 @@ export default class UserService {
   async updateBasicDetails(
     userId: string,
     user: Partial<IUser>
-  ): Promise<response> {
+  ): Promise<payloadResponse> {
     this.validatorService.validateIdFormat(userId);
     const foundUser = await this.userRepository.findById(userId);
     if (!foundUser) {
@@ -45,8 +45,12 @@ export default class UserService {
     });
     this.validatorService.validateEmailFormat(user.email!);
     this.validatorService.validatePhoneNumber(user.phone!);
-    await this.userRepository.update(userId, user);
-    return { status: true, message: "User Basic Details Updated" };
+    const updated = await this.userRepository.update(userId, user);
+    return {
+      status: true,
+      message: "User Basic Details Updated",
+      data: updated!,
+    };
   }
 
   async updateProfessionalDetails(

@@ -14,7 +14,7 @@ const userSchema = new Schema<IUser>({
       jobTitle: { type: String, required: true },
       linkedinUrl: { type: String, required: true },
       skills: [{ type: String, required: true }],
-      experience:[{type:Number,required:true}]
+      experience:{type:Number,required:true}
     },
     required: false,
   },

@@ -28,7 +28,7 @@ export default class UserRepository implements IUserRepository {
   }
 
   async update(id: string, user: Partial<IUser>): Promise<IUser | null> {
-    return await this.model.findByIdAndUpdate(id, user, { new: true });
+    return await this.model.findByIdAndUpdate(id, user, { new: true }).select(["-password", "-verificationToken", "-otp"]);
   }
 
   async verifyByToken(token: string): Promise<IUser | null> {

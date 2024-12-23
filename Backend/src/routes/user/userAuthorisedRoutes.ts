@@ -22,6 +22,7 @@ const userController = new UserController(userService);
 const router = Router();
 
 router.get("/profile", userController.handleGetProfile.bind(userController));
+
 router.patch(
   "/profile/basic-details",
   userController.handleUpdateBasicDetails.bind(userController)
