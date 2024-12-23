@@ -79,26 +79,28 @@ export const professionalDetailsSchema = z.object({
   companyName: z
     .string()
     .nonempty("This field is required")
-    .regex(/^[a-zA-Z]+$/, "Only text allowed")
+    .regex(/^[a-zA-Z\s]+$/, "Only text allowed")
     .max(50, "Company Name cannot exceed 50 characters"),
   jobTitle: z
     .string()
     .nonempty("This field is required")
-    .regex(/^[a-zA-Z]+$/, "Only text allowed")
+    .regex(/^[a-zA-Z\s]+$/, "Only text allowed")
     .max(50, "Job Title cannot exceed 50 characters"),
   linkedinUrl: z
     .string()
-    .regex(
-      /^(https?:\/\/)?(www\.)?linkedin\.com\/(in|company)\/[a-zA-Z0-9-_%]+\/?$/,
-      "Invalid URL"
-    )
-    .optional(),
-  experience: z.string(),
-  skill: z
-    .string()
-    .regex(/^[a-zA-Z]+$/, "Only text allowed")
-    .max(20, "Skill cannot excedd 20 characters")
-    .optional(),
+    .optional()
+    .refine(
+      (val) =>
+        !val || /^(https?:\/\/)?(www\.)?linkedin\.com\/(in|company)\/[a-zA-Z0-9-_%]+\/?$/.test(val),
+      {
+        message: "Invalid URL",
+      }
+    ),
+  experience: z.preprocess(
+    (value) => (typeof value === "string" && value.trim() !== "" ? Number(value) : undefined),
+    z.number().int("Experience must be a whole number").min(0, "Experience must be at least 0").max(50,"Tha's not possible")
+  ),
+  skills:z.array(z.string()).optional()
 });
 
 const locationSchema = z.object({
@@ -125,7 +127,7 @@ export const basicDetailsSchema = z.object({
     .email("Invalid email address"),
   bio: z.string().max(500, "Bio cannot excedd 500 characters").optional(),
   phoneCode: z.string().nonempty("Phone code required"),
-  phone: z.string().regex(/^\d{10,15}$/, "Invalid Phone Number"),
+  phone: z.string().nonempty('This field is required').regex(/^\d{10,15}$/, "Invalid Phone Number"),
   location: locationSchema.optional(),
 });
 

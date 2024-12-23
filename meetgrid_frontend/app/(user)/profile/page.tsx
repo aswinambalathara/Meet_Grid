@@ -14,6 +14,7 @@ import { Toaster } from "react-hot-toast";
 function page() {
   const [activeSection, setActiveSection] = useState("basic");
   const [loading, setLoading] = useState(true);
+  const [refresh,setRefresh] = useState(false)
   const [userData, setUserData] = useState<IUser>({ email: "" });
 
   useEffect(() => {
@@ -28,12 +29,12 @@ function page() {
       }
     }
     fetchUserProfile();
-  }, []);
+  }, [refresh]);
 
   const renderContent = () => {
     switch (activeSection) {
       case "basic":
-        return <BasicDetails data={userData} />;
+        return <BasicDetails data={userData}/>;
       case "professional-details":
         return <ProfessionalDetails userData={userData} />;
       case "events":
@@ -41,9 +42,13 @@ function page() {
       case "change-password":
         return <ChangePassword userData={userData} />;
       case "deactivate-account":
-        return <DeactivateAccount userData={userData} />;
+        const confirm = window.confirm("Are you trying to Deactivate Account ?")
+        if(confirm){return <DeactivateAccount userData={userData} />;
+        }
+        
     }
   };
+
 
   return (
     <div className="min-h-screen text-white flex items-center justify-center">

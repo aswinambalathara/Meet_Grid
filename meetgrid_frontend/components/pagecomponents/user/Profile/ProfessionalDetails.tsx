@@ -3,11 +3,16 @@ import { Button } from "@/components/ui/button";
 import ProfileFormInput from "@/components/ui/Inputs/ProfileFormInput";
 import TagInput from "@/components/ui/Inputs/TagInput";
 import IUser from "@/interfaces/IUser";
-import React, { FormEvent, useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useState,
+} from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { professionalDetailsSchema } from "@/lib/utility/schemas";
 import { ProfileProfessionalFormData } from "@/lib/utility/types";
+import toast from "react-hot-toast";
+import { updateProfessionalDetails } from "@/lib/api/user/AuthorisedRoutes";
 
 function ProfessionalDetails({ userData }: { userData: IUser }) {
   const {
@@ -19,14 +24,18 @@ function ProfessionalDetails({ userData }: { userData: IUser }) {
   } = useForm<ProfileProfessionalFormData>({
     resolver: zodResolver(professionalDetailsSchema),
     defaultValues: {
-      companyName: "",
-      jobTitle: "",
-      linkedinUrl: "",
+      companyName: userData.professionalInfo?.companyName || "",
+      jobTitle: userData.professionalInfo?.jobTitle || "",
+      linkedinUrl: userData.professionalInfo?.linkedinUrl || "",
+      experience: userData.professionalInfo?.experience || 0,
+      skills: userData.professionalInfo?.skills! || "",
     },
     mode: "onChange",
     reValidateMode: "onSubmit",
   });
-  const [skills, setSkills] = useState<string[]>([]);
+  const [skills, setSkills] = useState<string[]>(
+    userData.professionalInfo?.skills! || []
+  );
 
   useEffect(() => {
     //reset(userData.professionalInfo)
@@ -34,7 +43,20 @@ function ProfessionalDetails({ userData }: { userData: IUser }) {
   }, []);
 
   const handleInputChange = () => {};
-  const handleOnSubmit = (formData: ProfileProfessionalFormData) => {};
+  const handleOnSubmit = async (formData: ProfileProfessionalFormData) => {
+    if (skills) {
+      formData.skills = skills;
+    }
+    try {
+      const result = await updateProfessionalDetails(formData);
+      reset(result.data);
+      toast.success(result.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      }
+    }
+  };
 
   return (
     <div className="container overflow-y-auto h-full p-10 text-black flex flex-col">
@@ -48,6 +70,7 @@ function ProfessionalDetails({ userData }: { userData: IUser }) {
           {...register("companyName")}
           type="text"
           disabled={false}
+          mandatory
           placeholder="Company name"
           error={errors.companyName ? errors.companyName.message : ""}
         />
@@ -55,6 +78,7 @@ function ProfessionalDetails({ userData }: { userData: IUser }) {
           type="text"
           label="Job Title"
           id="jobTitle"
+          mandatory
           {...register("jobTitle")}
           disabled={false}
           error={errors.jobTitle ? errors.jobTitle.message : ""}
@@ -63,11 +87,12 @@ function ProfessionalDetails({ userData }: { userData: IUser }) {
         <ProfileFormInput
           type="number"
           label="Experience"
+          mandatory
           id="experience"
           {...register("experience")}
           disabled={false}
           min={0}
-          error={errors.jobTitle ? errors.jobTitle.message : ""}
+          error={errors.experience ? errors.experience.message : ""}
           placeholder="Years of Experience"
         />
         <ProfileFormInput
@@ -79,13 +104,7 @@ function ProfessionalDetails({ userData }: { userData: IUser }) {
           error={errors.linkedinUrl ? errors.linkedinUrl.message : ""}
           placeholder="Linkedin URL"
         />
-        <TagInput
-          errors={errors}
-          register={register}
-          setSkills={setSkills}
-          skills={skills || []}
-          resetField={resetField}
-        />
+        <TagInput setSkills={setSkills} skills={skills || []} />
         <div className="flex items-center justify-center mt-3">
           <Button
             size={"lg"}

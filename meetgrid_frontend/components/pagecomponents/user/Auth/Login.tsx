@@ -104,7 +104,7 @@ function Login() {
     setLoading(true);
     e.preventDefault();
     const emailError = validateEmail(user.email);
-    const passwordError = validatePassword(user.password);
+    const passwordError = validatePassword(user.password!);
     setErrors({ email: emailError || "", password: passwordError || "" });
     if (emailError || passwordError) {
       setLoading(false);
@@ -112,7 +112,7 @@ function Login() {
     }
 
     try {
-      const data = await loginUser(user.email, user.password);
+      const data = await loginUser(user.email, user.password!);
       setLoading(false);
       setCredentials("userToken", data.accessToken);
       console.log(data);

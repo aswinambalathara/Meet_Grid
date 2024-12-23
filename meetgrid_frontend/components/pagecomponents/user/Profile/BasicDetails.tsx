@@ -7,10 +7,9 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import ProfileFormInput from "@/components/ui/Inputs/ProfileFormInput";
-import { getUserProfile } from "@/lib/api/user/AuthorisedRoutes";
+import {sendEmailVerification, updateBasicDetails, verifyEmailOTP } from "@/lib/api/user/AuthorisedRoutes";
 import React, {
   ChangeEvent,
-  useCallback,
   useEffect,
   useRef,
   useState,
@@ -35,6 +34,9 @@ import { Label } from "@/components/ui/label";
 import { z } from "zod";
 import { ProfileBasicFormData } from "@/lib/utility/types";
 import IUser from "@/interfaces/IUser";
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Input } from "@/components/ui/input";
+import toast from "react-hot-toast";
 
 type LocationList = {
   phoneCodeList: Phonecodes[];
@@ -44,39 +46,45 @@ type LocationList = {
   countryId: number;
   stateId: number;
   cityId: number;
-  phoneCodeId:number;
+  phoneCodeId: number;
 };
 
 type FormData = z.infer<typeof basicDetailsSchema>;
 
-function BasicDetails({data}:{data:IUser}) {
+function BasicDetails({ data }: { data: IUser}) {
+  console.log(data)
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
     getValues,
+    formState: { errors },
   } = useForm<ProfileBasicFormData>({
     resolver: zodResolver(basicDetailsSchema),
     defaultValues: {
-      fullName: "",
-      email: "",
-      bio: "",
+      fullName: data.fullName || "",
+      email: data.email || "",
+      bio: data.bio || "",
       location: {
-        addressLine: "",
-        city: "",
-        country: "",
-        postalCode: "",
-        state: "",
+        addressLine: data.location?.addressLine || "",
+        city: data.location?.city || '',
+        country: data.location?.country || "",
+        postalCode:data.location?.postalCode || "",
+        state: data.location?.state || "",
       },
-      phone: "",
+      phone: data.phone || '',
       phoneCode: "",
     },
     mode: "onChange",
-    reValidateMode:'onSubmit',
+    reValidateMode: "onSubmit",
   });
 
   const editBioRef = useRef<HTMLTextAreaElement | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [isModalOpen,setModalOpen] = useState(false);
+  const [timer,setTimer] = useState(0);
+  const [otp,setOtp] = useState('')
+  const [otpError,setOTPError] = useState('')
   const [isBioEditing, setBioEditing] = useState(false);
   const [locationList, setLocationList] = useState<LocationList>({
     phoneCodeList: [],
@@ -86,36 +94,31 @@ function BasicDetails({data}:{data:IUser}) {
     countryId: 0,
     stateId: 0,
     cityId: 0,
-    phoneCodeId:0
+    phoneCodeId: 0,
   });
-  const [location, setLocation] = useState({
-    addressLine: "",
-    city: "",
-    state: "",
-    country: "",
-    postalCode: 0,
-  });
-  const [phoneCode,setPhoneCode] = useState('')
   const [isEmailVerified, setVerification] = useState(true);
   const { ref, ...restBio } = register("bio");
 
-  
-
   useEffect(() => {
-    GetPhonecodes().then((result) => {
-      setLocationList((prev) => ({
-        ...prev,
-        phoneCodeList: result,
-      }));
-    });
-
-    GetCountries().then((result) => {
-      setLocationList((prev) => ({
-        ...prev,
-        countriesList: result,
-      }));
-    });
-    reset(data)
+    (async function () {
+      try {
+        setLoading(true);
+        const [phonesCodes, countries] = await Promise.all([
+          GetPhonecodes(),
+          GetCountries(),
+        ]);
+        setLocationList((prev) => ({
+          ...prev,
+          phoneCodeList: phonesCodes,
+          countriesList: countries,
+        }));
+        reset(data);
+      } catch (error) {
+        console.error("Error fetching phoncodes, countries: ", error);
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, []);
 
   const handleCountrySelect = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -129,7 +132,6 @@ function BasicDetails({data}:{data:IUser}) {
           countryId: country.id,
         }))
       );
-      setLocation((prev) => ({ ...prev, country: country?.name }));
     }
   };
 
@@ -145,7 +147,6 @@ function BasicDetails({data}:{data:IUser}) {
           stateId: state.id,
         }))
       );
-      setLocation((prev) => ({ ...prev, state: state?.name }));
     }
   };
 
@@ -158,20 +159,21 @@ function BasicDetails({data}:{data:IUser}) {
         ...prev,
         cityId: city.id,
       }));
-      setLocation((prev) => ({ ...prev, city: city?.name }));
     }
   };
 
-  const handlePhoneCodeSelect = (e:ChangeEvent<HTMLSelectElement>)=>{
+  const handlePhoneCodeSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     const phoneCodeId = Number(e.target.value);
-    const phoneCode = locationList.phoneCodeList.find((p)=>p.id === phoneCodeId)
-    if(phoneCode){
-      setLocationList((prev)=>({
-        ...prev,phoneCodeId:phoneCode.id
-      }))
-      setPhoneCode(phoneCode.phone_code)
+    const phoneCode = locationList.phoneCodeList.find(
+      (p) => p.id === phoneCodeId
+    );
+    if (phoneCode) {
+      setLocationList((prev) => ({
+        ...prev,
+        phoneCodeId: phoneCode.id,
+      }));
     }
-  }
+  };
 
   const handleBioEdit = () => {
     const elem = editBioRef.current;
@@ -182,10 +184,76 @@ function BasicDetails({data}:{data:IUser}) {
     setBioEditing(!isBioEditing);
   };
 
-  const handleFormSubmit = (data: FormData) => {
-    console.log(data);
+  const handleSendEmailVerification = async() =>{
+    if(timer !== 0){
+      return 
+    }
+      setTimer(30);
+      const interval = setInterval(() => {
+        setTimer((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      try {
+        const result = await sendEmailVerification(data.email);
+        setModalOpen(true);
+        toast.success(result.message);
+      } catch (error) {
+        if(error instanceof Error){
+          toast.error(error.message)
+          setModalOpen(false)
+          setTimer(0)
+          clearInterval(interval)
+        }
+      }
+  }
+
+  const handleVerifyEmailOTP = async () =>{
+    if(otp.length < 6){
+      setOTPError('OTP must be 6 digits')
+      return
+    }
+    if(isNaN(Number(otp))){
+      setOTPError('Invalid OTP')
+      return
+    }
+    try {
+      const result = await verifyEmailOTP(otp)
+      toast.success(result.message);
+      setVerification(true)
+      setModalOpen(false)
+    } catch (error) {
+      if(error instanceof Error){
+        setOTPError(error.message)
+      }
+    }
+  }
+
+  const handleFormSubmit = async (formData: FormData) => {
+    if(data.email !== formData.email){
+      setVerification(false)
+      handleSendEmailVerification()
+      return
+    }
+
+    if(isEmailVerified){
+      try {
+        const result = await updateBasicDetails(formData);
+        reset(result.data);
+        toast.success('Basic Details updated');
+      } catch (error) {
+        if(error instanceof Error){
+          toast.error(error.message)
+        }
+      }
+    }
   };
 
+  if (loading) return null;
   return (
     <form
       onSubmit={handleSubmit(handleFormSubmit)}
@@ -194,7 +262,12 @@ function BasicDetails({data}:{data:IUser}) {
       <div className="top-part flex items-start">
         <div className="left basis-1/6">
           <div className="image-container bg-gray-600 h-24 w-24 rounded-full"></div>
-          <label className="text-sm cursor-pointer text-blue-800" htmlFor="profile-pic">Upload Image</label>
+          <label
+            className="text-sm cursor-pointer text-blue-800"
+            htmlFor="profile-pic"
+          >
+            Upload Image
+          </label>
           <input type="file" id="profile-pic" hidden />
         </div>
 
@@ -233,12 +306,12 @@ function BasicDetails({data}:{data:IUser}) {
 
       <div className="form-section flex flex-col gap-3">
         <ProfileFormInput
+          {...register("fullName")}
           label="Full Name"
           id="fullName"
           type="text"
           placeholder="Full Name"
           mandatory
-          {...register("fullName")}
           error={errors.fullName ? errors.fullName.message : ""}
         />
         <ProfileFormInput
@@ -257,13 +330,15 @@ function BasicDetails({data}:{data:IUser}) {
           <div className="flex items-center justify-between gap-2">
             <select
               {...register("phoneCode")}
-              value={locationList.phoneCodeId || ''}
+              value={
+                locationList.phoneCodeId || locationList.phoneCodeList[0].id
+              }
               onChange={handlePhoneCodeSelect}
-              className="w-1/12 max-w-[100px] overflow-x-auto bg-white/50 rounded p-2 cursor-pointer"
+              className="w-1/12 max-w-[100px] overflow-x-hidden bg-white/50 rounded p-2 cursor-pointer"
             >
               {locationList.phoneCodeList.map((item) => (
                 <option key={item.id} value={item.id}>
-                  + {item.phone_code}
+                  + {item.phone_code} {item.name}
                 </option>
               ))}
             </select>
@@ -287,16 +362,17 @@ function BasicDetails({data}:{data:IUser}) {
           type="single"
           className="bg-white/50  rounded-md mt-2"
           collapsible
+          defaultValue="item-1"
         >
           <AccordionItem value="item-1" className="px-2">
             <AccordionTrigger>Location</AccordionTrigger>
             <AccordionContent className="bg-slate-300/75 rounded mb-2 p-4 flex flex-col gap-4">
               <ProfileFormInput
+                {...register("location.addressLine")}
                 id="location.addressLine"
                 label="Address Line"
                 type="text"
-                {...register("location.addressLine")}
-                disabled={true}
+                disabled={false}
                 placeholder="Address Line"
                 mandatory
                 error={
@@ -313,7 +389,7 @@ function BasicDetails({data}:{data:IUser}) {
                     </Label>
                     <select
                       {...register("location.country")}
-                      value={locationList.countryId || ''}
+                      value={locationList.countryId || locationList.countriesList[0].id}
                       id="country-select"
                       onChange={handleCountrySelect}
                       className=" w-full bg-white/50 rounded p-2"
@@ -338,8 +414,8 @@ function BasicDetails({data}:{data:IUser}) {
                       State<span className="text-red-600">*</span>
                     </Label>
                     <select
-                      id="state-select"
                       {...register("location.state")}
+                      id="state-select"
                       onChange={handleStateSelect}
                       className="w-full bg-white/50 rounded p-2"
                       value={locationList.stateId || ""}
@@ -351,7 +427,7 @@ function BasicDetails({data}:{data:IUser}) {
                       ))}
                     </select>
                   </div>
-                  
+
                   <small className="ms-2 text-red-600">
                     {errors.location?.state
                       ? errors.location.state.message
@@ -367,8 +443,8 @@ function BasicDetails({data}:{data:IUser}) {
                       City<span className="text-red-600">*</span>
                     </Label>
                     <select
-                      id="city-select"
                       {...register("location.city")}
+                      id="city-select"
                       onChange={handleCitySelect}
                       className="w-full bg-white/50 rounded h-10 px-2"
                       value={locationList.cityId || ""}
@@ -381,19 +457,17 @@ function BasicDetails({data}:{data:IUser}) {
                     </select>
                   </div>
                   <small className="ms-2 text-red-600">
-                    {errors.location?.city
-                      ? errors.location.city.message
-                      : ""}
+                    {errors.location?.city ? errors.location.city.message : ""}
                   </small>
                 </div>
 
                 <ProfileFormInput
-                  id="location.postalCode"
                   {...register("location.postalCode")}
+                  id="location.postalCode"
                   label="Postal Code"
                   mandatory
                   type="text"
-                  disabled={true}
+                  disabled={false}
                   placeholder="Postal Code"
                   error={
                     errors.location?.postalCode
@@ -405,6 +479,44 @@ function BasicDetails({data}:{data:IUser}) {
             </AccordionContent>
           </AccordionItem>
         </Accordion>
+
+        <AlertDialog open={isModalOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center justify-between">
+              Email OTP Verification!
+              <Button
+                variant={"outline"}
+                onClick={() => setModalOpen(false)}
+                className="hover:bg-slate-600 hover:text-white"
+                size={"sm"}
+              >
+                <i className="fa-solid fa-xmark"></i>
+              </Button>
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              We have sent an <b>OTP</b> to {getValues('email')}.
+            </AlertDialogDescription>
+            <Input
+              placeholder="Enter OTP to continue"
+              maxLength={6}
+              onChange={(e)=>setOtp(e.target.value)}
+            />
+            <small className="text-red-600">{otpError}</small>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction
+            onClick={handleSendEmailVerification}
+              className="bg-white text-black border border-black hover:bg-black hover:text-white"
+            >
+              {timer !==0 ? `Resend OTP in ${timer}`:'Resend OTP'}
+            </AlertDialogAction>
+            <AlertDialogAction onClick={handleVerifyEmailOTP}>
+              Submit OTP
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
         <div className="flex items-center justify-center mt-3">
           <Button

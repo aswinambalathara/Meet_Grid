@@ -6,6 +6,7 @@ import axios, {
 import apiURLs from "@/config/apiConfig";
 import handleError from "@/lib/utility/errorHandler";
 import { ProfilePasswordFormData } from "@/lib/utility/types";
+import IUser from "@/interfaces/IUser";
 const { USER_URL } = apiURLs;
 
 const axiosUserInstance = axios.create({
@@ -89,6 +90,42 @@ export const getUserProfile = async () => {
     handleError(error);
   }
 };
+
+export const sendEmailVerification = async (email:string) =>{
+  try {
+    const response = await axiosUserInstance.post('/profile/basic-details/send-mail',{email});
+    return response.data
+  } catch (error) {
+    handleError(error)
+  }
+}
+
+export const verifyEmailOTP = async(otp:string) =>{
+  try {
+    const response = await axiosUserInstance.post('/profile/basic-details/verify-email',{otp})
+    return response.data
+  } catch (error) {
+    handleError(error)
+  }
+}
+
+export const updateBasicDetails = async (formData:Partial<IUser>) =>{
+  try {
+    const response = await axiosUserInstance.patch('/profile/basic-details',formData)
+    return response.data
+  } catch (error) {
+    handleError(error)
+  }
+}
+
+export const updateProfessionalDetails = async(formData:IUser['professionalInfo']) =>{
+  try {
+    const response = await axiosUserInstance.patch('/profile/professional-details',formData)
+    return response.data
+  } catch (error) {
+    handleError(error)
+  }
+}
 
 export const changePasswordSendOTP = async () =>{
   try {
