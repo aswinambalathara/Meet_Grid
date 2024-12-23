@@ -3,10 +3,7 @@ import { Button } from "@/components/ui/button";
 import ProfileFormInput from "@/components/ui/Inputs/ProfileFormInput";
 import TagInput from "@/components/ui/Inputs/TagInput";
 import IUser from "@/interfaces/IUser";
-import React, {
-  useEffect,
-  useState,
-} from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { professionalDetailsSchema } from "@/lib/utility/schemas";
@@ -14,12 +11,17 @@ import { ProfileProfessionalFormData } from "@/lib/utility/types";
 import toast from "react-hot-toast";
 import { updateProfessionalDetails } from "@/lib/api/user/AuthorisedRoutes";
 
-function ProfessionalDetails({ userData }: { userData: IUser }) {
+function ProfessionalDetails({
+  userData,
+  setUserData,
+}: {
+  userData: IUser;
+  setUserData: Dispatch<SetStateAction<IUser>>;
+}) {
   const {
     register,
     reset,
     handleSubmit,
-    resetField,
     formState: { errors },
   } = useForm<ProfileProfessionalFormData>({
     resolver: zodResolver(professionalDetailsSchema),
@@ -49,7 +51,10 @@ function ProfessionalDetails({ userData }: { userData: IUser }) {
     }
     try {
       const result = await updateProfessionalDetails(formData);
-      reset(result.data);
+      setUserData((prev) => ({
+        ...prev,
+        professionalInfo: result.data,
+      }));
       toast.success(result.message);
     } catch (error) {
       if (error instanceof Error) {

@@ -1,37 +1,26 @@
 "use client";
-
+import React from "react";
 import { Button } from "@/components/ui/button";
 import BasicEventDetails from "@/components/ui/forms/User/CreateEventForms/BasicEventDetails";
 import EventLocationDetails from "@/components/ui/forms/User/CreateEventForms/EventLocationDetails";
 import EventMedia from "@/components/ui/forms/User/CreateEventForms/EventMedia";
 import TicketDetails from "@/components/ui/forms/User/CreateEventForms/TicketDetails";
-import IEvent from "@/interfaces/IEvent";
-import React, { useState } from "react";
+
 import { eventFormSchema } from "@/lib/utility/schemas";
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm,FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { EventFormData } from "@/lib/utility/types";
 
 
 function HostEventPage() { 
-  const methods = useForm<z.infer<typeof eventFormSchema>>({
+  const methods = useForm<EventFormData>({
     resolver: zodResolver(eventFormSchema),
-    mode:'onBlur',
+    mode:'onChange',
     reValidateMode:'onSubmit',
-    defaultValues: {
-      title: "",
-      description: "",
-      category: "",
-      eventType: "In-Person",
-      eventBanner: "",
-      eventLogo: "",
-    },
   });
 
-  const { handleSubmit, reset, formState } = methods;
-  const { errors } = formState;
 
-  const onSubmit = (data: z.infer<typeof eventFormSchema>)=>{
+  const onSubmit = (data: EventFormData)=>{
 
   }
   
@@ -43,8 +32,8 @@ function HostEventPage() {
         </h1>
       </div>
       <FormProvider {...methods}>
-      <form className="form-content flex flex-col gap-3" onSubmit={handleSubmit(onSubmit)}>
-        <BasicEventDetails/>
+      <form className="form-content flex flex-col gap-3" onSubmit={methods.handleSubmit(onSubmit)}>
+        <BasicEventDetails />
         <EventLocationDetails eventType="In-Person"/>
         <TicketDetails/>
         <EventMedia/>

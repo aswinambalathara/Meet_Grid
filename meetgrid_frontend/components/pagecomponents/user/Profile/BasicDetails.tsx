@@ -7,9 +7,15 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import ProfileFormInput from "@/components/ui/Inputs/ProfileFormInput";
-import {sendEmailVerification, updateBasicDetails, verifyEmailOTP } from "@/lib/api/user/AuthorisedRoutes";
+import {
+  sendEmailVerification,
+  updateBasicDetails,
+  verifyEmailOTP,
+} from "@/lib/api/user/AuthorisedRoutes";
 import React, {
   ChangeEvent,
+  Dispatch,
+  SetStateAction,
   useEffect,
   useRef,
   useState,
@@ -34,7 +40,15 @@ import { Label } from "@/components/ui/label";
 import { z } from "zod";
 import { ProfileBasicFormData } from "@/lib/utility/types";
 import IUser from "@/interfaces/IUser";
-import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
 
@@ -51,8 +65,13 @@ type LocationList = {
 
 type FormData = z.infer<typeof basicDetailsSchema>;
 
-function BasicDetails({ data }: { data: IUser}) {
-  console.log(data)
+function BasicDetails({
+  data,
+  setUserData,
+}: {
+  data: IUser;
+  setUserData: Dispatch<SetStateAction<IUser>>;
+}) {
   const {
     register,
     handleSubmit,
@@ -67,12 +86,12 @@ function BasicDetails({ data }: { data: IUser}) {
       bio: data.bio || "",
       location: {
         addressLine: data.location?.addressLine || "",
-        city: data.location?.city || '',
+        city: data.location?.city || "",
         country: data.location?.country || "",
-        postalCode:data.location?.postalCode || "",
+        postalCode: data.location?.postalCode || "",
         state: data.location?.state || "",
       },
-      phone: data.phone || '',
+      phone: data.phone || "",
       phoneCode: "",
     },
     mode: "onChange",
@@ -81,10 +100,10 @@ function BasicDetails({ data }: { data: IUser}) {
 
   const editBioRef = useRef<HTMLTextAreaElement | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isModalOpen,setModalOpen] = useState(false);
-  const [timer,setTimer] = useState(0);
-  const [otp,setOtp] = useState('')
-  const [otpError,setOTPError] = useState('')
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [timer, setTimer] = useState(0);
+  const [otp, setOtp] = useState("");
+  const [otpError, setOTPError] = useState("");
   const [isBioEditing, setBioEditing] = useState(false);
   const [locationList, setLocationList] = useState<LocationList>({
     phoneCodeList: [],
@@ -184,70 +203,74 @@ function BasicDetails({ data }: { data: IUser}) {
     setBioEditing(!isBioEditing);
   };
 
-  const handleSendEmailVerification = async() =>{
-    if(timer !== 0){
-      return 
+  const handleSendEmailVerification = async () => {
+    if (timer !== 0) {
+      return;
     }
-      setTimer(30);
-      const interval = setInterval(() => {
-        setTimer((prev) => {
-          if (prev <= 1) {
-            clearInterval(interval);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-      try {
-        const result = await sendEmailVerification(data.email);
-        setModalOpen(true);
-        toast.success(result.message);
-      } catch (error) {
-        if(error instanceof Error){
-          toast.error(error.message)
-          setModalOpen(false)
-          setTimer(0)
-          clearInterval(interval)
+    setTimer(30);
+    const interval = setInterval(() => {
+      setTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
         }
+        return prev - 1;
+      });
+    }, 1000);
+    try {
+      const result = await sendEmailVerification(data.email);
+      setModalOpen(true);
+      toast.success(result.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+        setModalOpen(false);
+        setTimer(0);
+        clearInterval(interval);
       }
-  }
-
-  const handleVerifyEmailOTP = async () =>{
-    if(otp.length < 6){
-      setOTPError('OTP must be 6 digits')
-      return
     }
-    if(isNaN(Number(otp))){
-      setOTPError('Invalid OTP')
-      return
+  };
+
+  const handleVerifyEmailOTP = async () => {
+    if (otp.length < 6) {
+      setOTPError("OTP must be 6 digits");
+      return;
+    }
+    if (isNaN(Number(otp))) {
+      setOTPError("Invalid OTP");
+      return;
     }
     try {
-      const result = await verifyEmailOTP(otp)
+      const result = await verifyEmailOTP(otp);
       toast.success(result.message);
-      setVerification(true)
-      setModalOpen(false)
+      setVerification(true);
+      setModalOpen(false);
     } catch (error) {
-      if(error instanceof Error){
-        setOTPError(error.message)
+      if (error instanceof Error) {
+        setOTPError(error.message);
       }
     }
-  }
+  };
 
   const handleFormSubmit = async (formData: FormData) => {
-    if(data.email !== formData.email){
-      setVerification(false)
-      handleSendEmailVerification()
-      return
+    if (data.email !== formData.email) {
+      setVerification(false);
+      handleSendEmailVerification();
+      return;
     }
 
-    if(isEmailVerified){
+    if (isEmailVerified) {
       try {
         const result = await updateBasicDetails(formData);
-        reset(result.data);
-        toast.success('Basic Details updated');
+        console.log(result)
+        setUserData((prev) => ({
+          ...prev,
+          ...result.data,
+        }));
+        toast.success("Basic Details updated");
       } catch (error) {
-        if(error instanceof Error){
-          toast.error(error.message)
+        if (error instanceof Error) {
+          toast.error(error.message);
         }
       }
     }
@@ -389,7 +412,10 @@ function BasicDetails({ data }: { data: IUser}) {
                     </Label>
                     <select
                       {...register("location.country")}
-                      value={locationList.countryId || locationList.countriesList[0].id}
+                      value={
+                        locationList.countryId ||
+                        locationList.countriesList[0].id
+                      }
                       id="country-select"
                       onChange={handleCountrySelect}
                       className=" w-full bg-white/50 rounded p-2"
@@ -481,42 +507,42 @@ function BasicDetails({ data }: { data: IUser}) {
         </Accordion>
 
         <AlertDialog open={isModalOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center justify-between">
-              Email OTP Verification!
-              <Button
-                variant={"outline"}
-                onClick={() => setModalOpen(false)}
-                className="hover:bg-slate-600 hover:text-white"
-                size={"sm"}
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="flex items-center justify-between">
+                Email OTP Verification!
+                <Button
+                  variant={"outline"}
+                  onClick={() => setModalOpen(false)}
+                  className="hover:bg-slate-600 hover:text-white"
+                  size={"sm"}
+                >
+                  <i className="fa-solid fa-xmark"></i>
+                </Button>
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                We have sent an <b>OTP</b> to {getValues("email")}.
+              </AlertDialogDescription>
+              <Input
+                placeholder="Enter OTP to continue"
+                maxLength={6}
+                onChange={(e) => setOtp(e.target.value)}
+              />
+              <small className="text-red-600">{otpError}</small>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogAction
+                onClick={handleSendEmailVerification}
+                className="bg-white text-black border border-black hover:bg-black hover:text-white"
               >
-                <i className="fa-solid fa-xmark"></i>
-              </Button>
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              We have sent an <b>OTP</b> to {getValues('email')}.
-            </AlertDialogDescription>
-            <Input
-              placeholder="Enter OTP to continue"
-              maxLength={6}
-              onChange={(e)=>setOtp(e.target.value)}
-            />
-            <small className="text-red-600">{otpError}</small>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction
-            onClick={handleSendEmailVerification}
-              className="bg-white text-black border border-black hover:bg-black hover:text-white"
-            >
-              {timer !==0 ? `Resend OTP in ${timer}`:'Resend OTP'}
-            </AlertDialogAction>
-            <AlertDialogAction onClick={handleVerifyEmailOTP}>
-              Submit OTP
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+                {timer !== 0 ? `Resend OTP in ${timer}` : "Resend OTP"}
+              </AlertDialogAction>
+              <AlertDialogAction onClick={handleVerifyEmailOTP}>
+                Submit OTP
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         <div className="flex items-center justify-center mt-3">
           <Button

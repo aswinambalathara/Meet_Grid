@@ -79,7 +79,7 @@ function UserSignUp() {
         errorMessage = validatePassword(value);
         break;
       case "confirmPassword":
-        errorMessage = validateConfirmPassword(value, user.password);
+        errorMessage = validateConfirmPassword(value, user.password!);
         break;
       default:
         break;
@@ -99,7 +99,7 @@ function UserSignUp() {
     const formErrors = validateSignUpForm(
       user.fullName!,
       user.email,
-      user.password,
+      user.password!,
       confirmPassword
     );
     setErrors(formErrors);
