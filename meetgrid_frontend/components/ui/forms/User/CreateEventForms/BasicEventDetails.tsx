@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Input } from "../../../input";
 import { Label } from "../../../label";
 import {
@@ -20,12 +20,13 @@ function BasicEventDetails() {
     formState: { errors },
   } = useFormContext<EventBasicDetailForm>();
 
-  console.log(errors);
   return (
     <div className="h-full p-16">
       <h1 className="mb-5">Basic Event Details</h1>
       <div className="form-control flex flex-col mb-5 gap-2">
-        <Label htmlFor="event-title">Event Title</Label>
+        <Label htmlFor="event-title">
+          Event Title <span className="text-red-600">*</span>
+        </Label>
         <Input
           {...register("title")}
           type="text"
@@ -38,7 +39,9 @@ function BasicEventDetails() {
         </small>
       </div>
       <div className="form-control flex flex-col mb-5 gap-2">
-        <Label htmlFor="event-description">Event Description</Label>
+        <Label htmlFor="event-description">
+          Event Description<span className="text-red-600">*</span>
+        </Label>
         <Input
           type="text"
           {...register("description")}
@@ -52,7 +55,9 @@ function BasicEventDetails() {
       </div>
       <div className="flex w-full items-center gap-2 justify-between row mb-5">
         <div className="form-control flex flex-col gap-2 w-full">
-          <Label htmlFor="event-category">Event Category</Label>
+          <Label htmlFor="event-category">
+            Event Category<span className="text-red-600">*</span>
+          </Label>
           <Input
             {...register("category")}
             type="text"
@@ -65,7 +70,9 @@ function BasicEventDetails() {
           </small>
         </div>
         <div className="form-control flex flex-col gap-2 w-2/4">
-          <Label htmlFor="event-type">Event Type</Label>
+          <Label htmlFor="event-type">
+            Event Type<span className="text-red-600">*</span>
+          </Label>
           <Controller
             name="eventType"
             control={control}
@@ -81,7 +88,7 @@ function BasicEventDetails() {
                     <SelectValue placeholder="Select Event Type" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Offline">
+                    <SelectItem value="In-Person">
                       <i className="fa-solid fa-people-group text-green-700 me-2" />
                       Offline
                     </SelectItem>
@@ -101,11 +108,13 @@ function BasicEventDetails() {
       </div>
       <div className="row flex gap-2 mb-5">
         <div className="form-control flex flex-col gap-2 w-2/4">
-          <Label htmlFor="event-startDate">Event Start Date </Label>
+          <Label htmlFor="event-startDate">
+            Event Start Date <span className="text-red-600">*</span>
+          </Label>
           <input
             {...register("startDate")}
-            type="date"
-            min={new Date().toISOString().split("T")[0]}
+            type="datetime-local"
+            min={new Date().toISOString().slice(0, 16)}
             id="event-startDate"
             placeholder="Event Start Date"
             className="bg-slate-100 h-10 px-3 rounded text-sm"
@@ -115,11 +124,11 @@ function BasicEventDetails() {
           </small>
         </div>
         <div className="form-control flex flex-col gap-2 w-2/4">
-          <Label htmlFor="event-endDate">Event End Date</Label>
+          <Label htmlFor="event-endDate">Event End Date<span className="text-red-600">*</span></Label>
           <input
             {...register("endDate")}
-            type="date"
-            min={new Date().toISOString().split("T")[0]}
+            type="datetime-local"
+            min={new Date().toISOString().slice(0, 16)}
             id="event-endDate"
             placeholder="Event End Date"
             className="bg-slate-100 h-10 px-3 rounded text-sm"
@@ -129,34 +138,7 @@ function BasicEventDetails() {
           </small>
         </div>
       </div>
-      <div className="row flex gap-2">
-        <div className="form-control flex flex-col gap-2 w-2/4">
-          <Label htmlFor="event-startTime">Event Start Time</Label>
-          <input
-            {...register("startTime")}
-            type="time"
-            id="event-startTime"
-            placeholder="Event Start Time"
-            className="bg-slate-100 h-10 px-3 rounded text-sm"
-          />
-          <small className="text-red-600">
-            {errors.startTime ? errors.startTime.message : ""}
-          </small>
-        </div>
-        <div className="form-control flex flex-col gap-2 w-2/4">
-          <Label htmlFor="event-endTime">Event End Time</Label>
-          <input
-            {...register("endTime")}
-            type="time"
-            id="event-endTime"
-            placeholder="Event End Time"
-            className="bg-slate-100 h-10 px-3 rounded text-sm"
-          />
-          <small className="text-red-600">
-            {errors.endTime ? errors.endTime.message : ""}
-          </small>
-        </div>
-      </div>
+
     </div>
   );
 }

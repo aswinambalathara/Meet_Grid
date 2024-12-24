@@ -1,11 +1,11 @@
 "use client";
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import BasicEventDetails from "@/components/ui/forms/User/CreateEventForms/BasicEventDetails";
 import EventLocationDetails from "@/components/ui/forms/User/CreateEventForms/EventLocationDetails";
 import EventMedia from "@/components/ui/forms/User/CreateEventForms/EventMedia";
 import TicketDetails from "@/components/ui/forms/User/CreateEventForms/TicketDetails";
-
 import { eventFormSchema } from "@/lib/utility/schemas";
 import { useForm,FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,10 +20,14 @@ function HostEventPage() {
   });
 
 
+  const eventType = methods.watch('eventType') || 'In-Person'
+  
   const onSubmit = (data: EventFormData)=>{
 
   }
   
+
+
   return (
     <div className="min-h-screen bg-sky-100 sm:mb-5 sm:mx-16 rounded-lg">
       <div className="header bg-gradient-to-r from-pink-800 flex items-center justify-center to-blue-950 h-28 rounded-b-full">
@@ -34,7 +38,7 @@ function HostEventPage() {
       <FormProvider {...methods}>
       <form className="form-content flex flex-col gap-3" onSubmit={methods.handleSubmit(onSubmit)}>
         <BasicEventDetails />
-        <EventLocationDetails eventType="In-Person"/>
+        {eventType && <EventLocationDetails eventType={eventType}/>}
         <TicketDetails/>
         <EventMedia/>
         <div className="flex items-center justify-end gap-2 pe-10 mb-5">

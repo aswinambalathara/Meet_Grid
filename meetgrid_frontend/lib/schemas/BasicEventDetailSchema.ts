@@ -13,7 +13,7 @@ export const EventBasicDetailsBaseSchema = z.object({
     "Description can only contain letters, numbers, spaces, and .,!?-:@#() with up to 1000 characters."
   ),
   category: z.string().min(1, "Category is required"),
-  eventType: z.enum(["Offline", "Online"], {
+  eventType: z.enum(["Online", "In-Person"], {
     message: "Event type is required and must be either 'Offline' or 'Online'",
   }),
   startDate: z

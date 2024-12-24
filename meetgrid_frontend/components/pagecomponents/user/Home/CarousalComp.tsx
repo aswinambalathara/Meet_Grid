@@ -16,6 +16,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 function CarousalComp() {
   return (
@@ -29,7 +30,9 @@ function CarousalComp() {
             >
               <Card className="bg-stone-800 w-[90%] h-[80%] border-none flex flex-col justify-between overflow-auto">
                 <CardHeader className="alegreya text-white">
-                  <CardTitle className="text-lg sm:text-xl md:text-2xl lg:text-3xl">{item.title}</CardTitle>
+                  <CardTitle className="text-lg sm:text-xl md:text-2xl lg:text-3xl">
+                    {item.title}
+                  </CardTitle>
                   <CardDescription className="text-sm sm:text-base md:text-lg lg:text-xl text-white">
                     {item.description}
                   </CardDescription>
@@ -37,11 +40,16 @@ function CarousalComp() {
                 <CardContent>
                   <div className="Action-buttons flex items-center gap-3 ">
                     <Button className="bg-slate-50 text-black hover:bg-slate-200">
-                      Host Events <i className="fa-solid fa-chevron-right"></i>
+                      <Link href={"/events/host-event"}>
+                        Host Event{" "}
+                        <i className="fa-solid fa-chevron-right"></i>
+                      </Link>
                     </Button>
                     <Button className="bg-none ring-1 ring-slate-50 hover:bg-slate-50 hover:text-black">
+                    <Link href={"/events"}>
                       Explore Events{" "}
                       <i className="fa-solid fa-chevron-right"></i>
+                      </Link>
                     </Button>
                   </div>
                 </CardContent>

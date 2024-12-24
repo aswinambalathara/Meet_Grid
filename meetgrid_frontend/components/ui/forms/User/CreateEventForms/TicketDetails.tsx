@@ -1,8 +1,15 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
 import React from "react";
+import { useFormContext } from "react-hook-form";
 
 function TicketDetails() {
+  const {
+    watch,
+    register,
+    control,
+    formState: { errors },
+  } = useFormContext();
   return (
     <div className="h-full p-16">
       <h1 className="mb-5">Ticket Details</h1>
@@ -13,9 +20,11 @@ function TicketDetails() {
           name="ticketType"
           id="ticketType"
           className="bg-slate-100 h-10 rounded p-2 cursor-pointer text-sm"
-          defaultValue={''}
+          defaultValue={""}
         >
-          <option value={''} disabled>Select Ticket Type</option>
+          <option value={""} disabled>
+            Select Ticket Type
+          </option>
           <option value="Paid">Paid</option>
           <option value="Free">Free</option>
         </select>
@@ -32,7 +41,7 @@ function TicketDetails() {
       <div className="form-control flex flex-col mb-5 gap-2">
         <Label htmlFor="Quantity">Available Tickets</Label>
         <Input
-          type="text"
+          type="number"
           id="Quantity"
           placeholder="Available Tickets"
           className="bg-slate-100 h-10"

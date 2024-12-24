@@ -78,9 +78,6 @@ function Profile() {
     }
   };
 
-  if(loading){
-    return null
-  }
 
   return (
     <div className="min-h-screen text-white flex items-center justify-center">

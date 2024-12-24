@@ -4,6 +4,7 @@ import { FeatureCards } from "@/lib/constants";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import TrendingEvents from "@/components/pagecomponents/user/Home/TrendingEvents";
+import Link from "next/link";
 
 function Page() {
   return (
@@ -33,7 +34,11 @@ function Page() {
           <h1 className="text-2xl poltawski sm:ms-10">Join MeetGrid and Elevate Your Event Experience!</h1>
           <h2 className="text-xl poltawski sm:ms-10">Discover events, connect with participants, and make every moment count. Sign up now!</h2>
           <div className="action-buttons sm:ms-10 mt-10 flex items-center gap-3 text-black">
-            <Button className="bg-orange-700 hover:bg-orange-800">Host Events</Button>
+            <Button className="bg-orange-700 hover:bg-orange-800">
+              
+              <Link href={'/events/host-event'}>Host Event</Link>
+              
+              </Button>
             <Button className=" bg-none ring-1 ring-orange-700 hover:bg-orange-700">Sign Up</Button>
           </div>
         </div>
