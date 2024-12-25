@@ -44,3 +44,16 @@ export type NominatimResponse = {
     language?: string;
   };
 }[];
+
+export type NavLinks = {
+  label: string;
+  href: string;
+  icon?: string;
+  textcolor?: string;
+};
+
+export type HeroProps = {
+  id: number;
+  title: string;
+  description: string;
+};

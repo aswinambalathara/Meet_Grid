@@ -1,15 +1,5 @@
-type NavLinks = {
-  label: string;
-  href: string;
-  icon?: string;
-  textcolor?: string;
-};
-
-type HeroProps = {
-  id: number;
-  title: string;
-  description: string;
-};
+import { NavLinks } from "../utility/types";
+import { HeroProps } from "../utility/types";
 
 export type EventCardProps = {
   id: string;
@@ -233,3 +223,6 @@ export const EventFormsList = [
   "ticketDetails",
   "eventMedia",
 ];
+
+export const ALLOWED_FILE_TYPES = ["image/jpeg", "image/png"];
+export const MAX_FILE_SIZE = 5 * 1024 * 1024;

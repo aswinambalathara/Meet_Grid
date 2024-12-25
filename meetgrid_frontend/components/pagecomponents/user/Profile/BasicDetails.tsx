@@ -51,6 +51,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import toast from "react-hot-toast";
+import UploadImage from "./UploadImage";
 
 type LocationList = {
   phoneCodeList: Phonecodes[];
@@ -262,7 +263,7 @@ function BasicDetails({
     if (isEmailVerified) {
       try {
         const result = await updateBasicDetails(formData);
-        console.log(result)
+        console.log(result);
         setUserData((prev) => ({
           ...prev,
           ...result.data,
@@ -284,14 +285,7 @@ function BasicDetails({
     >
       <div className="top-part flex items-start">
         <div className="left basis-1/6">
-          <div className="image-container bg-gray-600 h-24 w-24 rounded-full"></div>
-          <label
-            className="text-sm cursor-pointer text-blue-800"
-            htmlFor="profile-pic"
-          >
-            Upload Image
-          </label>
-          <input type="file" id="profile-pic" hidden />
+        <UploadImage/>
         </div>
 
         <div className="right basis-5/6">
