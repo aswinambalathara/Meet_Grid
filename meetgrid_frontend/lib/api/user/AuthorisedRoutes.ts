@@ -118,6 +118,15 @@ export const updateBasicDetails = async (formData:Partial<IUser>) =>{
   }
 }
 
+export const updateProfileImage = async ({imageURL,public_id}:{imageURL:string,public_id:string})=>{
+try {
+  const response = await axiosUserInstance.patch('/profile/basic-details/upload-image',{imageURL,public_id});
+  return response.data
+} catch (error) {
+  handleError(error)
+}
+}
+
 export const updateProfessionalDetails = async(formData:IUser['professionalInfo']) =>{
   try {
     const response = await axiosUserInstance.patch('/profile/professional-details',formData)

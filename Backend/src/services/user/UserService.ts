@@ -11,6 +11,7 @@ import {
   response,
 } from "../../types";
 import generateOTP from "../../utils/OTPService";
+import cloudinary from "../../config/cloudinary";
 
 export default class UserService {
   constructor(
@@ -22,7 +23,7 @@ export default class UserService {
 
   async getProfile(userId: string): Promise<payloadResponse> {
     this.validatorService.validateIdFormat(userId);
-    const user = await this.userRepository.findById(userId)
+    const user = await this.userRepository.findById(userId);
     if (!user) {
       throw new CustomError("User not found", StatusCode.NotFound);
     }
@@ -235,7 +236,25 @@ export default class UserService {
     return { status: true, message: "Account Deactivated Successfully" };
   }
 
-  //   async uploadImage(userId:string,image:string):Promise<void>{
+  async uploadImage(
+    userId: string,
+    image: string,
+    public_id: string
+  ): Promise<payloadResponse> {
+    const foundUser = await this.userRepository.findById(userId);
+    if (!foundUser) {
+      throw new CustomError("User not found", StatusCode.NotFound);
+    }
 
-  //   }
+    if (foundUser.image?.public_id && foundUser.image.url) {
+      const deleteImage = await cloudinary.uploader.destroy(
+        foundUser.image.public_id
+      );
+      console.log(deleteImage);
+    }
+    foundUser.image = { public_id, url: image };
+    const update = await foundUser.save();
+
+    return { status: true, message: "Profile Image Updated", data: update };
+  }
 }

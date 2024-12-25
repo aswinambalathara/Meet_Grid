@@ -28,22 +28,10 @@ export const EventBasicDetailsBaseSchema = z.object({
     .refine((date) => !isNaN(Date.parse(date)), {
       message: "Invalid date",
     }),
-  startTime: z
-    .string()
-    .nonempty("This field is required")
-    .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, {
-      message: "Time must be in HH:MM format (24-hour clock)",
-    }),
-  endTime: z
-    .string()
-    .nonempty("This field is required")
-    .regex(/^([01]\d|2[0-3]):([0-5]\d)$/, {
-      message: "Time must be in HH:MM format (24-hour clock)",
-    }),
 });
 
 export const EventBasicDetailsSchema = EventBasicDetailsBaseSchema.superRefine(
-  ({ startDate, endDate, startTime, endTime }, ctx) => {
+  ({ startDate, endDate}, ctx) => {
     const start = new Date(startDate);
     const end = new Date(endDate);
 
@@ -53,22 +41,6 @@ export const EventBasicDetailsSchema = EventBasicDetailsBaseSchema.superRefine(
         path: ["endDate"],
         message: "End date must be greater than start date",
       });
-    }
-
-    if (startDate === endDate) {
-      const [startHour, startMinute] = startTime.split(":").map(Number);
-      const [endHour, endMinute] = endTime.split(":").map(Number);
-
-      const startTimeMinutes = startHour * 60 + startMinute;
-      const endTimeMinutes = endHour * 60 + endMinute;
-
-      if (endTimeMinutes <= startTimeMinutes) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["endTime"],
-          message: "End time must be greater than start time",
-        });
-      }
     }
   }
 );

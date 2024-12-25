@@ -21,9 +21,10 @@ const eventSchema = new Schema<IEvent>(
 
     meetLink: { type: String },
     timeZone: { type: String },
-
+    virtualPlatform: { type: String },
     location: {
-      address: { type: String },
+      venueName: { type: String },
+      streetAddress: { type: String },
       city: { type: String },
       state: { type: String },
       country: { type: String },
@@ -32,12 +33,21 @@ const eventSchema = new Schema<IEvent>(
         type: { type: String, enum: ["Point"] },
         coordinates: { type: [Number] },
       },
+      googlemapLink: { type: String },
     },
 
     organizer: { type: Schema.Types.ObjectId, ref: "User", required: true },
     attendees: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    eventLogo: { type: String },
-    eventBanner: { type: String },
+    eventLogo: {
+      url: { type: String },
+      public_id: { type: String },
+      required:true
+    },
+    eventBanner: {
+      url: { type: String },
+      public_id: { type: String },
+      required:true
+    },
     tickets: [
       {
         ticketType: { type: String, enum: ["Free", "Paid"], required: true },

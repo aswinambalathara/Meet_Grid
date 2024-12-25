@@ -27,6 +27,11 @@ router.patch(
   "/profile/basic-details",
   userController.handleUpdateBasicDetails.bind(userController)
 );
+
+router.patch(
+  "/profile/basic-details/upload-image",
+  userController.handleImageUpload.bind(userController)
+);
 router.patch(
   "/profile/professional-details",
   userController.handleUpdateProfessionalDetails.bind(userController)

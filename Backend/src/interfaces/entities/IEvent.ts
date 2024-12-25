@@ -17,8 +17,10 @@ export default interface IEvent extends Document {
   eventType: "Online" | "In-Person";
   meetLink?: string;
   timeZone?: string;
+  virtualPlatform?: string;
   location?: {
-    address: string;
+    venueName: string;
+    streetAddress: string;
     city: string;
     state: string;
     country: string;
@@ -27,11 +29,18 @@ export default interface IEvent extends Document {
       type: "Point";
       coordinates: [number, number];
     };
+    googlemapLink?: string;
   };
   organizer: Types.ObjectId;
   attendees: Types.ObjectId[];
-  eventLogo: string;
-  eventBanner: string;
+  eventLogo: {
+    url: string;
+    public_id: string;
+  };
+  eventBanner: {
+    url: string;
+    public_id: string;
+  };
   tickets: {
     ticketType: "Free" | "Paid";
     price: number;
@@ -50,5 +59,5 @@ export interface IEventCategory extends Document {
   categoryType?: "Professional" | "General";
   description?: string;
   createdAt?: Date;
-  isDeleted?:boolean
+  isDeleted?: boolean;
 }

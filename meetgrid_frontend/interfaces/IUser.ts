@@ -4,7 +4,10 @@ export default interface IUser {
   fullName?: string;
   password?: string;
   phone?: string;
-  image?: string;
+  image?: {
+    url:string,
+    public_id:string
+  };
   bio?: string;
   gender?: "Male" | "Female" | "Others";
   professionalInfo?: {

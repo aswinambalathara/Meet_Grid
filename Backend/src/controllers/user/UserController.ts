@@ -34,6 +34,25 @@ export default class UserController {
     }
   }
 
+  async handleImageUpload(
+    req: CustomRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { id } = req.user!;
+      const { imageURL, public_id } = req.body;
+      const result = await this.userService.uploadImage(
+        id,
+        imageURL,
+        public_id
+      );
+      res.status(StatusCode.Success).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async handleSendVerificationMail(
     req: CustomRequest,
     res: Response,
@@ -145,5 +164,4 @@ export default class UserController {
       next(error);
     }
   }
-
 }

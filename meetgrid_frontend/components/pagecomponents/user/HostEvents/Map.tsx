@@ -4,8 +4,6 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import mapboxgl, { Marker } from "mapbox-gl";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Label } from "@radix-ui/react-label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { EventVenueFormData, NominatimResponse } from "@/lib/utility/types";
 import { useFormContext } from "react-hook-form";
@@ -22,7 +20,7 @@ type MapProps = {
 };
 
 function Map({ streetAddress, country, state, city, pincode }: MapProps) {
-  const { setValue,getValues } = useFormContext<EventVenueFormData["location"]>();
+  const { setValue,getValues,formState:{errors} } = useFormContext<EventVenueFormData["location"]>();
   const [coordinates, setCoordinates] = useState({
     latitude: 10.1632,
     longitude: 76.6413,
@@ -83,7 +81,6 @@ function Map({ streetAddress, country, state, city, pincode }: MapProps) {
             },
           }
         );
-        console.log(result);
         if (result.data.length > 0) {
           setSuggestions(result.data);
           if (locationSelectRef.current) {
@@ -109,7 +106,6 @@ function Map({ streetAddress, country, state, city, pincode }: MapProps) {
   const handleLocationSelect = async (e: ChangeEvent<HTMLSelectElement>) => {
     const { value } = e.target;
     const place = suggestions.find((loc) => loc.place_id === Number(value));
-    console.log(place);
     const { lat, lon } = place!;
     setCoordinates({
       latitude: parseFloat(lat),
@@ -123,9 +119,10 @@ function Map({ streetAddress, country, state, city, pincode }: MapProps) {
     const lng = getValues('coordinates.coordinates.0');
     const googleMapLink = generateGoogleMapLink(lat,lng);
     setValue('coordinates.googleMapLink',googleMapLink);
+    toast.success('Location Confirmed')
   }
 
-  console.log(getValues())
+  console.error(errors)
   return (
     <div className="map-section w-full flex flex-col gap-2">
       <div className="flex justify-between items-end">
@@ -170,6 +167,9 @@ function Map({ streetAddress, country, state, city, pincode }: MapProps) {
         className="map-container w-full h-96 rounded"
       />
       <div className="text-center"><small >Double-click on the map to place a marker at your location. If your exact location is unavailable, select the nearest point. Click the 'Set Location' button to confirm your selection.</small></div>
+      <small className="text-red-600">
+            {errors.coordinates? errors.coordinates.message : ""}
+          </small>
     </div>
   );
 }

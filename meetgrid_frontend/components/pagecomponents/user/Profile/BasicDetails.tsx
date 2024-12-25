@@ -285,7 +285,7 @@ function BasicDetails({
     >
       <div className="top-part flex items-start">
         <div className="left basis-1/6">
-        <UploadImage/>
+          <UploadImage setData={setUserData} oldImage={data.image} />
         </div>
 
         <div className="right basis-5/6">

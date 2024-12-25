@@ -7,14 +7,17 @@ export default interface IUser extends Document {
   fullName: string;
   password: string;
   phone?: string;
-  image?: string;
+  image?: {
+    url: string;
+    public_id: string;
+  };
   bio?: string;
   professionalInfo?: {
     companyName?: string;
     jobTitle?: string;
     linkedinUrl?: string;
     skills?: string[];
-    experience?:string
+    experience?: string;
   };
   verificationToken?: {
     token: string;

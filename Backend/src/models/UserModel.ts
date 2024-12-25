@@ -1,54 +1,59 @@
 import { model, Schema } from "mongoose";
 import IUser from "../interfaces/entities/IUser";
 
-const userSchema = new Schema<IUser>({
-  fullName: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  phone: { type: String },
-  image: { type: String },
-  bio: { type: String },
-  professionalInfo: {
-    type: {
-      companyName: { type: String, required: true },
-      jobTitle: { type: String, required: true },
-      linkedinUrl: { type: String, required: true },
-      skills: [{ type: String, required: true }],
-      experience:{type:Number,required:true}
+const userSchema = new Schema<IUser>(
+  {
+    fullName: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    phone: { type: String },
+    image: {
+      url: { type: String },
+      public_id: { type: String },
     },
-    required: false,
-  },
-  eventsAttended: [{ type: Schema.Types.ObjectId, ref: "events" }],
-  eventsHosted: [{ type: Schema.Types.ObjectId, ref: "events" }],
-  eventsAttending: [{ type: Schema.Types.ObjectId, ref: "events" }],
-  verificationToken: {
-    type: {
-      token: { type: String, required: true },
-      expiry: { type: Date, required: true },
+    bio: { type: String },
+    professionalInfo: {
+      type: {
+        companyName: { type: String, required: true },
+        jobTitle: { type: String, required: true },
+        linkedinUrl: { type: String, required: true },
+        skills: [{ type: String, required: true }],
+        experience: { type: Number, required: true },
+      },
+      required: false,
     },
-    required: false,
-  },
-  otp: {
-    type: {
-      otp: { type: Number, required: true },
-      expiry: { type: Date, required: true },
+    eventsAttended: [{ type: Schema.Types.ObjectId, ref: "events" }],
+    eventsHosted: [{ type: Schema.Types.ObjectId, ref: "events" }],
+    eventsAttending: [{ type: Schema.Types.ObjectId, ref: "events" }],
+    verificationToken: {
+      type: {
+        token: { type: String, required: true },
+        expiry: { type: Date, required: true },
+      },
+      required: false,
     },
-  },
-  location: {
-    type: {
-      addressLine: { type: String, required: true },
-      city: { type: String, required: true },
-      country: { type: String, required: true },
-      state: { type: String, required: true },
-      postalCode: { type: String, required: true },
+    otp: {
+      type: {
+        otp: { type: Number, required: true },
+        expiry: { type: Date, required: true },
+      },
     },
-    required: false,
+    location: {
+      type: {
+        addressLine: { type: String, required: true },
+        city: { type: String, required: true },
+        country: { type: String, required: true },
+        state: { type: String, required: true },
+        postalCode: { type: String, required: true },
+      },
+      required: false,
+    },
+    isBlocked: { type: Boolean, required: true, default: false },
+    isDeactivated: { type: Boolean, required: true, default: false },
+    isVerified: { type: Boolean, required: true, default: false },
   },
-  isBlocked: { type: Boolean, required: true, default: false },
-  isDeactivated: { type: Boolean, required: true, default: false },
-  isVerified: { type: Boolean, required: true, default: false },
-
-},{timestamps:true});
+  { timestamps: true }
+);
 
 const userModel = model<IUser>("user", userSchema);
 export default userModel;
