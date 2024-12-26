@@ -63,3 +63,12 @@ export type HeroProps = {
   title: string;
   description: string;
 };
+
+export type category = {
+  readonly _id?:string,
+  categoryName?: string;
+  categoryType?: "Professional" | "General";
+  description?: string;
+  createdAt?: Date;
+  isDeleted?: boolean;
+}

@@ -28,25 +28,40 @@ export const TicketSchema = z.object({
     .nonempty("This field is required")
     .refine((date) => !isNaN(Date.parse(date)), {
       message: "Invalid date",
-    }),
+    })
+    .transform((date) => new Date(date)),
 });
 
 export const MediaAndOptionsSchema = z.object({
-  bannerImage: z
+  bannerImageFile: z
     .instanceof(File)
     .refine((file) => ALLOWED_FILE_TYPES.includes(file.type), {
       message: "Only JPEG and PNG files are allowed",
     })
-    .refine((file) => file.size <= MAX_FILE_SIZE, { 
+    .refine((file) => file.size <= MAX_FILE_SIZE, {
       message: "File size should be less than 5MB",
     }),
 
-  logoImage: z
+  eventBanner: z
+    .object({
+      url: z.string(),
+      public_id: z.string(),
+    })
+    .optional(),
+
+  eventLogo: z
+    .object({
+      url: z.string(),
+      public_id: z.string(),
+    })
+    .optional(),
+
+  logoImageFile: z
     .instanceof(File)
     .refine((file) => ALLOWED_FILE_TYPES.includes(file.type), {
       message: "Only JPEG and PNG files are allowed",
     })
-    .refine((file) => file.size <= MAX_FILE_SIZE, {  
+    .refine((file) => file.size <= MAX_FILE_SIZE, {
       message: "File size should be less than 5MB",
     }),
 
@@ -56,4 +71,3 @@ export const MediaAndOptionsSchema = z.object({
 
   allowConnections: z.boolean(),
 });
-

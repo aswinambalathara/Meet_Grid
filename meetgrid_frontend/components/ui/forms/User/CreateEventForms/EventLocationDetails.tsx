@@ -28,6 +28,7 @@ function EventLocationDetails({ eventType }: EventLocationDetailsProps) {
     country:watch('location.country'),
     pincode:watch('location.pincode'),
     state:watch('location.state'),
+    googleMapLink:watch('location.googleMapLink')
   }
 
   const timeZones = moment.tz.names();

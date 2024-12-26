@@ -20,7 +20,7 @@ type MapProps = {
 };
 
 function Map({ streetAddress, country, state, city, pincode }: MapProps) {
-  const { setValue,getValues,formState:{errors} } = useFormContext<EventVenueFormData["location"]>();
+  const { setValue,getValues,formState:{errors} } = useFormContext<EventVenueFormData>();
   const [coordinates, setCoordinates] = useState({
     latitude: 10.1632,
     longitude: 76.6413,
@@ -55,8 +55,10 @@ function Map({ streetAddress, country, state, city, pincode }: MapProps) {
       markerRef.current = new Marker()
         .setLngLat([lng, lat])
         .addTo(mapRef.current!);
-      setValue("coordinates.coordinates.0", lng);
-      setValue("coordinates.coordinates.1", lat);
+        setValue('location.coordinates', {
+          type: 'Point',
+          coordinates: [lng, lat],
+        });
     });
 
     return () => {
@@ -115,10 +117,10 @@ function Map({ streetAddress, country, state, city, pincode }: MapProps) {
   };
 
   const handleConfirmLocation = () => {
-    const lat = getValues('coordinates.coordinates.1');
-    const lng = getValues('coordinates.coordinates.0');
+    const lat = getValues('location.coordinates.coordinates.1');
+    const lng = getValues('location.coordinates.coordinates.0');
     const googleMapLink = generateGoogleMapLink(lat,lng);
-    setValue('coordinates.googleMapLink',googleMapLink);
+    setValue('location.googleMapLink',googleMapLink);
     toast.success('Location Confirmed')
   }
 
@@ -168,7 +170,7 @@ function Map({ streetAddress, country, state, city, pincode }: MapProps) {
       />
       <div className="text-center"><small >Double-click on the map to place a marker at your location. If your exact location is unavailable, select the nearest point. Click the 'Set Location' button to confirm your selection.</small></div>
       <small className="text-red-600">
-            {errors.coordinates? errors.coordinates.message : ""}
+            {errors.location?.coordinates? errors.location?.coordinates.message : ""}
           </small>
     </div>
   );

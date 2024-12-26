@@ -22,7 +22,7 @@ function EventMedia() {
   const [logoSrc, setLogoSrc] = useState<string | null>(null);
   const [bannerSrc, setBannerSrc] = useState<string | null>(null);
   const [imagetoCrop, setImageToCrop] = useState<{
-    flag: "logoImage" | "bannerImage" | "";
+    flag: "logoImageFile" | "bannerImageFile" | "";
     image: string | null;
   }>({
     flag: "",
@@ -53,19 +53,19 @@ function EventMedia() {
       const reader = new FileReader();
       reader.onload = () => {
         if (reader.result) {
-          if (fieldName === "bannerImage") {
+          if (fieldName === "bannerImageFile") {
             setBannerFile(file);
             setBannerSrc(reader.result as string);
             setImageToCrop({
-              flag: "bannerImage",
+              flag: "bannerImageFile",
               image: reader.result as string,
             });
             setAspectRatio(16 / 9);
-          } else if (fieldName === "logoImage") {
+          } else if (fieldName === "logoImageFile") {
             setLogoFile(file);
             setLogoSrc(reader.result as string);
             setImageToCrop({
-              flag: "logoImage",
+              flag: "logoImageFile",
               image: reader.result as string,
             });
             setAspectRatio(1 / 1);
@@ -77,7 +77,7 @@ function EventMedia() {
     };
 
   const handleCrop = async () => {
-    if (imagetoCrop.flag === "bannerImage") {
+    if (imagetoCrop.flag === "bannerImageFile") {
       if (!bannerFile) return;
       setLoading(true);
       try {
@@ -97,7 +97,7 @@ function EventMedia() {
         setLoading(false);
         setOpen(false);
       }
-    } else if (imagetoCrop.flag === "logoImage") {
+    } else if (imagetoCrop.flag === "logoImageFile") {
       if (!logoFile) return;
       try {
         const croppedImage = await getCroppedImg(
@@ -135,9 +135,9 @@ function EventMedia() {
         loading={loading}
       />
       <h1 className="mb-5">Event Media & Additional Options</h1>
-      <div className="row flex gap-2 mb-5">
+      <div className="row flex gap-2 mb-5 ">
         {logoFile && logoSrc ? (
-          <div className="logo-preview w-2/4 h-60 relative">
+          <div className="logo-preview w-2/4 h-60 relative border border-black">
             <img
               src={logoSrc}
               alt="Profile"
@@ -148,6 +148,10 @@ function EventMedia() {
                 height: "100%",
               }}
             />
+            <div className="flex gap-2 absolute right-2 bottom-3">
+              <i className="fa-solid fa-crop"></i>
+              <i className="fa-solid fa-upload"></i>
+            </div>
           </div>
         ) : (
           <div className="form-control flex flex-col gap-2 w-2/4">
@@ -160,18 +164,18 @@ function EventMedia() {
             <input
               hidden
               type="file"
-              onChange={handleChange("logoImage")}
+              onChange={handleChange("logoImageFile")}
               id="logo"
               accept={ALLOWED_FILE_TYPES.join(", ")}
               className="bg-slate-100 h-10 px-3 rounded text-sm"
             />
             <small className="text-red-600">
-              {errors.logoImage ? errors.logoImage.message : ""}
+              {errors.logoImageFile ? errors.logoImageFile.message : ""}
             </small>
           </div>
         )}
         {bannerFile && bannerSrc ? (
-          <div className="banner-preview w-2/4 h-60 relative">
+          <div className="banner-preview w-2/4 h-60 relative border border-black">
             <img
               src={bannerSrc}
               alt="Profile"
@@ -182,6 +186,10 @@ function EventMedia() {
                 height: "100%",
               }}
             />
+            <div className="flex gap-2 absolute right-2 bottom-3">
+              <i className="fa-solid fa-crop"></i>
+              <i className="fa-solid fa-upload"></i>
+            </div>
           </div>
         ) : (
           <div className="form-control flex flex-col gap-2 w-2/4">
@@ -194,14 +202,14 @@ function EventMedia() {
             <input
               hidden
               type="file"
-              onChange={handleChange("bannerImage")}
+              onChange={handleChange("bannerImageFile")}
               id="event-banner"
               placeholder="Upload Banner"
               accept={ALLOWED_FILE_TYPES.join(", ")}
               className="bg-slate-100 h-10 px-3 rounded text-sm"
             />
             <small className="text-red-600">
-              {errors.bannerImage ? errors.bannerImage.message : ""}
+              {errors.bannerImageFile ? errors.bannerImageFile.message : ""}
             </small>
           </div>
         )}

@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input";
-import { TicketsDetailFormData } from "@/lib/utility/types";
+import { EventFormData, TicketsDetailFormData } from "@/lib/utility/types";
 import { Label } from "@radix-ui/react-label";
 import React from "react";
 import { useFormContext } from "react-hook-form";
@@ -9,7 +9,7 @@ function TicketDetails() {
   const {
     register,
     formState: { errors },
-  } = useFormContext<TicketsDetailFormData>();
+  } = useFormContext<EventFormData>();
 
   //currency data
   const currencies = data;
@@ -21,7 +21,7 @@ function TicketDetails() {
         <div className="form-control flex flex-col gap-2 w-full">
           <Label htmlFor="ticketType">Ticket Type <span className="text-red-600">*</span></Label>
           <select
-            {...register("ticketType")}
+            {...register("ticket.ticketType")}
             id="ticketType"
             className="bg-slate-100 h-10 rounded p-2 cursor-pointer"
             defaultValue={""}
@@ -33,20 +33,20 @@ function TicketDetails() {
             <option value="Free">Free</option>
           </select>
           <small className="text-red-600">
-            {errors.ticketType ? errors.ticketType.message : ""}
+            {errors?.ticket?.ticketType ? errors.ticket.ticketType.message : ""}
           </small>
         </div>
         <div className="form-control flex flex-col gap-2 w-full">
           <Label htmlFor="ticketPrice">Ticket Price <span className="text-red-600">*</span></Label>
           <Input
-            {...register("price")}
+            {...register("ticket.price")}
             type="text"
             id="ticketPrice"
             placeholder="Ticket Price"
             className="bg-slate-100 h-10"
           />
           <small className="text-red-600">
-            {errors.price ? errors.price.message : ""}
+            {errors?.ticket?.price ? errors.ticket.price.message : ""}
           </small>
         </div>
       </div>
@@ -55,7 +55,7 @@ function TicketDetails() {
         <div className="form-control flex flex-col gap-2 w-full ">
           <Label htmlFor="currency">Currency <span className="text-red-600">*</span></Label>
           <select
-            {...register("currency")}
+            {...register("ticket.currency")}
             id="currency"
             defaultValue={""}
             className="bg-slate-100 h-10 rounded text-black px-2"
@@ -70,20 +70,20 @@ function TicketDetails() {
             ))}
           </select>
           <small className="text-red-600">
-            {errors.currency ? errors.currency.message : ""}
+            {errors.ticket?.currency ? errors.ticket?.currency.message : ""}
           </small>
         </div>
         <div className="form-control flex flex-col gap-2 w-full">
           <Label htmlFor="Quantity">Available Tickets <span className="text-red-600">*</span></Label>
           <Input
-            {...register("availableTickets")}
+            {...register("ticket.availableTickets")}
             type="number"
             id="availableTickets"
             placeholder="Available Tickets"
             className="bg-slate-100 h-10"
           />
           <small className="text-red-600">
-            {errors.availableTickets ? errors.availableTickets.message : ""}
+            {errors.ticket?.availableTickets ? errors.ticket?.availableTickets.message : ""}
           </small>
         </div>
       </div>
@@ -94,14 +94,14 @@ function TicketDetails() {
             Registration Deadline <span className="text-red-600">*</span>
           </Label>
           <input
-            {...register("registrationDeadline")}
+            {...register("ticket.registrationDeadline")}
             type="datetime-local"
             id="registration-deadline"
             className="bg-slate-100 h-10 px-3 rounded text-sm"
           />
           <small className="text-red-600">
-            {errors.registrationDeadline
-              ? errors.registrationDeadline.message
+            {errors.ticket?.registrationDeadline
+              ? errors.ticket?.registrationDeadline.message
               : ""}
           </small>
         </div>

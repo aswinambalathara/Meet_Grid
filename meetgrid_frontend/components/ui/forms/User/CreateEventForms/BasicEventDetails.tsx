@@ -11,9 +11,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Controller, useFormContext } from "react-hook-form";
-import { EventBasicDetailForm } from "@/lib/utility/types";
+import { category, EventBasicDetailForm } from "@/lib/utility/types";
 
-function BasicEventDetails() {
+function BasicEventDetails({ categories }: { categories: category[] }) {
   const {
     register,
     control,
@@ -58,13 +58,20 @@ function BasicEventDetails() {
           <Label htmlFor="event-category">
             Event Category<span className="text-red-600">*</span>
           </Label>
-          <Input
+          <select
             {...register("category")}
-            type="text"
             id="event-category"
-            placeholder="Event category"
-            className="bg-slate-100 h-10"
-          />
+            className="bg-slate-100 h-10 rounded capitalize"
+          >
+            <option value="" hidden>
+              Select Category
+            </option>
+            {categories.map((category, idx) => (
+              <option className="capitalize" value={category._id} key={category._id}>
+                {category.categoryName}
+              </option>
+            ))}
+          </select>
           <small className="text-red-600">
             {errors.category ? errors.category.message : ""}
           </small>
@@ -124,7 +131,9 @@ function BasicEventDetails() {
           </small>
         </div>
         <div className="form-control flex flex-col gap-2 w-2/4">
-          <Label htmlFor="event-endDate">Event End Date<span className="text-red-600">*</span></Label>
+          <Label htmlFor="event-endDate">
+            Event End Date<span className="text-red-600">*</span>
+          </Label>
           <input
             {...register("endDate")}
             type="datetime-local"
@@ -138,7 +147,6 @@ function BasicEventDetails() {
           </small>
         </div>
       </div>
-
     </div>
   );
 }

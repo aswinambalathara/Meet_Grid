@@ -7,10 +7,9 @@ import {
 } from "../schemas/TicketAndMediaSchema";
 
 export const eventFormSchema = z
-  .object({})
+  .object({ticket:TicketSchema})
   .merge(EventBasicDetailsBaseSchema)
   .merge(EventVenueSchema)
-  .merge(TicketSchema)
   .merge(MediaAndOptionsSchema)
   .superRefine((data, ctx) => {
     if (data.eventType === "Online") {
@@ -81,7 +80,7 @@ export const eventFormSchema = z
           message: "Pincode is required for in-person events.",
         });
       }
-      if (!location || !location.coordinates?.coordinates) {
+      if (!location || !location?.coordinates) {
         ctx.addIssue({
           code: "custom",
           path: ["location", "coordinates"],
@@ -89,7 +88,7 @@ export const eventFormSchema = z
         });
       }
 
-      if (!location || !location.coordinates?.googleMapLink) {
+      if (!location || !location?.googleMapLink) {
         ctx.addIssue({
           code: "custom",
           path: ["location", "coordinates"],

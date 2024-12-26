@@ -22,11 +22,10 @@ export const EventVenueSchema = z.object({
       .string()
       .regex(/^\d{5,6}$/, "Pincode must 6 digits")
       .optional(),
-    coordinates: z
-      .object({
-        coordinates: z.tuple([z.number(), z.number()]),
-        googleMapLink: z.string().url("Must be a valid URL"),
-      })
-      .optional(),
+    googleMapLink: z.string().url("Must be a valid URL"),
+    coordinates: z.object({
+      type: z.literal("Point"), 
+      coordinates: z.tuple([z.number(), z.number()]),
+    }).optional(),
   }),
 });
