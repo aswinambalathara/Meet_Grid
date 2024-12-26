@@ -9,16 +9,9 @@ const eventSchema = new Schema<IEvent>(
     },
     description: { type: String, required: true },
     category: { type: Schema.Types.ObjectId, ref: "Category", required: true },
-    date: {
-      startDate: { type: Date, required: true },
-      endDate: { type: Date, required: true },
-    },
-    eventTime: {
-      startTime: { type: String, required: true },
-      endTime: { type: String, required: true },
-    },
+    startDate: { type: Date, required: true },
+    endDate: { type: Date, required: true },
     eventType: { type: String, enum: ["Online", "In-Person"], required: true },
-
     meetLink: { type: String },
     timeZone: { type: String },
     virtualPlatform: { type: String },
@@ -39,24 +32,28 @@ const eventSchema = new Schema<IEvent>(
     organizer: { type: Schema.Types.ObjectId, ref: "User", required: true },
     attendees: [{ type: Schema.Types.ObjectId, ref: "User" }],
     eventLogo: {
-      url: { type: String },
-      public_id: { type: String },
-      required:true
+      type: {
+        url: { type: String },
+        public_id: { type: String },
+      },
+      required: true,
     },
     eventBanner: {
-      url: { type: String },
-      public_id: { type: String },
-      required:true
+      type: {
+        url: { type: String },
+        public_id: { type: String },
+      },
+      required: true,
     },
-    tickets: [
-      {
+    ticket:{ 
+      type:{
         ticketType: { type: String, enum: ["Free", "Paid"], required: true },
         price: { type: Number, required: true },
         currency: { type: String, required: true },
-        available: { type: Number, required: true },
-        sold: { type: Number, default: 0 },
+        availableTickets: { type: Number, required: true },
       },
-    ],
+      required:true
+    },
     status: {
       type: String,
       enum: ["Active", "Completed", "Cancelled", "Pending", "Rejected"],

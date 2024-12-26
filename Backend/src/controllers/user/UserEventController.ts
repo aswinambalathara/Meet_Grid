@@ -18,4 +18,17 @@ export default class UserEventController {
       next(error);
     }
   }
+
+  async getEventCategories(
+    req: CustomRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<void>{
+    try {
+      const result = await this.eventService.getEventCategories()
+      res.status(StatusCode.Success).json(result)
+    } catch (error) {
+      next(error)
+    }
+  }
 }

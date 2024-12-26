@@ -4,15 +4,8 @@ export default interface IEvent extends Document {
   title: string;
   description: string;
   category: Types.ObjectId;
-  subCategory: string;
-  date: {
-    startDate: Date;
-    endDate: Date;
-  };
-  eventTime: {
-    startTime: string;
-    endTime: string;
-  };
+  startDate: Date;
+  endDate: Date;
   registrationDeadline: Date;
   eventType: "Online" | "In-Person";
   meetLink?: string;
@@ -41,13 +34,12 @@ export default interface IEvent extends Document {
     url: string;
     public_id: string;
   };
-  tickets: {
+  ticket: {
     ticketType: "Free" | "Paid";
     price: number;
     currency: string;
-    available: number;
-    sold: number;
-  }[];
+    availableTickets: number;
+  };
   status: "Active" | "Completed" | "Cancelled" | "Pending" | "Rejected";
   isActive: boolean;
   readonly createdAt: Date;

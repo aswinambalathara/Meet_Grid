@@ -2,6 +2,7 @@ import { Router } from "express";
 import errorHandler from "../middlewares/errorHandler";
 import userAuthRoutes from "./user/UserAuthRoutes";
 import userProtectedRoutes from "./user/UserAuthorisedRoutes";
+import eventRoutes from "./user/EventsRoutes";
 import adminAuthRoutes from "./admin/AdminAuthRoutes";
 import adminRoutes from "./admin/AdminRoutes";
 import AdminAuthMiddleware from "../middlewares/adminAuthMiddleware";
@@ -15,6 +16,7 @@ const app = Router();
 
 app.use("/user/auth", userAuthRoutes);
 app.use("/user", userAuthMiddleware.exec, userProtectedRoutes);
+app.use("/events", userAuthMiddleware.exec, eventRoutes);
 app.use("/admin/auth", adminAuthRoutes);
 app.use("/admin", adminAuthMiddlware.exec, adminRoutes);
 app.use(errorHandler);
