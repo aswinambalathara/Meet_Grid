@@ -6,6 +6,7 @@ import cors from "cors";
 import { requestLogger, devLogger } from "./utils/logger";
 import path from "path";
 import cookieParser from "cookie-parser";
+import './types/index'
 const app = express();
 const port = PORT || 4000;
 

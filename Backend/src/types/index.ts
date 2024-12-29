@@ -1,3 +1,4 @@
+
 import { Request } from "express";
 
 export enum StatusCode {
@@ -17,6 +18,7 @@ export enum StatusCode {
   BadGateway = 502,
   ServiceUnavailable = 503,
 }
+
 
 export enum Cookie {
   Admin = "adminToken",
@@ -45,12 +47,31 @@ export interface CustomRequest extends Request {
   user?: {
     email: string;
     id: string;
-  };
+    name?:string;
+    photo?:string;
+  } 
   admin?: {
     email: string;
     id: string;
-  };
+  }
 }
+
+declare global{
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Express{
+    interface User{
+      email:string;
+      id:string;
+      photo?:string;
+      name?:string
+    }
+    interface Request {
+      NormalUser?:User & {email:string,id:string};
+      admin?:{email:string,id:string}
+    }
+  }
+}
+
 
 
 export type EventFilter = {
@@ -65,3 +86,5 @@ export type professionalInfoProps = {
     linkedinUrl: string;
     skills: string[];
 }
+
+export {}

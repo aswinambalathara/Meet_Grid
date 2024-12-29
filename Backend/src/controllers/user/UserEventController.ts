@@ -11,7 +11,7 @@ export default class UserEventController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const { id } = req.user!;
+      const {id} = req.user!
       const result = await this.eventService.create(id, req.body);
       res.status(StatusCode.Success).json(result);
     } catch (error) {
