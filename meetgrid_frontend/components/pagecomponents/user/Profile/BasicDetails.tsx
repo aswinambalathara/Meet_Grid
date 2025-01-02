@@ -289,7 +289,7 @@ function BasicDetails({
         </div>
 
         <div className="right basis-5/6">
-          <h3 className="font-semibold text-black text-lg">{"Aswin Nair"}</h3>
+          <h3 className="font-semibold text-black text-lg">{data.fullName}</h3>
           <div className="bio w-full mt-2">
             <label htmlFor="bio" className="text-sm">
               Bio

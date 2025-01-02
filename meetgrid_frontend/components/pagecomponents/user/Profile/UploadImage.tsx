@@ -74,7 +74,7 @@ function UploadImage({ oldImage, setData }: uploadImageProps) {
       setError("File size should be less than 5Mb");
       return;
     }
-    setError('') // resetting Errors
+    setError(""); // resetting Errors
     const reader = new FileReader();
     reader.onload = () => {
       if (reader.result) {
@@ -86,6 +86,7 @@ function UploadImage({ oldImage, setData }: uploadImageProps) {
     setAspectRatio(1 / 1);
     setOpen(true);
   };
+
   return (
     <>
       <div
@@ -97,7 +98,7 @@ function UploadImage({ oldImage, setData }: uploadImageProps) {
         }}
       >
         <img
-          src={oldImage?.url}
+          src={oldImage?.url || "/images/profile-img.jpg"}
           alt="Profile"
           style={{
             objectFit: "cover", // Ensures the image covers the circle
@@ -109,20 +110,20 @@ function UploadImage({ oldImage, setData }: uploadImageProps) {
       </div>
 
       <div className="flex flex-col gap-1">
-      <label
-        className="text-sm cursor-pointer text-blue-800"
-        htmlFor="profile-pic"
-      >
-        Upload Image
-      </label>
-      <input
-        type="file"
-        id="profile-pic"
-        onChange={handleChange}
-        hidden
-        accept={ALLOWED_FILE_TYPES.join(", ")}
-      />
-      <small className="text-red-600">{error}</small>
+        <label
+          className="text-sm cursor-pointer text-blue-800"
+          htmlFor="profile-pic"
+        >
+          Upload Image
+        </label>
+        <input
+          type="file"
+          id="profile-pic"
+          onChange={handleChange}
+          hidden
+          accept={ALLOWED_FILE_TYPES.join(", ")}
+        />
+        <small className="text-red-600">{error}</small>
       </div>
       <CropperComp
         crop={crop}
@@ -141,4 +142,4 @@ function UploadImage({ oldImage, setData }: uploadImageProps) {
   );
 }
 
-export default UploadImage;
+export default React.memo(UploadImage);

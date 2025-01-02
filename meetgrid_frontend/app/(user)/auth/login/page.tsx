@@ -8,10 +8,7 @@ export const metadata: Metadata = {
 };
 
 function page() {
-  
-  return (
-      <Login />
-  )
+  return <Login />;
 }
 
 export default page;

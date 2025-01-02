@@ -6,7 +6,7 @@ export const EventBasicDetailsBaseSchema = z.object({
     .min(1, "Title is required")
     .regex(
       /^[a-zA-Z0-9 .,!?\-]{1,100}/,
-      "Title can only contain letters, numbers, spaces, and .,!?-. (1–100 characters)."
+      "Title can only contain letters, numbers, spaces, and .,!?-. (1-100 characters)."
     ),
   description: z
     .string()

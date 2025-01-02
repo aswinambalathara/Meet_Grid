@@ -1,5 +1,5 @@
 import { EventBasicDetailsSchema } from "../schemas/BasicEventDetailSchema";
-import { EventVenueSchema } from "../schemas/EventVenueSchema";
+import { OfflineVenueSchema, OnlineVenueSchema } from "../schemas/EventVenueSchema";
 import {
   MediaAndOptionsSchema,
   TicketSchema,
@@ -21,7 +21,8 @@ export type ProfileProfessionalFormData = z.infer<
 export type ProfilePasswordFormData = z.infer<typeof changePasswordSchema>;
 export type EventFormData = z.infer<typeof eventFormSchema>;
 export type EventBasicDetailForm = z.infer<typeof EventBasicDetailsSchema>;
-export type EventVenueFormData = z.infer<typeof EventVenueSchema>;
+export type OnlineVenueFormdata = z.infer<typeof OnlineVenueSchema>;
+export type OfflineVenueFormdata = z.infer<typeof OfflineVenueSchema>
 export type TicketsDetailFormData = z.infer<typeof TicketSchema>;
 export type EventMediaFormData = z.infer<typeof MediaAndOptionsSchema>;
 

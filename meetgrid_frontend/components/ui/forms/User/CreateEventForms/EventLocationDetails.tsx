@@ -7,7 +7,7 @@ import IEvent from "@/interfaces/IEvent";
 import moment from "moment-timezone";
 import Map from "@/components/pagecomponents/user/HostEvents/Map";
 import { Controller, useFormContext } from "react-hook-form";
-import { EventVenueFormData } from "@/lib/utility/types";
+import { EventFormData } from "@/lib/utility/types";
 import { Textarea } from "@/components/ui/textarea";
 
 type EventLocationDetailsProps = {
@@ -18,18 +18,8 @@ function EventLocationDetails({ eventType }: EventLocationDetailsProps) {
   const {
     register,
     control,
-    watch,
     formState: { errors },
-  } = useFormContext<EventVenueFormData>();
-
-  const mapProps:EventVenueFormData['location'] = {
-    streetAddress:watch('location.streetAddress'),
-    city:watch('location.city'),
-    country:watch('location.country'),
-    pincode:watch('location.pincode'),
-    state:watch('location.state'),
-    googleMapLink:watch('location.googleMapLink')
-  }
+  } = useFormContext<EventFormData>();
 
   const timeZones = moment.tz.names();
 
@@ -42,14 +32,14 @@ function EventLocationDetails({ eventType }: EventLocationDetailsProps) {
             Virtual Meet Platform <span className="text-red-600">*</span>
           </Label>
           <Input
-            {...register("virtualPlatform")}
+            {...register("virtualDetails.virtualPlatform")}
             type="text"
             id="virtual-platform"
             placeholder="Virtual Meet Platform"
             className="bg-slate-100 h-10"
           />
           <small className="text-red-600">
-            {errors.virtualPlatform ? errors.virtualPlatform.message : ""}
+            {errors.virtualDetails?.virtualPlatform ? errors.virtualDetails.virtualPlatform.message : ""}
           </small>
         </div>
         <div className="form-control flex flex-col mb-5 gap-2">
@@ -57,23 +47,23 @@ function EventLocationDetails({ eventType }: EventLocationDetailsProps) {
             Virtual Meet Link <span className="text-red-600">*</span>
           </Label>
           <Input
-            {...register("meetLink")}
+            {...register("virtualDetails.meetLink")}
             type="text"
             id="virtual-link"
             placeholder="Virtual Meet Link"
             className="bg-slate-100 h-10"
           />
           <small className="text-red-600">
-            {errors.meetLink ? errors.meetLink.message : ""}
+            {errors.virtualDetails?.meetLink ? errors.virtualDetails.meetLink.message : ""}
           </small>
         </div>
         <div className="form-control flex flex-col mb-5 gap-2">
-          <Label htmlFor="time-zonge">
+          <Label htmlFor="time-zone">
             Time Zone <span className="text-red-600">*</span>
           </Label>
           <select
             className="h-10 cursor-pointer bg-slate-100 text-sm text-gray-500 rounded shadow-sm"
-            {...register("timeZone")}
+            {...register("virtualDetails.timeZone")}
             id="timezone"
             defaultValue={""}
           >
@@ -91,31 +81,32 @@ function EventLocationDetails({ eventType }: EventLocationDetailsProps) {
             ))}
           </select>
           <small className="text-red-600">
-            {errors.timeZone ? errors.timeZone.message : ""}
+            {errors.virtualDetails?.timeZone ? errors.virtualDetails.timeZone.message : ""}
           </small>
         </div>
         <div className="form-control flex flex-col mb-5 gap-2">
           <Label htmlFor="access-instructions">Access Instructions</Label>
 
           <Controller
-            name="accessInstructions"
+            name="virtualDetails.accessInstructions"
             control={control}
             render={({ field }) => (
               <Textarea
                 {...field}
-                id="accessInstructions"
+                id="access instructions"
                 placeholder="Enter access instructions"
                 className="bg-slate-100 h-10"
               />
             )}
           />
           <small className="text-red-600">
-            {errors.accessInstructions ? errors.accessInstructions.message : ""}
+            {errors.virtualDetails?.accessInstructions ? errors.virtualDetails.accessInstructions.message : ""}
           </small>
         </div>
       </div>
     );
   }
+
   return (
     <div className="h-full p-16">
       <h1 className="mb-5">Location & Venue Details</h1>
@@ -218,10 +209,11 @@ function EventLocationDetails({ eventType }: EventLocationDetailsProps) {
       </div>
 
       <div className="location-section flex flex-col w-full">
-        <Map {...mapProps!} />
+        <Map />
       </div>
     </div>
   );
+
 }
 
 export default EventLocationDetails;

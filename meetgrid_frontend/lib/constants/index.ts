@@ -165,7 +165,7 @@ export const TrendingEventsList: EventCardProps[] = [
     title: "Google Hackathon",
   },
   {
-    id: "1",
+    id: "7",
     date: "10/12/2024",
     eventType: "Online",
     ticketType: "Free",
@@ -175,7 +175,7 @@ export const TrendingEventsList: EventCardProps[] = [
       "https://images.unsplash.com/photo-1561347981-969c80cf4463?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
-    id: "2",
+    id: "8",
     date: "10/12/2024",
     eventType: "Online",
     ticketType: "Free",
@@ -184,7 +184,7 @@ export const TrendingEventsList: EventCardProps[] = [
       "https://images.unsplash.com/photo-1542831371-29b0f74f9713?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
-    id: "3",
+    id: "9",
     date: "10/12/2024",
     eventType: "Online",
     ticketType: "Free",
@@ -193,7 +193,7 @@ export const TrendingEventsList: EventCardProps[] = [
       "https://images.unsplash.com/photo-1578909196400-59f8f8156a05?q=80&w=1935&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
-    id: "6",
+    id: "10",
     date: "10/12/2024",
     eventType: "Online",
     ticketType: "Free",
@@ -202,14 +202,14 @@ export const TrendingEventsList: EventCardProps[] = [
       "https://images.unsplash.com/photo-1628258334105-2a0b3d6efee1?q=80&w=1887&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
-    id: "4",
+    id: "11",
     date: "10/12/2024",
     eventType: "Online",
     ticketType: "Free",
     title: "Google Hackathon",
   },
   {
-    id: "5",
+    id: "12",
     date: "10/12/2024",
     eventType: "Online",
     ticketType: "Free",

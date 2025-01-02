@@ -22,11 +22,28 @@ function HostEventPage() {
     resolver: zodResolver(eventFormSchema),
     mode: "onChange",
     reValidateMode: "onSubmit",
+    defaultValues: {
+      allowConnections: true,
+      eventType: undefined,
+      category: "",
+      description: "",
+      endDate: undefined,
+      eventBanner: undefined,
+      eventLogo: undefined,
+      bannerImageFile: undefined,
+      location: {},
+      logoImageFile: undefined,
+      rulesAndInstructions: "",
+      startDate: undefined,
+      ticket: {},
+      title: "",
+      virtualDetails: {},
+    },
   });
   const [loading, setLoading] = useState({ status: false, flag: "" });
   const [eventCategories, setEventCategories] = useState<category[]>([]);
-  
-  const fetchEventCategories = useCallback(async () => { 
+
+  const fetchEventCategories = useCallback(async () => {
     try {
       const result = await getEventCategories();
       setEventCategories(result.data);
@@ -37,7 +54,7 @@ function HostEventPage() {
         toast.error("An unknown error occurred");
       }
     }
-  }, []);  
+  }, []);
 
   useEffect(() => {
     fetchEventCategories();
@@ -67,20 +84,20 @@ function HostEventPage() {
           public_id: uploadBanner.newImagePublicId,
         };
       }
-      setLoading({flag:'Creating Event',status:true})
+      setLoading({ flag: "Creating Event", status: true });
       const createEvent = await HostEvent(rest);
       toast.success(createEvent.message);
-      return <Confirmation/>
+      return <Confirmation />;
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
       }
-    }finally{
-      setLoading({flag:'',status:false})
+    } finally {
+      setLoading({ flag: "", status: false });
     }
   };
 
-  console.log(methods.formState.errors)
+  //console.log(methods.formState.errors)
   return (
     <div className="min-h-screen bg-sky-100 sm:mb-5 sm:mx-16 rounded-lg">
       <Toaster />

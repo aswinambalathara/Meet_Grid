@@ -1,102 +1,40 @@
 import * as z from "zod";
 import { EventBasicDetailsBaseSchema } from "../schemas/BasicEventDetailSchema";
-import { EventVenueSchema } from "../schemas/EventVenueSchema";
+import {
+  OfflineVenueSchema,
+  OnlineVenueSchema,
+} from "../schemas/EventVenueSchema";
 import {
   TicketSchema,
   MediaAndOptionsSchema,
 } from "../schemas/TicketAndMediaSchema";
 
 export const eventFormSchema = z
-  .object({ticket:TicketSchema})
+  .object({ ticket: TicketSchema })
   .merge(EventBasicDetailsBaseSchema)
-  .merge(EventVenueSchema)
   .merge(MediaAndOptionsSchema)
-  .superRefine((data, ctx) => {
+  .extend({
+    virtualDetails: OnlineVenueSchema.optional(),
+    location: OfflineVenueSchema.optional(),
+  }).superRefine((data, ctx) => {
+    console.log('hi')
     if (data.eventType === "Online") {
-      // Validate online event fields
-      if (!data.virtualPlatform) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["virtualPlatform"],
-          message: "Virtual platform is required for online events.",
-        });
-      }
-      if (!data.meetLink) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["meetLink"],
-          message: "Meet link is required for online events.",
-        });
-      }
-      if (!data.timeZone) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["timeZone"],
-          message: "Time zone is required for online events.",
-        });
+      const result = OnlineVenueSchema.safeParse(data.virtualDetails);
+      if (!result.success) {
+        for (const issue of result.error.errors) {
+          ctx.addIssue(issue);
+        }
       }
     } else if (data.eventType === "In-Person") {
-      // Validate in-person event fields
-      const location = data.location;
-      if (!location || !location.venueName) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["location", "venueName"],
-          message: "Venue name is required for in-person events.",
-        });
-      }
-      if (!location || !location.streetAddress) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["location", "streetAddress"],
-          message: "Street address is required for in-person events.",
-        });
-      }
-      if (!location || !location.city) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["location", "city"],
-          message: "City is required for in-person events.",
-        });
-      }
-      if (!location || !location.state) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["location", "state"],
-          message: "State is required for in-person events.",
-        });
-      }
-      if (!location || !location.country) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["location", "country"],
-          message: "Country is required for in-person events.",
-        });
-      }
-      if (!location || !location.pincode) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["location", "pincode"],
-          message: "Pincode is required for in-person events.",
-        });
-      }
-      if (!location || !location?.coordinates) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["location", "coordinates"],
-          message: "Coordinates required for in-person events.",
-        });
-      }
-
-      if (!location || !location?.googleMapLink) {
-        ctx.addIssue({
-          code: "custom",
-          path: ["location", "coordinates"],
-          message: "Map required for in-person events.",
-        });
+      const result = OfflineVenueSchema.safeParse(data.location);
+      if (!result.success) {
+        for (const issue of result.error.errors) {
+          ctx.addIssue(issue);
+        }
       }
     }
   });
+
 
 export const professionalDetailsSchema = z.object({
   companyName: z

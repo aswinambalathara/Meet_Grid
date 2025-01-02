@@ -42,12 +42,12 @@ function BasicEventDetails({ categories }: { categories: category[] }) {
         <Label htmlFor="event-description">
           Event Description<span className="text-red-600">*</span>
         </Label>
-        <Input
-          type="text"
+        <textarea
           {...register("description")}
           id="event-description"
           placeholder="Event description"
-          className="bg-slate-100 h-10"
+          rows={5}
+          className="bg-slate-100 rounded text-sm p-2"
         />
         <small className="text-red-600">
           {errors.description ? errors.description.message : ""}
@@ -61,7 +61,7 @@ function BasicEventDetails({ categories }: { categories: category[] }) {
           <select
             {...register("category")}
             id="event-category"
-            className="bg-slate-100 h-10 rounded capitalize"
+            className="bg-slate-100 h-10 rounded text-sm capitalize"
           >
             <option value="" hidden>
               Select Category
