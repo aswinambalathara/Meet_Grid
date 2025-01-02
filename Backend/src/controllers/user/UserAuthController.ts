@@ -66,6 +66,44 @@ export default class AuthUserController {
     }
   }
 
+  async handleGoogleLogin(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const user = req.user;
+      const result = await this.userAuthService.doGoogleLogin(user!);
+
+      if ("error" in result) {
+        res
+          .status(result.code)
+          .redirect(
+            `${CLIENT_URL}/auth/callback?error=${encodeURIComponent(
+              result.error
+            )}`
+          );
+        return;
+      }
+
+      res.cookie(Cookie.User, result.refreshToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
+      res
+        .status(StatusCode.Success)
+        .redirect(
+          `${CLIENT_URL}/auth/callback?token=${encodeURIComponent(
+            result.accessToken
+          )}`
+        );
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async handleOTPLogin(
     req: Request,
     res: Response,
@@ -102,7 +140,7 @@ export default class AuthUserController {
     try {
       const { email, otp } = req.body;
       const { accessToken, refreshToken, message, status } =
-        await this.userAuthService.validateUserOTPLogin(email,Number(otp));
+        await this.userAuthService.validateUserOTPLogin(email, Number(otp));
       res.cookie(Cookie.User, refreshToken, {
         httpOnly: true,
         secure: true,
@@ -141,7 +179,7 @@ export default class AuthUserController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const {token} = req.body;
+      const { token } = req.body;
       const result = await this.userAuthService.validateResetToken(token);
       res.status(StatusCode.Success).json(result);
     } catch (error) {

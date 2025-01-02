@@ -5,11 +5,12 @@ export default interface IUser extends Document {
   readonly updatedAt?: Date;
   email: string;
   fullName: string;
-  password: string;
+  password?: string;
   phone?: string;
+  googleId?: string;
   image?: {
     url: string;
-    public_id: string;
+    public_id?: string;
   };
   bio?: string;
   professionalInfo?: {
@@ -40,4 +41,5 @@ export default interface IUser extends Document {
   isDeactivated?: boolean;
   isBlocked?: boolean;
   isVerified?: boolean;
+  isGoogleLogin?:boolean
 }

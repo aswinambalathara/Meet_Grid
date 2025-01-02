@@ -147,7 +147,7 @@ export default class UserService {
     if (currentPassword) {
       const isPasswordValid = await this.bcryptService.compare(
         currentPassword,
-        foundUser.password
+        foundUser.password!
       );
       if (!isPasswordValid) {
         throw new CustomError(
@@ -159,7 +159,7 @@ export default class UserService {
 
     const isSame = await this.bcryptService.compare(
       newPassword,
-      foundUser.password
+      foundUser.password!
     );
     if (isSame) {
       throw new CustomError(
@@ -168,7 +168,7 @@ export default class UserService {
       );
     }
 
-    foundUser.password = await this.bcryptService.hash(newPassword);
+    foundUser.password! = await this.bcryptService.hash(newPassword);
     await foundUser.save();
     return { status: true, message: "Password changed successfully" };
   }
@@ -225,7 +225,7 @@ export default class UserService {
     }
     const isPasswordValid = await this.bcryptService.compare(
       password,
-      foundUser.password
+      foundUser.password!
     );
     if (!isPasswordValid) {
       throw new CustomError("Invalid Password", StatusCode.Unauthorized);

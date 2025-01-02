@@ -19,6 +19,8 @@ export default class UserRepository implements IUserRepository {
     return await this.model.findOne({ email: email });
   }
 
+
+
   async findAll(): Promise<IUser[]> {
     return await this.model.find();
   }

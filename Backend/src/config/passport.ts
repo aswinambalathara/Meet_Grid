@@ -9,18 +9,11 @@ import { GOOGLE_CLIENT_ID,GOOGLE_CLIENT_SECRET } from "./env";
 },(accessToken,refreshToken,profile,done)=>{
     const {displayName,id,emails,photos} = profile
     const email = emails?.[0].value || ''
-    const photo = photos?.[0].value
+    const image = photos?.[0].value
 
-    const user:Express.User = {id,name:displayName,email,photo}
+    const user:Express.User = {id,fullName:displayName,email,image:image,}
     return done(null,user)
 })
 
 
-// passport.serializeUser((user:Express.User,done)=>{
-//     done(null,user.id);
-// })
-
-// passport.deserializeUser((id:string,done)=>{
-//     done(null,{id})
-// })
 export default googleStrategy

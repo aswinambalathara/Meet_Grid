@@ -27,7 +27,7 @@ export default class UserAuthService {
       name: userData.fullName,
     });
     this.validatorService.validateEmailFormat(userData.email);
-    this.validatorService.validatePassword(userData.password);
+    this.validatorService.validatePassword(userData.password!);
 
     const isUserExist = await this.userRepository.findByEmail(userData.email);
     if (isUserExist)
@@ -35,7 +35,7 @@ export default class UserAuthService {
         "User already exist with email",
         StatusCode.Conflict
       );
-    userData.password = await this.bcryptService.hash(userData.password);
+    userData.password = await this.bcryptService.hash(userData.password!);
     const token = this.tokenService.generateToken();
     const verificationToken = {
       token,
@@ -105,7 +105,7 @@ export default class UserAuthService {
     }
     const isAuthorised = await this.bcryptService.compare(
       password,
-      foundUser.password
+      foundUser.password!
     );
     if (!isAuthorised)
       throw new CustomError("Invalid Credentials", StatusCode.Unauthorized);
@@ -127,11 +127,60 @@ export default class UserAuthService {
     };
   }
 
-  //   async doOAuthLogin(
-  //     email: string,
-  //     name: string,
-  //     profile?: string
-  //   ): Promise<void> {}
+  async doGoogleLogin(
+    userData: Express.User
+  ): Promise<TokenResponse | { error: string; code: number }> {
+    const { email } = userData;
+    this.validatorService.validateEmailFormat(email!);
+    const foundUser = await this.userRepository.findByEmail(email!);
+    if (!foundUser) {
+      const user: Partial<IUser> = {
+        email: userData.email,
+        fullName: userData.fullName!,
+        isGoogleLogin: true,
+        googleId: userData.id,
+        image: {
+          url: userData.image!,
+          public_id: undefined,
+        },
+      };
+      const createdUser = await this.userRepository.create(user as IUser);
+      const accessToken = this.jwtService.createAccessToken(
+        createdUser.email,
+        createdUser.id
+      );
+      const refreshToken = this.jwtService.createRefreshToken(
+        createdUser.email,
+        createdUser.id
+      );
+      return {
+        accessToken,
+        refreshToken,
+        message: "Login Successfull User Created",
+        status: true,
+      };
+    }
+    if (!foundUser.isGoogleLogin && !foundUser.googleId) {
+      return {
+        error: "User already exist with another login method",
+        code: StatusCode.Conflict,
+      };
+    }
+    const accessToken = this.jwtService.createAccessToken(
+      foundUser.email,
+      foundUser.id
+    );
+    const refreshToken = this.jwtService.createRefreshToken(
+      foundUser.email,
+      foundUser.id
+    );
+    return {
+      accessToken,
+      refreshToken,
+      message: "Login Successfull",
+      status: true,
+    };
+  }
 
   async sendUserOTPLogin(email: string): Promise<response> {
     this.validatorService.validateEmailFormat(email);
@@ -275,7 +324,7 @@ export default class UserAuthService {
       throw new CustomError("User blocked", StatusCode.Forbidden);
     const matchPassword = await this.bcryptService.compare(
       password,
-      foundUser.password
+      foundUser.password!
     );
     if (matchPassword) {
       throw new CustomError(

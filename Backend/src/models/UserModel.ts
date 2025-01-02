@@ -5,8 +5,19 @@ const userSchema = new Schema<IUser>(
   {
     fullName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: {
+      type: String,
+      required: function (this: IUser) {
+        return !this.isGoogleLogin;
+      },
+    },
     phone: { type: String },
+    googleId: {
+      type: String,
+      required: function (this: IUser) {
+        return this.isGoogleLogin;
+      },
+    },
     image: {
       url: { type: String },
       public_id: { type: String },
@@ -51,6 +62,7 @@ const userSchema = new Schema<IUser>(
     isBlocked: { type: Boolean, required: true, default: false },
     isDeactivated: { type: Boolean, required: true, default: false },
     isVerified: { type: Boolean, required: true, default: false },
+    isGoogleLogin: { type: Boolean, required: true, default: false },
   },
   { timestamps: true }
 );

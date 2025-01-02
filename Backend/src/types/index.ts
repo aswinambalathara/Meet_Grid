@@ -48,7 +48,7 @@ export interface CustomRequest extends Request {
     email: string;
     id: string;
     name?:string;
-    photo?:string;
+    image?:string;
   } 
   admin?: {
     email: string;
@@ -62,8 +62,8 @@ declare global{
     interface User{
       email:string;
       id:string;
-      photo?:string;
-      name?:string
+      image?:string;
+      fullName?:string
     }
     interface Request {
       NormalUser?:User & {email:string,id:string};
