@@ -11,14 +11,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Controller, useFormContext } from "react-hook-form";
-import { category, EventBasicDetailForm } from "@/lib/utility/types";
+import { category, EventFormData } from "@/lib/utility/types";
 
 function BasicEventDetails({ categories }: { categories: category[] }) {
   const {
     register,
     control,
     formState: { errors },
-  } = useFormContext<EventBasicDetailForm>();
+  } = useFormContext<EventFormData>();
 
   return (
     <div className="h-full p-16">
@@ -83,7 +83,7 @@ function BasicEventDetails({ categories }: { categories: category[] }) {
           <Controller
             name="eventType"
             control={control}
-            defaultValue={undefined}
+            defaultValue={"In-Person"}
             rules={{ required: "Event type is required" }}
             render={({ field, fieldState: { error } }) => (
               <>
@@ -97,7 +97,7 @@ function BasicEventDetails({ categories }: { categories: category[] }) {
                   <SelectContent>
                     <SelectItem value="In-Person">
                       <i className="fa-solid fa-people-group text-green-700 me-2" />
-                      Offline
+                      In-Person
                     </SelectItem>
                     <SelectItem value="Online">
                       <i className="fa-solid fa-globe me-2 text-blue-700" />

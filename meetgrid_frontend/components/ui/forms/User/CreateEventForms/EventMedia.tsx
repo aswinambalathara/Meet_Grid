@@ -5,7 +5,7 @@ import CropperComp from "@/components/ui/Utils/Cropper";
 import { ALLOWED_FILE_TYPES } from "@/lib/constants";
 import useCrop from "@/lib/hooks/useCrop";
 import getCroppedImg from "@/lib/utility/cropImage";
-import { EventMediaFormData } from "@/lib/utility/types";
+import { EventFormData, EventMediaFormData} from "@/lib/utility/types";
 import { Label } from "@radix-ui/react-label";
 import React, { ChangeEvent, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
@@ -16,7 +16,7 @@ function EventMedia() {
     trigger,
     setValue,
     formState: { errors },
-  } = useFormContext<EventMediaFormData>();
+  } = useFormContext<EventFormData>();
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoSrc, setLogoSrc] = useState<string | null>(null);

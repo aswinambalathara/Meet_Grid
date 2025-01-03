@@ -1,12 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Label } from "../../../label";
 import { Input } from "../../../input";
 import IEvent from "@/interfaces/IEvent";
 import moment from "moment-timezone";
 import Map from "@/components/pagecomponents/user/HostEvents/Map";
-import { Controller, useFormContext } from "react-hook-form";
+import { Controller, FieldErrors, useFormContext } from "react-hook-form";
 import { EventFormData } from "@/lib/utility/types";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -21,7 +21,11 @@ function EventLocationDetails({ eventType }: EventLocationDetailsProps) {
     formState: { errors },
   } = useFormContext<EventFormData>();
 
+  useEffect(()=>{},[])
+
   const timeZones = moment.tz.names();
+  const offlineErrors:FieldErrors<Extract<EventFormData,{ eventType: "In-Person" }>> = errors
+  const onlineErrors:FieldErrors<Extract<EventFormData,{ eventType: "Online" }>> = errors
 
   if (eventType === "Online") {
     return (
@@ -39,7 +43,7 @@ function EventLocationDetails({ eventType }: EventLocationDetailsProps) {
             className="bg-slate-100 h-10"
           />
           <small className="text-red-600">
-            {errors.virtualDetails?.virtualPlatform ? errors.virtualDetails.virtualPlatform.message : ""}
+            {onlineErrors.virtualDetails?.virtualPlatform ? onlineErrors.virtualDetails.virtualPlatform.message : ""}
           </small>
         </div>
         <div className="form-control flex flex-col mb-5 gap-2">
@@ -54,7 +58,7 @@ function EventLocationDetails({ eventType }: EventLocationDetailsProps) {
             className="bg-slate-100 h-10"
           />
           <small className="text-red-600">
-            {errors.virtualDetails?.meetLink ? errors.virtualDetails.meetLink.message : ""}
+            {onlineErrors.virtualDetails?.meetLink ? onlineErrors.virtualDetails.meetLink.message : ""}
           </small>
         </div>
         <div className="form-control flex flex-col mb-5 gap-2">
@@ -81,7 +85,7 @@ function EventLocationDetails({ eventType }: EventLocationDetailsProps) {
             ))}
           </select>
           <small className="text-red-600">
-            {errors.virtualDetails?.timeZone ? errors.virtualDetails.timeZone.message : ""}
+            {onlineErrors.virtualDetails?.timeZone ? onlineErrors.virtualDetails.timeZone.message : ""}
           </small>
         </div>
         <div className="form-control flex flex-col mb-5 gap-2">
@@ -100,7 +104,7 @@ function EventLocationDetails({ eventType }: EventLocationDetailsProps) {
             )}
           />
           <small className="text-red-600">
-            {errors.virtualDetails?.accessInstructions ? errors.virtualDetails.accessInstructions.message : ""}
+            {onlineErrors.virtualDetails?.accessInstructions ? onlineErrors.virtualDetails.accessInstructions.message : ""}
           </small>
         </div>
       </div>
@@ -122,7 +126,7 @@ function EventLocationDetails({ eventType }: EventLocationDetailsProps) {
           className="bg-slate-100 h-10"
         />
         <small className="text-red-600">
-          {errors.location?.venueName ? errors.location?.venueName.message : ""}
+          {offlineErrors.location?.venueName ? offlineErrors.location?.venueName.message : ""}
         </small>
       </div>
       <div className="form-control flex flex-col mb-5 gap-2">
@@ -137,8 +141,8 @@ function EventLocationDetails({ eventType }: EventLocationDetailsProps) {
           className="bg-slate-100 h-10"
         />
         <small className="text-red-600">
-          {errors.location?.streetAddress
-            ? errors.location?.streetAddress.message
+          {offlineErrors.location?.streetAddress
+            ? offlineErrors.location?.streetAddress.message
             : ""}
         </small>
       </div>
@@ -155,7 +159,7 @@ function EventLocationDetails({ eventType }: EventLocationDetailsProps) {
             className="bg-slate-100 h-10"
           />
           <small className="text-red-600">
-            {errors.location?.country ? errors.location?.country.message : ""}
+            {offlineErrors.location?.country ? offlineErrors.location?.country.message : ""}
           </small>
         </div>
         <div className="form-control flex flex-col gap-2 w-full">
@@ -170,7 +174,7 @@ function EventLocationDetails({ eventType }: EventLocationDetailsProps) {
             className="bg-slate-100 h-10"
           />
           <small className="text-red-600">
-            {errors.location?.state ? errors.location?.state.message : ""}
+            {offlineErrors.location?.state ? offlineErrors.location?.state.message : ""}
           </small>
         </div>
       </div>
@@ -187,7 +191,7 @@ function EventLocationDetails({ eventType }: EventLocationDetailsProps) {
             className="bg-slate-100 h-10"
           />
           <small className="text-red-600">
-            {errors.location?.city ? errors.location?.city.message : ""}
+            {offlineErrors.location?.city ? offlineErrors.location?.city.message : ""}
           </small>
         </div>
 
@@ -203,13 +207,13 @@ function EventLocationDetails({ eventType }: EventLocationDetailsProps) {
             className="bg-slate-100 h-10"
           />
           <small className="text-red-600">
-            {errors.location?.pincode ? errors.location?.pincode.message : ""}
+            {offlineErrors.location?.pincode ? offlineErrors.location?.pincode.message : ""}
           </small>
         </div>
       </div>
 
       <div className="location-section flex flex-col w-full">
-        <Map />
+        <Map errors={offlineErrors}/>
       </div>
     </div>
   );

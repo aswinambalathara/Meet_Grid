@@ -1,14 +1,9 @@
-import { EventBasicDetailsSchema } from "../schemas/BasicEventDetailSchema";
-import { OfflineVenueSchema, OnlineVenueSchema } from "../schemas/EventVenueSchema";
-import {
-  MediaAndOptionsSchema,
-  TicketSchema,
-} from "../schemas/TicketAndMediaSchema";
+import { MediaAndOptionsSchema } from "../schemas/TicketAndMediaSchema";
 import {
   adminCategorySchema,
   basicDetailsSchema,
   changePasswordSchema,
-  eventFormSchema,
+  EventFormSchema,
   professionalDetailsSchema,
 } from "./schemas";
 import { z } from "zod";
@@ -19,11 +14,7 @@ export type ProfileProfessionalFormData = z.infer<
   typeof professionalDetailsSchema
 >;
 export type ProfilePasswordFormData = z.infer<typeof changePasswordSchema>;
-export type EventFormData = z.infer<typeof eventFormSchema>;
-export type EventBasicDetailForm = z.infer<typeof EventBasicDetailsSchema>;
-export type OnlineVenueFormdata = z.infer<typeof OnlineVenueSchema>;
-export type OfflineVenueFormdata = z.infer<typeof OfflineVenueSchema>
-export type TicketsDetailFormData = z.infer<typeof TicketSchema>;
+export type EventFormData = z.infer<typeof EventFormSchema>;
 export type EventMediaFormData = z.infer<typeof MediaAndOptionsSchema>;
 
 export type NominatimResponse = {
@@ -66,10 +57,10 @@ export type HeroProps = {
 };
 
 export type category = {
-  readonly _id?:string,
+  readonly _id?: string;
   categoryName?: string;
   categoryType?: "Professional" | "General";
   description?: string;
   createdAt?: Date;
   isDeleted?: boolean;
-}
+};

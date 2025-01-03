@@ -9,32 +9,26 @@ import {
   MediaAndOptionsSchema,
 } from "../schemas/TicketAndMediaSchema";
 
-export const eventFormSchema = z
-  .object({ ticket: TicketSchema })
+const venueSchema = z.discriminatedUnion("eventType", [
+  z.object({
+    eventType: z.literal("Online"),
+    virtualDetails: OnlineVenueSchema,
+  }),
+  z.object({
+    eventType: z.literal("In-Person"),
+    location: OfflineVenueSchema,
+  }),
+]);
+
+export const EventFormSchema = z
+  .object({
+    ticket: TicketSchema,
+  })
   .merge(EventBasicDetailsBaseSchema)
   .merge(MediaAndOptionsSchema)
-  .extend({
-    virtualDetails: OnlineVenueSchema.optional(),
-    location: OfflineVenueSchema.optional(),
-  }).superRefine((data, ctx) => {
-    console.log('hi')
-    if (data.eventType === "Online") {
-      const result = OnlineVenueSchema.safeParse(data.virtualDetails);
-      if (!result.success) {
-        for (const issue of result.error.errors) {
-          ctx.addIssue(issue);
-        }
-      }
-    } else if (data.eventType === "In-Person") {
-      const result = OfflineVenueSchema.safeParse(data.location);
-      if (!result.success) {
-        for (const issue of result.error.errors) {
-          ctx.addIssue(issue);
-        }
-      }
-    }
-  });
-
+  .and(venueSchema).refine((data)=>{
+    console.log(data)
+  })
 
 export const professionalDetailsSchema = z.object({
   companyName: z

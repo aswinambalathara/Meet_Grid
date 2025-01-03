@@ -6,7 +6,7 @@ import BasicEventDetails from "@/components/ui/forms/User/CreateEventForms/Basic
 import EventLocationDetails from "@/components/ui/forms/User/CreateEventForms/EventLocationDetails";
 import EventMedia from "@/components/ui/forms/User/CreateEventForms/EventMedia";
 import TicketDetails from "@/components/ui/forms/User/CreateEventForms/TicketDetails";
-import { eventFormSchema } from "@/lib/utility/schemas";
+import { EventFormSchema } from "@/lib/utility/schemas";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { category, EventFormData } from "@/lib/utility/types";
@@ -14,14 +14,11 @@ import toast, { Toaster } from "react-hot-toast";
 import { getEventCategories } from "@/lib/api/user/EventRoutes";
 import useImageUpload from "@/lib/hooks/useImageUpload";
 import { HostEvent } from "@/lib/api/user/EventRoutes";
-import { useRouter } from "next/navigation";
-import Confirmation from "./Confirmation";
 
 function HostEventPage() {
   const methods = useForm<EventFormData>({
-    resolver: zodResolver(eventFormSchema),
-    mode: "onChange",
-    reValidateMode: "onSubmit",
+    resolver: zodResolver(EventFormSchema),
+    mode: "all",
     defaultValues: {
       allowConnections: true,
       eventType: undefined,
@@ -87,7 +84,6 @@ function HostEventPage() {
       setLoading({ flag: "Creating Event", status: true });
       const createEvent = await HostEvent(rest);
       toast.success(createEvent.message);
-      return <Confirmation />;
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
@@ -97,7 +93,8 @@ function HostEventPage() {
     }
   };
 
-  //console.log(methods.formState.errors)
+  //console.error(methods.formState.errors,'logging from main')
+  //console.log(methods.getValues())
   return (
     <div className="min-h-screen bg-sky-100 sm:mb-5 sm:mx-16 rounded-lg">
       <Toaster />
@@ -116,10 +113,10 @@ function HostEventPage() {
           <TicketDetails />
           <EventMedia />
           <div className="flex items-center justify-end gap-2 pe-10 mb-5">
-            <Button type="button" variant={"outline"}>
-              Preview Form
-            </Button>
-            <Button disabled={loading.status}>
+            {/* <Button type="button" variant={"outline"}>
+              Reset Form
+            </Button> */}
+            <Button type="submit" disabled={loading.status}>
               {loading.status ? loading.flag : "Submit Form"}
             </Button>
           </div>

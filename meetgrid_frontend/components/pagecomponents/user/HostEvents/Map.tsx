@@ -1,5 +1,5 @@
 "use client";
-import React, { ChangeEvent, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "mapbox-gl/dist/mapbox-gl.css";
 import mapboxgl, { Marker } from "mapbox-gl";
 import axios from "axios";
@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   EventFormData,
   NominatimResponse,
-  OfflineVenueFormdata,
 } from "@/lib/utility/types";
 import { useFormContext } from "react-hook-form";
 import { generateGoogleMapLink } from "@/lib/utility/Helpers";
@@ -16,11 +15,10 @@ import { Input } from "@/components/ui/input";
 
 const publicToken = process.env.NEXT_PUBLIC_MAP_TOKEN;
 
-function Map() {
+function Map({errors}:{errors:any}) {
   const {
     setValue,
     getValues,
-    formState: { errors },
   } = useFormContext<EventFormData>();
   const [coordinates, setCoordinates] = useState({
     latitude: 10.1632,
@@ -123,10 +121,10 @@ function Map() {
     const lat = getValues("location.coordinates.coordinates.1");
     const lng = getValues("location.coordinates.coordinates.0");
     const googleMapLink = generateGoogleMapLink(lat, lng);
+    //console.log(googleMapLink)
     setValue("location.googleMapLink", googleMapLink);
     toast.success("Location Confirmed");
   };
-  console.error(errors);
   return (
     <div className="map-section w-full flex flex-col gap-2">
       <div className="flex justify-between items-center gap-2">
