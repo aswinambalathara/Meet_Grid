@@ -8,9 +8,12 @@ export default interface IEvent extends Document {
   endDate: Date;
   registrationDeadline: Date;
   eventType: "Online" | "In-Person";
-  meetLink?: string;
-  timeZone?: string;
-  virtualPlatform?: string;
+  virtualDetails?: {
+    virtualPlatform: string;
+    meetLink: string;
+    timeZone: string;
+    accessInstructions?: string;
+  };
   location?: {
     venueName: string;
     streetAddress: string;
@@ -22,7 +25,7 @@ export default interface IEvent extends Document {
       type: "Point";
       coordinates: [number, number];
     };
-    googlemapLink?: string;
+    googleMapLink: string;
   };
   organizer: Types.ObjectId;
   attendees: Types.ObjectId[];

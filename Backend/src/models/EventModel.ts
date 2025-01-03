@@ -12,9 +12,12 @@ const eventSchema = new Schema<IEvent>(
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
     eventType: { type: String, enum: ["Online", "In-Person"], required: true },
-    meetLink: { type: String },
-    timeZone: { type: String },
-    virtualPlatform: { type: String },
+    virtualDetails: {
+      virtualPlatform: { type: String },
+      meetLink: { type: String },
+      timeZone: { type: String },
+      accessInstructions: { type: String },
+    },
     location: {
       venueName: { type: String },
       streetAddress: { type: String },
@@ -26,7 +29,7 @@ const eventSchema = new Schema<IEvent>(
         type: { type: String, enum: ["Point"] },
         coordinates: { type: [Number] },
       },
-      googlemapLink: { type: String },
+      googleMapLink: { type: String },
     },
 
     organizer: { type: Schema.Types.ObjectId, ref: "User", required: true },
@@ -45,14 +48,14 @@ const eventSchema = new Schema<IEvent>(
       },
       required: true,
     },
-    ticket:{ 
-      type:{
+    ticket: {
+      type: {
         ticketType: { type: String, enum: ["Free", "Paid"], required: true },
         price: { type: Number, required: true },
         currency: { type: String, required: true },
         availableTickets: { type: Number, required: true },
       },
-      required:true
+      required: true,
     },
     status: {
       type: String,
@@ -63,6 +66,8 @@ const eventSchema = new Schema<IEvent>(
   },
   { timestamps: true }
 );
+
+eventSchema.index({ location: "2dsphere" });
 
 const EventModel = model("event", eventSchema);
 export default EventModel;

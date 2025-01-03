@@ -1,9 +1,10 @@
 import { Types } from "mongoose";
 import IEvent from "../../interfaces/entities/IEvent";
 import IEventRepository from "../../interfaces/repository/IEventRepository";
-import { EventFilter, payloadResponse } from "../../types";
+import { payloadResponse, StatusCode } from "../../types";
 import JoiService from "../../utils/validatorService";
 import IEventCategoryRepository from "../../interfaces/repository/IEventCategoryRepository";
+import CustomError from "../../utils/CustomError";
 
 export default class EventService {
   constructor(
@@ -29,10 +30,40 @@ export default class EventService {
       eventBanner: event.eventBanner,
       tickets: event.ticket,
     });
-    this.validatorService.validateIdFormat(userId);
-    event.organizer = new Types.ObjectId(userId);
 
+    if (event.eventType === "In-Person") {
+      this.validatorService.validateRequiredFields({
+        venueName: event.location?.venueName,
+        streetAddress: event.location?.streetAddress,
+        city: event.location?.city,
+        state: event.location?.state,
+        country: event.location?.country,
+        pincode: event.location?.pincode,
+        coordinates: event.location?.coordinates,
+        googleMapLink: event.location?.googleMapLink,
+      });
+    }
+
+    if (event.eventType === "Online") {
+      this.validatorService.validateRequiredFields({
+        virtualPlatform: event.virtualDetails?.virtualPlatform,
+        meetLink: event.virtualDetails?.meetLink,
+        timeZone: event.virtualDetails?.timeZone,
+      });
+    }
+
+    this.validatorService.validateIdFormat(userId);
+    const isExist = await this.eventRepository.find({ title: event.title });
+    if (isExist && isExist.organizer === new Types.ObjectId(userId)) {
+      throw new CustomError(
+        "Event Already Exist with same name",
+        StatusCode.Conflict
+      );
+    }
+
+    event.organizer = new Types.ObjectId(userId);
     const createEvent = await this.eventRepository.create(event);
+
     return {
       status: true,
       data: createEvent,
@@ -40,8 +71,8 @@ export default class EventService {
     };
   }
 
-  async getEvents(filters: EventFilter): Promise<IEvent[]> {
-    return await this.eventRepository.findAll(filters);
+  async getEvents(filters: Partial<IEvent>): Promise<IEvent[]> {
+    return await this.eventRepository.findAll({ ...filters });
   }
 
   //async getEvent(userId: string, eventId: string): Promise<void> {}
