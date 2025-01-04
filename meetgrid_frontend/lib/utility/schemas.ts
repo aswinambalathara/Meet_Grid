@@ -26,9 +26,7 @@ export const EventFormSchema = z
   })
   .merge(EventBasicDetailsBaseSchema)
   .merge(MediaAndOptionsSchema)
-  .and(venueSchema).refine((data)=>{
-    console.log(data)
-  })
+  .and(venueSchema)
 
 export const professionalDetailsSchema = z.object({
   companyName: z

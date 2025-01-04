@@ -17,7 +17,7 @@ function RequireUserAuth({ children }: { children: React.ReactNode }) {
     }
 
     if (!userToken) {
-      router.push("/");
+      router.push("/auth/login");
     } else {
       setIsChecking(false); 
     }

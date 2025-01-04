@@ -5,7 +5,7 @@ export type EventCardProps = {
   id: string;
   image?: string;
   title: string;
-  eventType: "Online" | "Offline";
+  eventType: "Online" | "In-Person" ;
   date: string;
   ticketType: "Free" | "Paid";
 };

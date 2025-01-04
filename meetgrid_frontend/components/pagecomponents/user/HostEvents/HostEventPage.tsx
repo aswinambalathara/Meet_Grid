@@ -93,7 +93,7 @@ function HostEventPage() {
     }
   };
 
-  //console.error(methods.formState.errors,'logging from main')
+  console.error(methods.formState.errors,'logging from main')
   //console.log(methods.getValues())
   return (
     <div className="min-h-screen bg-sky-100 sm:mb-5 sm:mx-16 rounded-lg">

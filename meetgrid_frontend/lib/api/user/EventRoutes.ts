@@ -6,7 +6,8 @@ import axios, {
 import apiURLs from "@/config/apiConfig";
 import handleError from "@/lib/utility/errorHandler";
 import IEvent from "@/interfaces/IEvent";
-const { EVENT_URL,USER_URL} = apiURLs;
+import { EventFilterOptions } from "@/lib/utility/types";
+const { EVENT_URL, USER_URL } = apiURLs;
 
 const axiosEventInstance = axios.create({
   baseURL: EVENT_URL,
@@ -81,21 +82,31 @@ axiosEventInstance.interceptors.response.use(
   }
 );
 
-export const getEventCategories = async () =>{
-    try {
-        const response = await axiosEventInstance.get('/events/getEventCategories')
-        return response.data
-    } catch (error) {
-        handleError(error)
-        
-    }
-}
+export const getEventCategories = async () => {
+  try {
+    const response = await axiosEventInstance.get("/events/getEventCategories");
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
 
-export const HostEvent = async (data:IEvent) =>{
-    try {
-        const response = await axiosEventInstance.post('/events/createEvent',data)
-        return response.data
-    } catch (error) {
-        handleError(error)
-    }
-}
+export const HostEvent = async (data: IEvent) => {
+  try {
+    const response = await axiosEventInstance.post("/events/createEvent", data);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const fetchEvents = async (filters: EventFilterOptions) => {
+  try {
+    const response = await axiosEventInstance.get("/events/get-events", {
+      params: filters,
+    });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};

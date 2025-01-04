@@ -25,7 +25,7 @@ function Map({errors}:{errors:any}) {
     longitude: 76.6413,
     zoom: 7,
   });
-  const [suggestions, setSuggestions] = useState<NominatimResponse>([]);
+  const [suggestions, setSuggestions] = useState<NominatimResponse[]>([]);
   const [hidden, setHidden] = useState(true);
   const [search, setSearch] = useState("");
   const mapContainerRef = useRef<HTMLDivElement | null>(null);

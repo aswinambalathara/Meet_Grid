@@ -33,15 +33,17 @@ export type NominatimResponse = {
     suburb?: string;
     city?: string;
     county?: string;
+    village?: string;
     state?: string;
     country?: string;
     country_code?: string;
     postcode?: string;
+    neighbourhood?: string;
   };
   extratags?: {
     language?: string;
   };
-}[];
+};
 
 export type NavLinks = {
   label: string;
@@ -63,4 +65,13 @@ export type category = {
   description?: string;
   createdAt?: Date;
   isDeleted?: boolean;
+};
+
+export type EventFilterOptions = {
+  coordinates?: { latitude: number; longitude: number };
+  categoryGroup: "Professional" | "General";
+  category?: string;
+  maxDistance?: number;
+  eventType?: "Online" | "In-Person";
+  search?: string;
 };
