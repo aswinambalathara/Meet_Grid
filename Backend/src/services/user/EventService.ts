@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import IEvent from "../../interfaces/entities/IEvent";
 import IEventRepository from "../../interfaces/repository/IEventRepository";
-import { payloadResponse, StatusCode } from "../../types";
+import { EventFilter, payloadResponse, StatusCode } from "../../types";
 import JoiService from "../../utils/validatorService";
 import IEventCategoryRepository from "../../interfaces/repository/IEventCategoryRepository";
 import CustomError from "../../utils/CustomError";
@@ -19,6 +19,7 @@ export default class EventService {
   }
 
   async create(userId: string, event: IEvent): Promise<payloadResponse> {
+    console.log(event);
     this.validatorService.validateRequiredFields({
       title: event.title,
       description: event.description,
@@ -71,8 +72,14 @@ export default class EventService {
     };
   }
 
-  async getEvents(filters: Partial<IEvent>): Promise<IEvent[]> {
-    return await this.eventRepository.findAll({ ...filters });
+  async getEvents(filters: EventFilter): Promise<payloadResponse> {
+    //console.log(filters);
+    const result = await this.eventRepository.findEvents({
+      ...filters,
+      maxDistance: filters.maxDistance && Number(filters.maxDistance * 1000),
+    });
+    return { status: true, data: result, message: "Events" };
+    //return await this.eventRepository.findAll({ ...filters });
   }
 
   //async getEvent(userId: string, eventId: string): Promise<void> {}

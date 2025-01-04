@@ -13,23 +13,29 @@ const eventSchema = new Schema<IEvent>(
     endDate: { type: Date, required: true },
     eventType: { type: String, enum: ["Online", "In-Person"], required: true },
     virtualDetails: {
-      virtualPlatform: { type: String },
+      type:{
+        virtualPlatform: { type: String },
       meetLink: { type: String },
       timeZone: { type: String },
       accessInstructions: { type: String },
+      },
+      required: false,
     },
     location: {
-      venueName: { type: String },
-      streetAddress: { type: String },
-      city: { type: String },
-      state: { type: String },
-      country: { type: String },
-      pincode: { type: String },
-      coordinates: {
-        type: { type: String, enum: ["Point"] },
-        coordinates: { type: [Number] },
+      type: {
+        venueName: { type: String },
+        streetAddress: { type: String },
+        city: { type: String },
+        state: { type: String },
+        country: { type: String },
+        pincode: { type: String },
+        coordinates: {
+          type: { type: String, enum: ["Point"] },
+          coordinates: { type: [Number] },
+        },
+        googleMapLink: { type: String },
       },
-      googleMapLink: { type: String },
+      required: false,
     },
 
     organizer: { type: Schema.Types.ObjectId, ref: "User", required: true },

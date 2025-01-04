@@ -1,5 +1,5 @@
-
 import { Request } from "express";
+//import IEvent from "../interfaces/entities/IEvent";
 
 export enum StatusCode {
   Success = 200,
@@ -19,7 +19,6 @@ export enum StatusCode {
   ServiceUnavailable = 503,
 }
 
-
 export enum Cookie {
   Admin = "adminToken",
   User = "userToken",
@@ -38,53 +37,54 @@ export type response = {
 };
 
 export type payloadResponse = {
-  status:boolean,
-  message:string,
-  data:object
-}
+  status: boolean;
+  message: string;
+  data: object;
+};
 
 export interface CustomRequest extends Request {
   user?: {
     email: string;
     id: string;
-    name?:string;
-    image?:string;
-  } 
+    name?: string;
+    image?: string;
+  };
   admin?: {
     email: string;
     id: string;
-  }
+  };
 }
 
-declare global{
+declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace Express{
-    interface User{
-      email:string;
-      id:string;
-      image?:string;
-      fullName?:string
+  namespace Express {
+    interface User {
+      email: string;
+      id: string;
+      image?: string;
+      fullName?: string;
     }
     interface Request {
-      NormalUser?:User & {email:string,id:string};
-      admin?:{email:string,id:string}
+      NormalUser?: User & { email: string; id: string };
+      admin?: { email: string; id: string };
     }
   }
 }
 
-
-
-export type EventFilter = {
-  category: string;
-  coordinates?: string[];
-  [key: string]: string | string[] | undefined;
-}
+export type EventFilter =  {
+  categoryGroup: "Professional" | "General";
+  coordinates?: {latitude: string; longitude: string};
+  maxDistance?:number
+  category?:string
+  search?:string,
+  eventType?:"Online" | "In-Person",
+};
 
 export type professionalInfoProps = {
   companyName: string;
-    jobTitle: string;
-    linkedinUrl: string;
-    skills: string[];
-}
+  jobTitle: string;
+  linkedinUrl: string;
+  skills: string[];
+};
 
-export {}
+export {};

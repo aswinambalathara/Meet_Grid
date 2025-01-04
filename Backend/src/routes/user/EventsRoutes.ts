@@ -27,4 +27,9 @@ router.post(
   eventController.createEvent.bind(eventController)
 );
 
+router.get(
+  "/events/get-events",
+  eventController.getEvents.bind(eventController)
+);
+
 export default router;
