@@ -2,30 +2,15 @@ import type { Metadata } from "next";
 import "@/styles/globals.css";
 import Navbar from "@/components/pagecomponents/user/Layout/Navbar";
 import Footer from "@/components/pagecomponents/user/Layout/Footer";
-import {Poppins,Poltawski_Nowy,Alegreya_SC} from 'next/font/google';
+import {alegreya,poltawski,poppins} from '@/app/fonts/fonts'
 import { AuthProvider } from "@/lib/context/AuthProvider";
+
 export const metadata: Metadata = {
   title: "Meet Grid | Home",
   description: "Connecting You to Events, and Events to Connections",
 };
 
-const poppins = Poppins({
-  subsets:['latin'],
-  weight:['400','700'],
-  variable:'--font-poppins'
-});
 
-export const poltawski = Poltawski_Nowy({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-  variable: '--font-poltawski',
-});
-
-export const alegreya = Alegreya_SC({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-  variable: '--font-alegreya',
-});
 
 export default function RootLayout({
   children,

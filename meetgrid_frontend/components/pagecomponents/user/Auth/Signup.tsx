@@ -79,7 +79,7 @@ function UserSignUp() {
         errorMessage = validatePassword(value);
         break;
       case "confirmPassword":
-        errorMessage = validateConfirmPassword(value, user.password);
+        errorMessage = validateConfirmPassword(value, user.password!);
         break;
       default:
         break;
@@ -99,7 +99,7 @@ function UserSignUp() {
     const formErrors = validateSignUpForm(
       user.fullName!,
       user.email,
-      user.password,
+      user.password!,
       confirmPassword
     );
     setErrors(formErrors);
@@ -132,7 +132,7 @@ function UserSignUp() {
   }
 
   return (
-    <div className="SignUp-Container container min-h-screen bg-user-background flex items-center justify-center">
+    <div className="SignUp-Container min-h-screen bg-user-background flex items-center justify-center">
       <Toaster />
       <div className="user-auth-background md:w-3/4 min-h-[700px] rounded-xl flex flex-col md:flex-row items-center justify-between py-16 px-4 lg:px-28 md:py-0">
         <div className="signup-note text-white text-center mb-8 md:mb-0">

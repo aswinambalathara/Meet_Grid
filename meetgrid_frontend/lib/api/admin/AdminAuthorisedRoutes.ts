@@ -7,7 +7,7 @@ import apiURLs from "@/config/apiConfig";
 import handleError from "@/lib/utility/errorHandler";
 const { ADMIN_URL } = apiURLs;
 
-const adminAxiosInstance = axios.create({
+ const adminAxiosInstance = axios.create({
   baseURL: `${ADMIN_URL}`,
   headers: {
     "Content-Type": "application/json",
@@ -139,3 +139,6 @@ export const adminLogout = async () => {
     handleError(error);
   }
 };
+
+
+export default adminAxiosInstance

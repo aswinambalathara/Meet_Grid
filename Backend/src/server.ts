@@ -6,6 +6,9 @@ import cors from "cors";
 import { requestLogger, devLogger } from "./utils/logger";
 import path from "path";
 import cookieParser from "cookie-parser";
+import "./types/index";
+import passport from "passport";
+import googleStrategy from "./config/passport";
 const app = express();
 const port = PORT || 4000;
 
@@ -24,6 +27,9 @@ app.use(devLogger);
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(passport.initialize());
+passport.use(googleStrategy);
 
 app.use("/api", routes);
 connectDB().then(() => {

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import AdminLoginForm from "@/components/ui/forms/adminLoginForm";
+import AdminLoginForm from "@/components/ui/forms/Admin/adminLoginForm";
 import "@/styles/admin.css";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { useRouter} from "next/navigation";

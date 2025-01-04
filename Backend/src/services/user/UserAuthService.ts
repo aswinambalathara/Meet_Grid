@@ -27,7 +27,7 @@ export default class UserAuthService {
       name: userData.fullName,
     });
     this.validatorService.validateEmailFormat(userData.email);
-    this.validatorService.validatePassword(userData.password);
+    this.validatorService.validatePassword(userData.password!);
 
     const isUserExist = await this.userRepository.findByEmail(userData.email);
     if (isUserExist)
@@ -35,7 +35,7 @@ export default class UserAuthService {
         "User already exist with email",
         StatusCode.Conflict
       );
-    userData.password = await this.bcryptService.hash(userData.password);
+    userData.password = await this.bcryptService.hash(userData.password!);
     const token = this.tokenService.generateToken();
     const verificationToken = {
       token,
@@ -65,7 +65,7 @@ export default class UserAuthService {
         StatusCode.Unauthorized
       );
     foundUser.isVerified = true;
-    await this.userRepository.update(foundUser._id!, foundUser);
+    await this.userRepository.update(foundUser.id, foundUser);
   }
 
   async doUserLogin(email: string, password: string): Promise<TokenResponse> {
@@ -88,7 +88,7 @@ export default class UserAuthService {
 
       foundUser.verificationToken = verificationToken;
 
-      await this.userRepository.update(foundUser._id!, foundUser);
+      await this.userRepository.update(foundUser.id, foundUser);
 
       await this.emailService.sendMail({
         email: foundUser.email,
@@ -97,7 +97,7 @@ export default class UserAuthService {
         subject: "Verification Mail",
         link: `${SERVER_URL}/api/user/auth/verify-user?token=${token}`,
       });
-      console.log(`${SERVER_URL}/api/user/auth/verify-user?token=${token}`)
+      console.log(`${SERVER_URL}/api/user/auth/verify-user?token=${token}`);
       throw new CustomError(
         `User not verified. Verification email sent to ${foundUser.email}.`,
         StatusCode.Forbidden
@@ -105,18 +105,18 @@ export default class UserAuthService {
     }
     const isAuthorised = await this.bcryptService.compare(
       password,
-      foundUser.password
+      foundUser.password!
     );
     if (!isAuthorised)
       throw new CustomError("Invalid Credentials", StatusCode.Unauthorized);
 
     const accessToken = this.jwtService.createAccessToken(
       foundUser.email,
-      foundUser._id!
+      foundUser.id
     );
     const refreshToken = this.jwtService.createRefreshToken(
       foundUser.email,
-      foundUser._id!
+      foundUser.id
     );
 
     return {
@@ -127,11 +127,60 @@ export default class UserAuthService {
     };
   }
 
-  //   async doOAuthLogin(
-  //     email: string,
-  //     name: string,
-  //     profile?: string
-  //   ): Promise<void> {}
+  async doGoogleLogin(
+    userData: Express.User
+  ): Promise<TokenResponse | { error: string; code: number }> {
+    const { email } = userData;
+    this.validatorService.validateEmailFormat(email!);
+    const foundUser = await this.userRepository.findByEmail(email!);
+    if (!foundUser) {
+      const user: Partial<IUser> = {
+        email: userData.email,
+        fullName: userData.fullName!,
+        isGoogleLogin: true,
+        googleId: userData.id,
+        image: {
+          url: userData.image!,
+          public_id: undefined,
+        },
+      };
+      const createdUser = await this.userRepository.create(user as IUser);
+      const accessToken = this.jwtService.createAccessToken(
+        createdUser.email,
+        createdUser.id
+      );
+      const refreshToken = this.jwtService.createRefreshToken(
+        createdUser.email,
+        createdUser.id
+      );
+      return {
+        accessToken,
+        refreshToken,
+        message: "Login Successfull User Created",
+        status: true,
+      };
+    }
+    if (!foundUser.isGoogleLogin && !foundUser.googleId) {
+      return {
+        error: "User already exist with another login method",
+        code: StatusCode.Conflict,
+      };
+    }
+    const accessToken = this.jwtService.createAccessToken(
+      foundUser.email,
+      foundUser.id
+    );
+    const refreshToken = this.jwtService.createRefreshToken(
+      foundUser.email,
+      foundUser.id
+    );
+    return {
+      accessToken,
+      refreshToken,
+      message: "Login Successfull",
+      status: true,
+    };
+  }
 
   async sendUserOTPLogin(email: string): Promise<response> {
     this.validatorService.validateEmailFormat(email);
@@ -153,7 +202,7 @@ export default class UserAuthService {
 
       foundUser.verificationToken = verificationToken;
 
-      await this.userRepository.update(foundUser._id!, foundUser);
+      await this.userRepository.update(foundUser.id, foundUser);
 
       await this.emailService.sendMail({
         email: foundUser.email,
@@ -211,11 +260,11 @@ export default class UserAuthService {
 
     const accessToken = this.jwtService.createAccessToken(
       foundUser.email,
-      foundUser._id!
+      foundUser.id
     );
     const refreshToken = this.jwtService.createRefreshToken(
       foundUser.email,
-      foundUser._id!
+      foundUser.id
     );
 
     return {
@@ -241,7 +290,7 @@ export default class UserAuthService {
       token: resetToken,
       expiry: new Date(Date.now() + 10 * 60 * 1000),
     };
-    await this.userRepository.update(foundUser._id!, foundUser);
+    await this.userRepository.update(foundUser.id, foundUser);
 
     await this.emailService.sendMail({
       email: foundUser.email,
@@ -275,7 +324,7 @@ export default class UserAuthService {
       throw new CustomError("User blocked", StatusCode.Forbidden);
     const matchPassword = await this.bcryptService.compare(
       password,
-      foundUser.password
+      foundUser.password!
     );
     if (matchPassword) {
       throw new CustomError(
@@ -285,7 +334,7 @@ export default class UserAuthService {
     }
     password = await this.bcryptService.hash(password);
     foundUser.password = password;
-    await this.userRepository.update(foundUser._id!, foundUser);
+    await this.userRepository.update(foundUser.id, foundUser);
     return { status: true, message: "Reset Password Successfull" };
   }
 
@@ -294,10 +343,7 @@ export default class UserAuthService {
     const foundUser = await this.userRepository.findByEmail(email);
     if (!foundUser)
       throw new CustomError("Unauthorized", StatusCode.Unauthorized);
-    const accessToken = this.jwtService.createAccessToken(
-      email,
-      foundUser._id!
-    );
+    const accessToken = this.jwtService.createAccessToken(email, foundUser.id);
     return { accessToken };
   }
 
@@ -309,7 +355,7 @@ export default class UserAuthService {
     };
     user.otp = otp;
 
-    await this.userRepository.update(user._id!, user);
+    await this.userRepository.update(user.id, user);
 
     await this.emailService.sendMail({
       email: user.email,

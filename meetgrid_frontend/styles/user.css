@@ -1,35 +1,53 @@
-.user-auth-background{
-    background-image: url('../public/images/auth-bg.jpg');
-    background-size: cover;
-    background-position: center;
+.user-auth-background {
+  background-image: url("../public/images/auth-bg.jpg");
+  background-size: cover;
+  background-position: center;
 }
 
-.auth-form{
-    background-color: hsla(0, 0%, 100%, 0.250);
+.auth-form {
+  background-color: hsla(0, 0%, 100%, 0.25);
 }
 
-.auth-input{
-    position: relative;
+.auth-input {
+  position: relative;
 }
 
-.auth-input i{
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    color: #2C1B1B;
+.auth-input i {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  color: #2c1b1b;
 }
 
-.auth-button{
-    background-color: #211d1d;
-    color: white;
-    transition: 100ms ease;
+.auth-button {
+  background-color: #211d1d;
+  color: white;
+  transition: 100ms ease;
 }
 
-.auth-button:hover{
-    background-color: #1c1a1a;
-    
+.auth-button:hover {
+  background-color: #1c1a1a;
 }
 
-.change-transition{
-    transition: 300ms ease ;
+.change-transition {
+  transition: 300ms ease;
+}
+
+.section-events::-webkit-scrollbar {
+  width: 12px;
+}
+
+.section-events::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 12px;
+}
+
+.section-events::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 12px;
+
+}
+
+.section-events::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

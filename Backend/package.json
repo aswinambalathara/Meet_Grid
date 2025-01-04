@@ -13,6 +13,7 @@
   "dependencies": {
     "@types/cookie-parser": "^1.4.7",
     "bcrypt": "^5.1.1",
+    "cloudinary": "^2.5.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -22,6 +23,8 @@
     "mongoose": "^8.7.2",
     "morgan": "^1.10.0",
     "nodemailer": "^6.9.15",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
     "rotating-file-stream": "^3.2.5",
     "ts-node": "^10.9.2"
   },
@@ -35,6 +38,8 @@
     "@types/morgan": "^1.9.9",
     "@types/node": "^22.7.9",
     "@types/nodemailer": "^6.4.16",
+    "@types/passport": "^1.0.17",
+    "@types/passport-google-oauth20": "^2.0.16",
     "eslint": "^9.16.0",
     "globals": "^15.13.0",
     "typescript": "^5.6.3",

@@ -1,4 +1,5 @@
 import { Request } from "express";
+//import IEvent from "../interfaces/entities/IEvent";
 
 export enum StatusCode {
   Success = 200,
@@ -35,13 +36,55 @@ export type response = {
   message: string;
 };
 
+export type payloadResponse = {
+  status: boolean;
+  message: string;
+  data: object;
+};
+
 export interface CustomRequest extends Request {
   user?: {
     email: string;
     id: string;
+    name?: string;
+    image?: string;
   };
   admin?: {
     email: string;
     id: string;
   };
 }
+
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Express {
+    interface User {
+      email: string;
+      id: string;
+      image?: string;
+      fullName?: string;
+    }
+    interface Request {
+      NormalUser?: User & { email: string; id: string };
+      admin?: { email: string; id: string };
+    }
+  }
+}
+
+export type EventFilter =  {
+  categoryGroup: "Professional" | "General";
+  coordinates?: {latitude: string; longitude: string};
+  maxDistance?:number
+  category?:string
+  search?:string,
+  eventType?:"Online" | "In-Person",
+};
+
+export type professionalInfoProps = {
+  companyName: string;
+  jobTitle: string;
+  linkedinUrl: string;
+  skills: string[];
+};
+
+export {};

@@ -1,10 +1,10 @@
 "use client";
 import React, { useState } from "react";
 import IAdmin, { IAdminErrors } from "@/interfaces/IAdmin";
-import BrownButton from "../Buttons/BrownButton";
-import { Label } from "../label";
-import { Input } from "../input";
-import ErrorComponent from "../errors/Error";
+import BrownButton from "@/components/ui/Buttons/BrownButton";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import ErrorComponent from "@/components/ui/errors/Error";
 import {
   validateEmail,
   validatePassword,

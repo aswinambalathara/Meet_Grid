@@ -1,9 +1,12 @@
-import React from 'react'
-
+import React from "react";
+import ProtectedRoute from "@/components/wrappers/RequireAdminAuth";
+import EventCategories from "@/components/pagecomponents/admin/EventCategories";
 function page() {
   return (
-    <div className='flex items-center justify-center'>EVENT CATEGORIES</div>
-  )
+    <ProtectedRoute>
+      <EventCategories/>
+    </ProtectedRoute>
+  );
 }
 
-export default page
+export default page;

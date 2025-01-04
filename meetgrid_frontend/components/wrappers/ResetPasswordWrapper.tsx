@@ -5,8 +5,6 @@ import { useSearchParams, useRouter, notFound } from "next/navigation";
 import toast from "react-hot-toast";
 import { validateResetToken } from "@/lib/api/user/AuthRoutes";
 import { useAuth } from "@/lib/hooks/useAuth";
-//import BrownButton from "../ui/Buttons/BrownButton";
-//import Link from "next/link";
 
 function ResetPasswordPage() {
   const searchParams = useSearchParams();
@@ -50,17 +48,6 @@ function ResetPasswordPage() {
     <ResetPassword />
   ) : notFound()
   
-//   (
-//     <>
-//       <div className="w-full min-h-screen flex flex-col gap-3 items-center justify-center text-white">
-//         <h1 className="text-2xl">Try Again!!</h1>
-//         <h3>Invalid or Expired Token</h3>
-//         <Link href={"/"}>
-//           <BrownButton type="button" className="border" label="Back to home" />
-//         </Link>
-//       </div>
-//     </>
-//   );
 }
 
 export default ResetPasswordPage;

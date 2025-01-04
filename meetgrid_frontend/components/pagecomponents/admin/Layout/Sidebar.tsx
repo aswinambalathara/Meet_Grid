@@ -16,15 +16,17 @@ function Sidebar() {
   if (path.includes("/admin/login")) return null;
 
   const handleLogoutBtn = async () => {
-    console.log('logout call')
-    try {
-      await handleAdminLogout();
-      logout("adminToken");
-      router.push("/admin/login");
-    } catch (error) {
-      if (error instanceof Error) {
+    const confirm = window.confirm("Are you trying to logout?");
+    if (confirm) {
+      try {
+        await handleAdminLogout();
         logout("adminToken");
-        console.error(error);
+        router.push("/admin/login");
+      } catch (error) {
+        if (error instanceof Error) {
+          logout("adminToken");
+          console.error(error);
+        }
       }
     }
   };
@@ -64,11 +66,11 @@ function Sidebar() {
           })}
         </ul>
       </div>
-      <button onClick={handleLogoutBtn} className="mb-4 w-full py-2 px-3 rounded-lg border flex items-center hover:font-semibold gap-3 hover:bg-lime-100 hover:text-black transition-all ease-linear duration-200 cursor-pointer">
-        <i
-          className="fa-solid fa-right-to-bracket text-red-600"
-          
-        ></i>
+      <button
+        onClick={handleLogoutBtn}
+        className="mb-4 w-full py-2 px-3 rounded-lg border flex items-center hover:font-semibold gap-3 hover:bg-lime-100 hover:text-black transition-all ease-linear duration-200 cursor-pointer"
+      >
+        <i className="fa-solid fa-right-to-bracket text-red-600"></i>
         Logout
       </button>
     </aside>

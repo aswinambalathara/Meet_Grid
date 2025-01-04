@@ -9,6 +9,8 @@ import UserRepository from "../../repositories/UserRepository";
 import UserAuthService from "../../services/user/UserAuthService";
 import AuthUserController from "../../controllers/user/UserAuthController";
 import CryptoService from "../../utils/CryptoService";
+import passport from "passport";
+import { CLIENT_URL } from "../../config/env";
 
 const router = Router();
 
@@ -33,6 +35,20 @@ router.post(
   "/create",
   authUserController.handleUserSignUp.bind(authUserController)
 );
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+router.get(
+  "/google/callback",
+  passport.authenticate("google", {
+    failureRedirect: `${CLIENT_URL}/auth/login`,
+    session: false,
+  }),
+  authUserController.handleGoogleLogin.bind(authUserController)
+);
+
+
 router.get(
   "/verify-user",
   authUserController.handleUserVerification.bind(authUserController)
