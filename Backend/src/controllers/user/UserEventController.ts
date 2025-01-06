@@ -45,4 +45,18 @@ export default class UserEventController {
       next(error);
     }
   }
+
+  async getEvent(
+    req: CustomRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { id } = req.params;
+      const result = await this.eventService.getEvent(id);
+      res.status(StatusCode.Success).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
 }

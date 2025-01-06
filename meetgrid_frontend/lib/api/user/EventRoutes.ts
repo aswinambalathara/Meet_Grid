@@ -110,3 +110,12 @@ export const fetchEvents = async (filters: EventFilterOptions) => {
     handleError(error);
   }
 };
+
+export const getEvent = async (id: string) => {
+  try {
+    const response = await axiosEventInstance.get(`/events/get-event/${id}`);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};

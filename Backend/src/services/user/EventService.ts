@@ -73,14 +73,16 @@ export default class EventService {
   }
 
   async getEvents(filters: EventFilter): Promise<payloadResponse> {
-    //console.log(filters);
     const result = await this.eventRepository.findEvents({
       ...filters,
       maxDistance: filters.maxDistance && Number(filters.maxDistance * 1000),
     });
     return { status: true, data: result, message: "Events" };
-    //return await this.eventRepository.findAll({ ...filters });
   }
 
-  //async getEvent(userId: string, eventId: string): Promise<void> {}
+  async getEvent(eventId: string): Promise<payloadResponse> {
+    const result = await this.eventRepository.findById(eventId)
+    console.log(result)
+    return { data: result!, message: "Event", status: true };
+  }
 }

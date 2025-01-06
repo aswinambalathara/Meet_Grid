@@ -21,6 +21,7 @@ function ProfessionalDetails({
   const {
     register,
     reset,
+    getValues,
     handleSubmit,
     formState: { errors },
   } = useForm<ProfileProfessionalFormData>({
@@ -30,7 +31,7 @@ function ProfessionalDetails({
       jobTitle: userData.professionalInfo?.jobTitle || "",
       linkedinUrl: userData.professionalInfo?.linkedinUrl || "",
       experience: userData.professionalInfo?.experience || 0,
-      skills: userData.professionalInfo?.skills! || "",
+      skills: userData.professionalInfo?.skills! || [],
     },
     mode: "onChange",
     reValidateMode: "onSubmit",
@@ -39,18 +40,14 @@ function ProfessionalDetails({
     userData.professionalInfo?.skills! || []
   );
 
-  useEffect(() => {
-    //reset(userData.professionalInfo)
-    //setSkills(userData.professionalInfo?.skills!)
-  }, []);
-
-  const handleInputChange = () => {};
   const handleOnSubmit = async (formData: ProfileProfessionalFormData) => {
+    console.log(formData);
     if (skills) {
       formData.skills = skills;
     }
     try {
       const result = await updateProfessionalDetails(formData);
+
       setUserData((prev) => ({
         ...prev,
         professionalInfo: result.data,
@@ -62,6 +59,9 @@ function ProfessionalDetails({
       }
     }
   };
+
+  //console.error(errors);
+  //console.log(getValues());
 
   return (
     <div className="container overflow-y-auto h-full p-10 text-black flex flex-col">

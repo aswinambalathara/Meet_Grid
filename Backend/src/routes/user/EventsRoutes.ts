@@ -32,4 +32,6 @@ router.get(
   eventController.getEvents.bind(eventController)
 );
 
+router.get('/events/get-event/:id',eventController.getEvent.bind(eventController))
+
 export default router;

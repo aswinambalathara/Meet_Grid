@@ -38,10 +38,13 @@ export default interface IEvent extends Document {
     public_id: string;
   };
   ticket: {
+    ticketName:string
+    ticketDescription:string;
     ticketType: "Free" | "Paid";
     price: number;
     currency: string;
     availableTickets: number;
+    registrationDeadline:Date;
   };
   status: "Active" | "Completed" | "Cancelled" | "Pending" | "Rejected";
   isActive: boolean;

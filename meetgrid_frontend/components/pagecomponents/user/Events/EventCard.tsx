@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { EventCardProps } from "@/lib/constants";
+import moment from "moment";
 
 function EventCard({
   id,
@@ -11,6 +12,8 @@ function EventCard({
   title,
   ...props
 }: EventCardProps & React.ComponentPropsWithoutRef<"div">) {
+  const startDate = moment(date.startDate).format('DD-MM-YYYY hh:mm A');
+  const endDate = moment(date.endDate).format('DD-MM-YYYY hh:mm A')
   return (
     <Card key={id} {...props}>
       <CardContent className="flex min-h-52 justify-center p-3 flex-col">
@@ -36,7 +39,7 @@ function EventCard({
             </p>
             <p>
               <i className="fa-regular fa-calendar-days text-blue-600"></i>{" "}
-              {date}
+              {startDate}
             </p>
             <p>
               <i className="fa-solid fa-ticket text-blue-600"></i> {ticketType}

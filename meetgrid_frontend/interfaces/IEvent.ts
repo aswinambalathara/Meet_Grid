@@ -1,3 +1,5 @@
+import IUser from "./IUser";
+
 export default interface IEvent {
   readonly _id?: string;
   title: string;
@@ -9,6 +11,7 @@ export default interface IEvent {
   meetLink?: string;
   timeZone?: string;
   virtualPlatform?: string;
+  organizer?: Partial<IUser>;
   location?: {
     venueName?: string;
     streetAddress?: string;
@@ -20,7 +23,7 @@ export default interface IEvent {
       type: "Point";
       coordinates: [number, number];
     };
-    googlemapLink?: string;
+    googleMapLink?: string;
   };
   eventLogo?: {
     url?: string;
@@ -31,6 +34,8 @@ export default interface IEvent {
     public_id?: string;
   };
   ticket: {
+    ticketName?: string;
+    ticketDescription?: string;
     ticketType: "Free" | "Paid";
     price: number;
     currency: string;

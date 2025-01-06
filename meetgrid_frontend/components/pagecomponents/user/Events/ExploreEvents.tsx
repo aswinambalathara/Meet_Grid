@@ -7,7 +7,7 @@ import toast, { Toaster } from "react-hot-toast";
 import EventCard from "./EventCard";
 import IEvent from "@/interfaces/IEvent";
 import { EventFilterOptions, NominatimResponse } from "@/lib/utility/types";
-import { fetchEvents } from "@/lib/api/user/EventRoutes";
+import { fetchEvents, getEventCategories } from "@/lib/api/user/EventRoutes";
 import Loading from "../Layout/Loading";
 import { fetchLocation, getShortLocation } from "@/lib/utility/Helpers";
 import { Input } from "@/components/ui/input";
@@ -16,8 +16,11 @@ import { fetchPlace } from "@/lib/api/external";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import axios from "axios";
+import IEventCategory from "@/interfaces/IEventCategory";
+import { useRouter } from "next/navigation";
 
 function ExploreEvents() {
+  const router = useRouter();
   const [active, setActive] = useState<"Professional" | "General">(
     "Professional"
   );
@@ -26,6 +29,7 @@ function ExploreEvents() {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [isFilterActive, setFilterActive] = useState(false);
   const [location, setLocation] = useState<string>("Enter Location");
+  const [categories, setCategories] = useState<IEventCategory[]>([]);
   const [suggestions, setSuggestions] = useState<NominatimResponse[]>([]);
   const [refetch, setRefetch] = useState(false);
   const [filters, setFilters] = useState<EventFilterOptions>({
@@ -43,17 +47,18 @@ function ExploreEvents() {
           coordinates: { latitude, longitude },
         }));
 
-        if (latitude && longitude) {
-          const result = await fetchPlace([latitude, longitude]);
-          //console.log(result);
-          setLocation(result?.address.county!);
-        }
-
-        const response = await fetchEvents({
-          ...filters,
-          coordinates: { latitude, longitude },
-        });
-        setEvents(response.data);
+        const [categoryResponse, eventsResponse, placeResponse] =
+          await Promise.all([
+            getEventCategories(),
+            fetchEvents({
+              ...filters,
+              coordinates: { latitude, longitude },
+            }),
+            fetchPlace([latitude, longitude]),
+          ]);
+        setLocation(getShortLocation(placeResponse?.address!));
+        setCategories(categoryResponse.data);
+        setEvents(eventsResponse.data);
       } catch (error) {
         if (error instanceof Error) {
           console.error("Error fetching location or events:", error);
@@ -86,6 +91,7 @@ function ExploreEvents() {
     setFilters((prev) => ({
       ...prev,
       categoryGroup: eventGroup,
+      category: "",
     }));
   };
 
@@ -147,6 +153,11 @@ function ExploreEvents() {
       eventType: undefined,
       maxDistance: undefined,
     }));
+    setRefetch(!refetch);
+  };
+
+  const handleCardClick = (id: string) => {
+    router.push(`/events/${id}`);
   };
 
   if (loading) {
@@ -251,7 +262,9 @@ function ExploreEvents() {
           }`}
         >
           <div className="control flex flex-col gap-1">
-            <p>Max Distance <span>({filters.maxDistance || 5}KM)</span> </p>
+            <p>
+              Max Distance <span>({filters.maxDistance || 5}KM)</span>{" "}
+            </p>
             <Slider
               onValueChange={(values) =>
                 setFilters((prev) => ({
@@ -272,12 +285,36 @@ function ExploreEvents() {
               name="event-categories"
               defaultValue={""}
               value={filters.category}
-              className="rounded h-8 text-sm"
+              className="rounded h-8 text-sm capitalize cursor-pointer"
               id="event-categories"
+              onChange={(e) =>
+                setFilters((prev) => ({
+                  ...prev,
+                  category: e.target.value,
+                }))
+              }
             >
-              <option value="" hidden>
-                Categories
+              <option value={""} hidden>
+                Select category
               </option>
+              {categories.length ? (
+                categories
+                  .filter(
+                    (category) =>
+                      category.categoryType === filters.categoryGroup
+                  )
+                  .map((category) => (
+                    <option
+                      className="capitalize cursor-pointer"
+                      key={category._id}
+                      value={category._id}
+                    >
+                      {category.categoryName}
+                    </option>
+                  ))
+              ) : (
+                <option>No category found</option>
+              )}
             </select>
           </div>
           <div className="control flex flex-col gap-1">
@@ -317,7 +354,9 @@ function ExploreEvents() {
             </div>
           </div>
           <div className="control flex gap-1 mt-4 justify-end">
-            <Button className="text-white" onClick={()=>setRefetch(!refetch)}>Apply Filters</Button>
+            <Button className="text-white" onClick={() => setRefetch(!refetch)}>
+              Apply Filters
+            </Button>
             <Button variant={"secondary"} onClick={handleResetFilter}>
               Reset
             </Button>
@@ -325,7 +364,9 @@ function ExploreEvents() {
         </div>
         <div
           className={`events-list grid ${
-            events.length ? "sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6" : ""
+            events.length
+              ? "sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6"
+              : ""
           } gap-4 p-5 mb-5`}
         >
           {events.length ? (
@@ -333,12 +374,16 @@ function ExploreEvents() {
               <EventCard
                 key={idx}
                 className="hover:scale-95 transition-all ease-out duration-200"
-                date={event.startDate.toString()}
+                date={{
+                  startDate: event.startDate.toString(),
+                  endDate: event.endDate.toString(),
+                }}
                 eventType={event.eventType}
                 id={event._id!}
                 ticketType={event.ticket.ticketType}
                 title={event.title}
                 image={event.eventBanner?.url}
+                onClick={() => handleCardClick(event._id!)}
               />
             ))
           ) : (

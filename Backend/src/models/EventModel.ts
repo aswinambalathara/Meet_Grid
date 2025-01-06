@@ -13,11 +13,11 @@ const eventSchema = new Schema<IEvent>(
     endDate: { type: Date, required: true },
     eventType: { type: String, enum: ["Online", "In-Person"], required: true },
     virtualDetails: {
-      type:{
+      type: {
         virtualPlatform: { type: String },
-      meetLink: { type: String },
-      timeZone: { type: String },
-      accessInstructions: { type: String },
+        meetLink: { type: String },
+        timeZone: { type: String },
+        accessInstructions: { type: String },
       },
       required: false,
     },
@@ -38,8 +38,8 @@ const eventSchema = new Schema<IEvent>(
       required: false,
     },
 
-    organizer: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    attendees: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    organizer: { type: Schema.Types.ObjectId, ref: "user", required: true },
+    attendees: [{ type: Schema.Types.ObjectId, ref: "user" }],
     eventLogo: {
       type: {
         url: { type: String },
@@ -60,6 +60,9 @@ const eventSchema = new Schema<IEvent>(
         price: { type: Number, required: true },
         currency: { type: String, required: true },
         availableTickets: { type: Number, required: true },
+        registrationDeadline: { type: Date, required: true },
+        ticketName: { type: String, required: true, default: "Normal Ticket" },
+        ticketDescription: { type: String, required: true, default: "" },
       },
       required: true,
     },

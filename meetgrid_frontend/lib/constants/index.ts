@@ -6,7 +6,7 @@ export type EventCardProps = {
   image?: string;
   title: string;
   eventType: "Online" | "In-Person" ;
-  date: string;
+  date: {startDate:string,endDate:string}
   ticketType: "Free" | "Paid";
 };
 
@@ -115,7 +115,7 @@ export const FeatureCards: { title: string; des: string }[] = [
 export const TrendingEventsList: EventCardProps[] = [
   {
     id: "1",
-    date: "10/12/2024",
+    date:{startDate:'10/12/2024',endDate:'10/12/2024'},
     eventType: "Online",
     ticketType: "Free",
     title:
@@ -125,7 +125,7 @@ export const TrendingEventsList: EventCardProps[] = [
   },
   {
     id: "2",
-    date: "10/12/2024",
+    date:{startDate:'10/12/2024',endDate:'10/12/2024'},
     eventType: "Online",
     ticketType: "Free",
     title: "Google Hackathon",
@@ -134,7 +134,7 @@ export const TrendingEventsList: EventCardProps[] = [
   },
   {
     id: "3",
-    date: "10/12/2024",
+    date:{startDate:'10/12/2024',endDate:'10/12/2024'},
     eventType: "Online",
     ticketType: "Free",
     title: "Google Hackathon",
@@ -143,7 +143,7 @@ export const TrendingEventsList: EventCardProps[] = [
   },
   {
     id: "6",
-    date: "10/12/2024",
+    date:{startDate:'10/12/2024',endDate:'10/12/2024'},
     eventType: "Online",
     ticketType: "Free",
     title: "Google Hackathon",
@@ -152,21 +152,21 @@ export const TrendingEventsList: EventCardProps[] = [
   },
   {
     id: "4",
-    date: "10/12/2024",
+    date:{startDate:'10/12/2024',endDate:'10/12/2024'},
     eventType: "Online",
     ticketType: "Free",
     title: "Google Hackathon",
   },
   {
     id: "5",
-    date: "10/12/2024",
+    date:{startDate:'10/12/2024',endDate:'10/12/2024'},
     eventType: "Online",
     ticketType: "Free",
     title: "Google Hackathon",
   },
   {
     id: "7",
-    date: "10/12/2024",
+    date:{startDate:'10/12/2024',endDate:'10/12/2024'},
     eventType: "Online",
     ticketType: "Free",
     title:
@@ -176,7 +176,7 @@ export const TrendingEventsList: EventCardProps[] = [
   },
   {
     id: "8",
-    date: "10/12/2024",
+    date:{startDate:'10/12/2024',endDate:'10/12/2024'},
     eventType: "Online",
     ticketType: "Free",
     title: "Google Hackathon",
@@ -185,7 +185,7 @@ export const TrendingEventsList: EventCardProps[] = [
   },
   {
     id: "9",
-    date: "10/12/2024",
+    date:{startDate:'10/12/2024',endDate:'10/12/2024'},
     eventType: "Online",
     ticketType: "Free",
     title: "Google Hackathon",
@@ -194,7 +194,7 @@ export const TrendingEventsList: EventCardProps[] = [
   },
   {
     id: "10",
-    date: "10/12/2024",
+    date:{startDate:'10/12/2024',endDate:'10/12/2024'},
     eventType: "Online",
     ticketType: "Free",
     title: "Google Hackathon",
@@ -203,14 +203,14 @@ export const TrendingEventsList: EventCardProps[] = [
   },
   {
     id: "11",
-    date: "10/12/2024",
+    date:{startDate:'10/12/2024',endDate:'10/12/2024'},
     eventType: "Online",
     ticketType: "Free",
     title: "Google Hackathon",
   },
   {
     id: "12",
-    date: "10/12/2024",
+    date:{startDate:'10/12/2024',endDate:'10/12/2024'},
     eventType: "Online",
     ticketType: "Free",
     title: "Google Hackathon",

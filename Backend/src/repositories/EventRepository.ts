@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import mongoose from "mongoose";
 import IEvent from "../interfaces/entities/IEvent";
 import IEventRepository from "../interfaces/repository/IEventRepository";
 import EventModel from "../models/EventModel";
@@ -11,7 +12,7 @@ export default class EventRepository implements IEventRepository {
     return await this.model.findOne({ category: categoryId });
   }
   async findById(id: string): Promise<IEvent | null> {
-    return await this.model.findById(id);
+    return await this.model.findById(id).populate('organizer','fullName image email phone bio professionalInfo.linkedinUrl','user').exec()
   }
   async findAll(): Promise<IEvent[]> {
     return await this.model.find();
@@ -58,7 +59,7 @@ export default class EventRepository implements IEventRepository {
     }
 
     if (filters.category) {
-      physicalMatch["category._id"] = filters.category;
+      physicalMatch["category._id"] = new mongoose.Types.ObjectId(filters.category);
     }
 
     if (filters.eventType) {
