@@ -1,10 +1,33 @@
 "use client";
-import React, { useState } from "react";
+import React, { lazy, Suspense, useState } from "react";
 import { Button } from "@/components/ui/button";
+import Loading from "../Layout/Loading";
+const PickTickets = lazy(
+  () => import("@/components/pagecomponents/user/Events/PickTickets")
+);
+const AttendeeDetails = lazy(
+  () => import("@/components/pagecomponents/user/Events/AttendeeDetails")
+);
+const PaymentPage = lazy(
+  () => import("@/components/pagecomponents/user/Events/PaymentPage")
+);
 
 function Checkout() {
   const steps = ["PICK-TICKETS", "ATTENDEE-DETAILS", "PAYMENT"];
-  const [activeStep, setActiveStep] = useState<typeof steps[number]>(steps[0]);
+  const [activeStep, setActiveStep] = useState<(typeof steps)[number]>(
+    steps[2]
+  );
+
+  const renderStep = () => {
+    switch (activeStep) {
+      case "PICK-TICKETS":
+        return <PickTickets />;
+      case "ATTENDEE-DETAILS":
+        return <AttendeeDetails />;
+      case "PAYMENT":
+        return <PaymentPage />;
+    }
+  };
 
   return (
     <div className="min-h-screen container bg-slate-50 ">
@@ -18,11 +41,11 @@ function Checkout() {
         </div>
       </div>
 
-      <section className="payment-section mx-5 flex gap-2">
+      <section className="payment-section mx-5 flex flex-col sm:flex-row gap-2">
+
         <div className="main basis-3/4 shadow bg-white min-h-full flex">
           <div className="side bg-slate-200 min-h-[480px] max-w-20 flex flex-col justify-between items-center py-5 relative">
-
-            <div className="flex flex-col items-center justify-center gap-1 drop-shadow" >
+            <div className="flex flex-col items-center justify-center gap-1 drop-shadow">
               <span
                 className={`rounded-full w-10 h-10 text-center leading-10 ${
                   steps.indexOf(activeStep) >= steps.indexOf("PICK-TICKETS")
@@ -61,7 +84,10 @@ function Checkout() {
               <small className="text-center">Payment</small>
             </div>
           </div>
-          <div className="w-full p-4"></div>
+
+          <div className="w-full p-4 step-display">
+            <Suspense fallback={<Loading />}>{renderStep()}</Suspense>
+          </div>
         </div>
 
         <div className="ticket-summary basis-1/4 rounded shadow bg-clip-padding border-[5px] border-slate-200 bg-white sticky top-0 h-fit p-2 flex flex-col gap-2">

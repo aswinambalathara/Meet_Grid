@@ -53,7 +53,7 @@ function TrendingEvents() {
                           </p>
                           <p>
                             <i className="fa-regular fa-calendar-days text-blue-600"></i>{" "}
-                            {event.date}
+                            {event.date.startDate}
                           </p>
                           <p>
                             <i className="fa-solid fa-ticket text-blue-600"></i>{" "}

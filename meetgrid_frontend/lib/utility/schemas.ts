@@ -26,7 +26,7 @@ export const EventFormSchema = z
   })
   .merge(EventBasicDetailsBaseSchema)
   .merge(MediaAndOptionsSchema)
-  .and(venueSchema)
+  .and(venueSchema);
 
 export const professionalDetailsSchema = z.object({
   companyName: z
@@ -140,3 +140,68 @@ export const changePasswordSchema = z
     message: "Passwords does not matching",
     path: ["confirmPassword"],
   });
+
+export const AttendeeSchema = z.object({
+  fullName: z
+    .string()
+    .min(1, "Please enter your name")
+    .max(50, "Name cannot be more than 50 characters"),
+  phone: z
+    .string()
+    .nonempty("Please enter your phone number")
+    .regex(/^\d{10,15}$/, "Invalid Phone Number"),
+  email: z.string().email("Please enter valid email address").optional(),
+  linkedinUrl: z
+    .string()
+    .optional()
+    .refine(
+      (val) =>
+        !val ||
+        /^(https?:\/\/)?(www\.)?linkedin\.com\/(in|company)\/[a-zA-Z0-9-_%]+\/?$/.test(
+          val
+        ),
+      {
+        message: "Invalid URL",
+      }
+    ),
+  organisation: z
+    .string()
+    .regex(/^[a-zA-Z0-9&.\- ]$/, "Invalid Input")
+    .max(50, "Organisation cannot be more than 50 characters")
+    .optional(),
+  designation: z
+    .string()
+    .regex(/^[a-zA-Z.\- ]$/, "Invalid Input")
+    .max(50, "Designation cannot be more than 50 characters")
+    .optional(),
+});
+
+
+export const billingAddressSchema = z.object({
+  street: z
+    .string()
+    .min(1, "Street is required")
+    .max(100, "Street cannot exceed 100 characters"),
+  city: z
+    .string()
+    .min(1, "City is required")
+    .max(50, "City cannot exceed 50 characters"),
+  state: z
+    .string()
+    .min(1, "State is required")
+    .max(50, "State cannot exceed 50 characters"),
+  country: z
+    .string()
+    .min(1, "Country is required")
+    .max(50, "Country cannot exceed 50 characters"),
+  pincode: z
+    .string()
+    .min(6, "Pincode must be 6 digits")
+    .max(6, "Pincode must be 6 digits")
+    .regex(/^\d+$/, "Pincode must contain only numbers")
+    .transform((value) => parseInt(value, 10))
+    .refine((value) => value >= 100000 && value <= 999999, {
+      message: "Pincode must be a valid 6-digit number",
+    }),
+});
+

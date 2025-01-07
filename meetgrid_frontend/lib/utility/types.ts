@@ -1,7 +1,9 @@
 import { MediaAndOptionsSchema } from "../schemas/TicketAndMediaSchema";
 import {
   adminCategorySchema,
+  AttendeeSchema,
   basicDetailsSchema,
+  billingAddressSchema,
   changePasswordSchema,
   EventFormSchema,
   professionalDetailsSchema,
@@ -16,6 +18,8 @@ export type ProfileProfessionalFormData = z.infer<
 export type ProfilePasswordFormData = z.infer<typeof changePasswordSchema>;
 export type EventFormData = z.infer<typeof EventFormSchema>;
 export type EventMediaFormData = z.infer<typeof MediaAndOptionsSchema>;
+export type AttendeeFormData = z.infer<typeof AttendeeSchema>;
+export type billingAddressFormData = z.infer<typeof billingAddressSchema>
 
 export type NominatimResponse = {
   place_id: number;
