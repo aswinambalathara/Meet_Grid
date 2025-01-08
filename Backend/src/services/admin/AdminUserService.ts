@@ -1,3 +1,4 @@
+import { redisClient } from "../../config/configRedis";
 import IUser from "../../interfaces/entities/IUser";
 import IUserRepository from "../../interfaces/repository/IUserRepository";
 import { StatusCode } from "../../types";
@@ -34,11 +35,21 @@ export default class AdminUserService {
     const updatedUser = await this.userRepository.update(id, {
       isBlocked: !isBlocked,
     });
+
     if (!updatedUser)
       throw new CustomError(
         "Error while updating | User Not Found",
         StatusCode.NotFound
       );
+
+      const sessionData = {
+        id: updatedUser?._id,
+        email: updatedUser?.email,
+        isBlocked: updatedUser?.isBlocked,
+      };
+
+      await redisClient.set(`user:${updatedUser.id}`, JSON.stringify(sessionData));
+
     return {
       isBlocked: updatedUser.isBlocked!,
       message: isBlocked ? "User Blocked" : "User Unblocked",

@@ -16,7 +16,7 @@ export default interface ITicket extends Document {
       designation?: string;
     }
   ];
-  billingAddress: {
+  billingAddress: { 
     street: string;
     city: string;
     state: string;
@@ -30,3 +30,4 @@ export default interface ITicket extends Document {
     transactionDate: Date;
   };
 }
+ 

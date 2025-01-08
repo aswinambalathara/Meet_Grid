@@ -17,16 +17,11 @@ const eventService = new EventService(
 const eventController = new UserEventController(eventService);
 const router = Router();
 
-router.get(
-  "/events/getEventCategories",
-  eventController.getEventCategories.bind(eventController)
+router.post(
+  "/events/createEvent",
+  eventController.createEvent.bind(eventController)
 );
 
-router.get(
-  "/events/get-events",
-  eventController.getEvents.bind(eventController)
-);
 
-router.get('/events/get-event/:id',eventController.getEvent.bind(eventController))
 
 export default router;

@@ -9,6 +9,7 @@ import cookieParser from "cookie-parser";
 import "./types/index";
 import passport from "passport";
 import googleStrategy from "./config/passport";
+import connectRedis from "./config/configRedis";
 const app = express();
 const port = PORT || 4000;
 
@@ -32,6 +33,7 @@ app.use(passport.initialize());
 passport.use(googleStrategy);
 
 app.use("/api", routes);
+connectRedis()
 connectDB().then(() => {
   app.listen(port, () => {
     console.log(`Server Connected And Running On PORT: ${port}`);

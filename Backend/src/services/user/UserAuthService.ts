@@ -166,6 +166,12 @@ export default class UserAuthService {
         code: StatusCode.Conflict,
       };
     }
+    if (foundUser.isBlocked) {
+      return {
+        error: "User blocked",
+        code: StatusCode.Forbidden,
+      };
+    }
     const accessToken = this.jwtService.createAccessToken(
       foundUser.email,
       foundUser.id
