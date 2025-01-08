@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
 
-function adminNotfound() {
+function UserNotFound() {
   return (
     <div className="container min-h-screen w-full flex flex-col items-center justify-center bg-black">
       <div className="flex flex-col gap-1 items-center mb-10">
@@ -15,4 +15,4 @@ function adminNotfound() {
   );
 }
 
-export default adminNotfound;
+export default UserNotFound;

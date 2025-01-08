@@ -5,17 +5,22 @@ import { Button } from "@/components/ui/button";
 import CountdownTimer from "@/components/ui/Utils/CountdownTimer";
 import IEvent from "@/interfaces/IEvent";
 import { getEvent } from "@/lib/api/user/EventRoutes";
+import { selectedEventId } from "@/redux/slices/CheckoutSlice";
 import moment from "moment";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
 
 function EventDetailPage() {
   const pathParams = useParams();
+  const dispatch = useDispatch();
+  const router = useRouter();
   const { id } = pathParams;
   const [loading, setLoading] = useState(true);
   const [event, setEvent] = useState<IEvent | null>(null);
+
   const eventDeadline = moment(
     event?.ticket.registrationDeadline.toString()
   ).format("DD-MM-YYYY hh:mm A");
@@ -59,6 +64,11 @@ function EventDetailPage() {
         }
       });
     window.location.href = `mailto:${contact}`;
+  };
+
+  const handleRegister = () => {
+    dispatch(selectedEventId(event?._id));
+    router.push('/events/checkout')
   };
 
   if (loading) {
@@ -123,7 +133,7 @@ function EventDetailPage() {
                     <h1 className="ticket-type uppercase text-2xl font-bold">
                       {event?.ticket.ticketType}
                     </h1>
-                    <Button>Register Now</Button>
+                    <Button onClick={handleRegister}>Register Now</Button>
                   </div>
                 </li>
               </ul>
@@ -177,7 +187,7 @@ function EventDetailPage() {
         </div>
 
         <div className="action-buttons w-full flex flex-col gap-3 mb-3">
-          <Button className="py-5">Register Now</Button>
+          <Button className="py-5" onClick={handleRegister}>Register Now</Button>
           {event?.eventType === "In-Person" && (
             <Link
               target="_blank"

@@ -6,7 +6,7 @@ import axios, {
 import apiURLs from "@/config/apiConfig";
 import handleError from "@/lib/utility/errorHandler";
 import IEvent from "@/interfaces/IEvent";
-import { EventFilterOptions } from "@/lib/utility/types";
+import { ErrorResponse, EventFilterOptions } from "@/lib/utility/types";
 const { EVENT_URL, USER_URL } = apiURLs;
 
 const axiosEventInstance = axios.create({
@@ -40,6 +40,28 @@ axiosEventInstance.interceptors.response.use(
   },
   async (error: AxiosError) => {
     const originalRequest = error.config as CustomAxiosRequestConfig;
+
+        if (error.response?.status === 403) {
+          const responseData = error.response.data as ErrorResponse
+          console.log(responseData)
+          if (responseData.isBlocked === true) {
+            try {
+              const tokens = JSON.parse(localStorage.getItem("auth") || "{}");
+              await axios.get(`${USER_URL}/auth/logout`);
+              localStorage.setItem(
+                "auth",
+                JSON.stringify({
+                  ...tokens,
+                  userToken: "",
+                })
+              );
+            } catch (err) {
+              handleError(err);
+            }finally{
+              window.location.href = '/auth/login?error=User Blocked'
+            }
+          }
+        }
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;

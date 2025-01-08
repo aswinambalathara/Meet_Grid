@@ -79,3 +79,8 @@ export type EventFilterOptions = {
   eventType?: "Online" | "In-Person";
   search?: string;
 };
+
+export type ErrorResponse = {
+  message?: string;
+  isBlocked?: true;
+};

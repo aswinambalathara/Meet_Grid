@@ -1,7 +1,14 @@
 "use client";
-import React, { lazy, Suspense, useState } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import Loading from "../Layout/Loading";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import UserNotFound from "@/app/not-found";
+import toast from "react-hot-toast";
+import { getEvent } from "@/lib/api/user/EventRoutes";
+import { updateEventDetails } from "@/redux/slices/CheckoutSlice";
+import IEvent from "@/interfaces/IEvent";
 const PickTickets = lazy(
   () => import("@/components/pagecomponents/user/Events/PickTickets")
 );
@@ -13,10 +20,39 @@ const PaymentPage = lazy(
 );
 
 function Checkout() {
+  const { eventId } = useSelector((state: RootState) => state.checkout);
+  const dispatch = useDispatch()
+  const [loading,setLoading] = useState(true);
   const steps = ["PICK-TICKETS", "ATTENDEE-DETAILS", "PAYMENT"];
   const [activeStep, setActiveStep] = useState<(typeof steps)[number]>(
-    steps[2]
+    steps[0]
   );
+
+  useEffect(() => {
+    const handlePopState = () => {
+      console.log("user clicked back button");
+    };
+
+    (async ()=>{
+      try {
+        const result:IEvent = await getEvent(eventId)
+        dispatch(updateEventDetails({
+          ticketPrice:result.ticket.price,
+        }))
+      } catch (error) {
+        if(error instanceof Error){
+          toast.error(error.message)
+        }
+      }finally{
+        setLoading(false)
+      }
+    })()
+
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
 
   const renderStep = () => {
     switch (activeStep) {
@@ -28,6 +64,17 @@ function Checkout() {
         return <PaymentPage />;
     }
   };
+
+  console.log(eventId);
+
+
+  if (!eventId) {
+    return UserNotFound();
+  }
+
+  if(loading){
+    return <Loading/>
+  }
 
   return (
     <div className="min-h-screen container bg-slate-50 ">
@@ -42,7 +89,6 @@ function Checkout() {
       </div>
 
       <section className="payment-section mx-5 flex flex-col sm:flex-row gap-2">
-
         <div className="main basis-3/4 shadow bg-white min-h-full flex">
           <div className="side bg-slate-200 min-h-[480px] max-w-20 flex flex-col justify-between items-center py-5 relative">
             <div className="flex flex-col items-center justify-center gap-1 drop-shadow">

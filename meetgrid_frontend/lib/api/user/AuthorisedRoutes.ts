@@ -5,9 +5,12 @@ import axios, {
 } from "axios";
 import apiURLs from "@/config/apiConfig";
 import handleError from "@/lib/utility/errorHandler";
-import { ProfilePasswordFormData } from "@/lib/utility/types";
+import { ErrorResponse, ProfilePasswordFormData } from "@/lib/utility/types";
 import IUser from "@/interfaces/IUser";
+
 const { USER_URL } = apiURLs;
+
+
 
 const axiosUserInstance = axios.create({
   baseURL: USER_URL,
@@ -40,6 +43,28 @@ axiosUserInstance.interceptors.response.use(
   },
   async (error: AxiosError) => {
     const originalRequest = error.config as CustomAxiosRequestConfig;
+
+    if (error.response?.status === 403) {
+      const responseData = error.response.data as ErrorResponse;
+
+      if (responseData.isBlocked) {
+        try {
+          const tokens = JSON.parse(localStorage.getItem("auth") || "{}");
+          await axios.get(`${USER_URL}/auth/logout`);
+          localStorage.setItem(
+            "auth",
+            JSON.stringify({
+              ...tokens,
+              userToken: "",
+            })
+          );
+        } catch (err) {
+          handleError(err);
+        }finally{
+          window.location.href = '/auth/login?error=User Blocked'
+        }
+      }
+    }
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -84,90 +109,124 @@ axiosUserInstance.interceptors.response.use(
 
 export const getUserProfile = async () => {
   try {
-    const response = await axiosUserInstance.get('/profile');
-    return response.data
+    const response = await axiosUserInstance.get("/profile");
+    return response.data;
   } catch (error) {
     handleError(error);
   }
 };
 
-export const sendEmailVerification = async (email:string) =>{
+export const sendEmailVerification = async (email: string) => {
   try {
-    const response = await axiosUserInstance.post('/profile/basic-details/send-mail',{email});
-    return response.data
+    const response = await axiosUserInstance.post(
+      "/profile/basic-details/send-mail",
+      { email }
+    );
+    return response.data;
   } catch (error) {
-    handleError(error)
+    handleError(error);
   }
-}
+};
 
-export const verifyEmailOTP = async(otp:string) =>{
+export const verifyEmailOTP = async (otp: string) => {
   try {
-    const response = await axiosUserInstance.post('/profile/basic-details/verify-email',{otp})
-    return response.data
+    const response = await axiosUserInstance.post(
+      "/profile/basic-details/verify-email",
+      { otp }
+    );
+    return response.data;
   } catch (error) {
-    handleError(error)
+    handleError(error);
   }
-}
+};
 
-export const updateBasicDetails = async (formData:Partial<IUser>) =>{
+export const updateBasicDetails = async (formData: Partial<IUser>) => {
   try {
-    const response = await axiosUserInstance.patch('/profile/basic-details',formData)
-    return response.data
+    const response = await axiosUserInstance.patch(
+      "/profile/basic-details",
+      formData
+    );
+    return response.data;
   } catch (error) {
-    handleError(error)
+    handleError(error);
   }
-}
+};
 
-export const updateProfileImage = async ({imageURL,public_id}:{imageURL:string,public_id:string})=>{
-try {
-  const response = await axiosUserInstance.patch('/profile/basic-details/upload-image',{imageURL,public_id});
-  return response.data
-} catch (error) {
-  handleError(error)
-}
-}
-
-export const updateProfessionalDetails = async(formData:IUser['professionalInfo']) =>{
+export const updateProfileImage = async ({
+  imageURL,
+  public_id,
+}: {
+  imageURL: string;
+  public_id: string;
+}) => {
   try {
-    const response = await axiosUserInstance.patch('/profile/professional-details',formData)
-    return response.data
+    const response = await axiosUserInstance.patch(
+      "/profile/basic-details/upload-image",
+      { imageURL, public_id }
+    );
+    return response.data;
   } catch (error) {
-    handleError(error)
+    handleError(error);
   }
-}
+};
 
-export const changePasswordSendOTP = async () =>{
+export const updateProfessionalDetails = async (
+  formData: IUser["professionalInfo"]
+) => {
   try {
-    const response = await axiosUserInstance.get('/profile/change-password/send-otp');
-    return response.data
+    const response = await axiosUserInstance.patch(
+      "/profile/professional-details",
+      formData
+    );
+    return response.data;
   } catch (error) {
-    handleError(error)
+    handleError(error);
   }
-}
+};
 
-export const verifyChangePasswordOTP = async (otp:number) =>{
+export const changePasswordSendOTP = async () => {
   try {
-    const response = await axiosUserInstance.post('/profile/change-password/verify-otp',{otp});
-    return response.data
+    const response = await axiosUserInstance.get(
+      "/profile/change-password/send-otp"
+    );
+    return response.data;
   } catch (error) {
-    handleError(error)
+    handleError(error);
   }
-}
+};
 
-export const changePassword = async (data:ProfilePasswordFormData) =>{
+export const verifyChangePasswordOTP = async (otp: number) => {
   try {
-    const response = await axiosUserInstance.patch('/profile/change-password',data)
-    return response.data
+    const response = await axiosUserInstance.post(
+      "/profile/change-password/verify-otp",
+      { otp }
+    );
+    return response.data;
   } catch (error) {
-    handleError(error)
+    handleError(error);
   }
-}
+};
 
-export const deactivateAccount = async (password:string)=>{
+export const changePassword = async (data: ProfilePasswordFormData) => {
   try {
-    const response = await axiosUserInstance.patch('/profile/deactivate-account',{password})
-    return response.data
+    const response = await axiosUserInstance.patch(
+      "/profile/change-password",
+      data
+    );
+    return response.data;
   } catch (error) {
-    handleError(error)
+    handleError(error);
   }
-}
+};
+
+export const deactivateAccount = async (password: string) => {
+  try {
+    const response = await axiosUserInstance.patch(
+      "/profile/deactivate-account",
+      { password }
+    );
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};

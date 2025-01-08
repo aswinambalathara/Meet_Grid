@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export default function handleError(error: unknown) {
+export default async function handleError(error: unknown) {
   if (axios.isAxiosError(error)) {
     if (error.response) {
       console.error("Server Error:", error.response.data);

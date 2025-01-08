@@ -2,15 +2,14 @@ import type { Metadata } from "next";
 import "@/styles/globals.css";
 import Navbar from "@/components/pagecomponents/user/Layout/Navbar";
 import Footer from "@/components/pagecomponents/user/Layout/Footer";
-import {alegreya,poltawski,poppins} from '@/app/fonts/fonts'
+import { alegreya, poltawski, poppins } from "@/app/fonts/fonts";
 import { AuthProvider } from "@/lib/context/AuthProvider";
+import { ReduxProvider } from "@/lib/context/ReduxProvider";
 
 export const metadata: Metadata = {
   title: "Meet Grid | Home",
   description: "Connecting You to Events, and Events to Connections",
 };
-
-
 
 export default function RootLayout({
   children,
@@ -18,9 +17,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${poppins.variable} ${alegreya.variable} ${poltawski.variable}`}>
+    <html
+      lang="en"
+      className={`${poppins.variable} ${alegreya.variable} ${poltawski.variable}`}
+    >
       <head>
-      <link rel="icon" href="/icons/favicon.ico" />
+        <link rel="icon" href="/icons/favicon.ico" />
         <link
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
@@ -30,11 +32,13 @@ export default function RootLayout({
         />
       </head>
       <body className={poppins.className}>
-        <AuthProvider>
-        <Navbar />
-        {children}
-        <Footer />
-        </AuthProvider>
+        <ReduxProvider>
+          <AuthProvider>
+            <Navbar />
+            {children}
+            <Footer />
+          </AuthProvider>
+        </ReduxProvider>
       </body>
     </html>
   );

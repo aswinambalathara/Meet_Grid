@@ -55,14 +55,18 @@ function Navbar() {
       <nav className="bg-nav-brown w-full md:w-[1400px] h-auto md:h-16 rounded-none md:rounded-full flex flex-wrap items-center justify-between px-5">
         {/* Logo Section */}
         <div className="flex items-center justify-between w-full md:w-auto">
-          <Link href={'/'}><Logo /></Link>
-          
+          <Link href={"/"}>
+            <Logo />
+          </Link>
+
           {/* Hamburger Menu for Small Screens */}
           <button
             className="text-white text-2xl md:hidden focus:outline-none"
             onClick={toggleMenu}
           >
-            <i className={`fa-solid ${isMenuOpen ? "fa-times" : "fa-bars"}`}></i>
+            <i
+              className={`fa-solid ${isMenuOpen ? "fa-times" : "fa-bars"}`}
+            ></i>
           </button>
         </div>
 
@@ -72,10 +76,10 @@ function Navbar() {
             isMenuOpen ? "block" : "hidden"
           } md:flex md:flex-row text-white gap-6 items-center w-full md:w-auto mt-4 md:mt-0`}
         >
-          <Link href={'/events'}>
-          <li className="bg-[#1B1919] px-4 py-2 rounded-full hover:bg-transparent hover:ring-slate-100 hover:ring-1 cursor-pointer transition-all duration-300">
-            Explore Events
-          </li>
+          <Link href={"/events"}>
+            <li className="bg-[#1B1919] px-4 py-2 rounded-full hover:bg-transparent hover:ring-slate-100 hover:ring-1 cursor-pointer transition-all duration-300">
+              Explore Events
+            </li>
           </Link>
 
           {isAuthorised && (
@@ -84,11 +88,11 @@ function Navbar() {
             </li>
           )}
 
-         <Link href={'/events/host-event'}>
-         <li className="bg-[#1B1919] px-4 py-2 rounded-full hover:bg-transparent hover:ring-slate-100 hover:ring-1 cursor-pointer">
-            Host Event
-          </li>
-         </Link>
+          <Link href={"/events/host-event"}>
+            <li className="bg-[#1B1919] px-4 py-2 rounded-full hover:bg-transparent hover:ring-slate-100 hover:ring-1 cursor-pointer">
+              Host Event
+            </li>
+          </Link>
 
           {isAuthorised ? (
             <li
@@ -101,9 +105,11 @@ function Navbar() {
                   className="absolute right-0 top-12 mt-2 w-36 bg-blue-50 text-black rounded-lg shadow-lg z-50"
                   onMouseLeave={closeDropdown}
                 >
-                  <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer">
-                    <Link href="/profile">Profile</Link>
-                  </li>
+                  <Link href="/profile">
+                    <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer">
+                      Profile
+                    </li>
+                  </Link>
                   <li
                     className="px-4 py-2 hover:bg-gray-200 cursor-pointer"
                     onClick={handleLogOut}

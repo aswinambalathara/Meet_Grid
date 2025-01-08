@@ -373,7 +373,7 @@ function ExploreEvents() {
             events.map((event, idx) => (
               <EventCard
                 key={idx}
-                className="hover:scale-95 transition-all ease-out duration-200"
+                className="hover:scale-95 transition-all ease-out duration-200 cursor-pointer"
                 date={{
                   startDate: event.startDate.toString(),
                   endDate: event.endDate.toString(),
