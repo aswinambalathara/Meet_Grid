@@ -5,7 +5,7 @@ import { CustomRequest, EventFilter, StatusCode } from "../../types/index";
 export default class UserEventController {
   constructor(private eventService: EventService) {}
 
-  async createEvent(
+  async handleCreateEvent(
     req: CustomRequest,
     res: Response,
     next: NextFunction
@@ -19,7 +19,7 @@ export default class UserEventController {
     }
   }
 
-  async getEventCategories(
+  async handleGetEventCategories(
     req: CustomRequest,
     res: Response,
     next: NextFunction
@@ -32,7 +32,7 @@ export default class UserEventController {
     }
   }
 
-  async getEvents(
+  async handleGetEvents(
     req: CustomRequest,
     res: Response,
     next: NextFunction
@@ -46,7 +46,7 @@ export default class UserEventController {
     }
   }
 
-  async getEvent(
+  async handleGetEvent(
     req: CustomRequest,
     res: Response,
     next: NextFunction
@@ -59,4 +59,5 @@ export default class UserEventController {
       next(error);
     }
   }
+
 }

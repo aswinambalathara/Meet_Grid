@@ -1,5 +1,6 @@
 import { Request } from "express";
-//import IEvent from "../interfaces/entities/IEvent";
+
+
 
 export enum StatusCode {
   Success = 200,
@@ -86,5 +87,8 @@ export type professionalInfoProps = {
   linkedinUrl: string;
   skills: string[];
 };
+
+
+
 
 export {};

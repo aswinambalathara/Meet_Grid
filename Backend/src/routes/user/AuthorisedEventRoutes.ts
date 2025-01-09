@@ -18,10 +18,11 @@ const eventController = new UserEventController(eventService);
 const router = Router();
 
 router.post(
-  "/events/createEvent",
-  eventController.createEvent.bind(eventController)
+  "/createEvent",
+  eventController.handleCreateEvent.bind(eventController)
 );
 
+router.post('/check-out',)
 
 
 export default router;

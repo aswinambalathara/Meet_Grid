@@ -6,6 +6,7 @@ import eventRoutes from "./user/EventsRoutes";
 import protectEventRoutes from "./user/AuthorisedEventRoutes";
 import adminAuthRoutes from "./admin/AdminAuthRoutes";
 import adminRoutes from "./admin/AdminRoutes";
+import userTicketRoutes from './user/UserTicketRouter';
 import AdminAuthMiddleware from "../middlewares/adminAuthMiddleware";
 import UserAuthMiddleware from "../middlewares/userAuthMiddleware";
 import JWTService from "../utils/jwtService";
@@ -22,6 +23,7 @@ app.use("/user/auth", userAuthRoutes);
 app.use("/user", userAuthMiddleware.exec, userProtectedRoutes);
 app.use("/events", eventRoutes);
 app.use("/events", userAuthMiddleware.exec, protectEventRoutes);
+app.use('/tickets',userAuthMiddleware.exec,userTicketRoutes)
 app.use("/admin/auth", adminAuthRoutes);
 app.use("/admin", adminAuthMiddlware.exec, adminRoutes);
 app.use(errorHandler);

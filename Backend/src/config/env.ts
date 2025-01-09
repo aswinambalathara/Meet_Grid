@@ -18,6 +18,8 @@ const {
   REDIS_HOST,
   REDIS_PORT,
   REDIS_PASS,
+  RAZORPAY_KEY,
+  RAZORPAY_SECRET
 } = process.env;
 
 export {
@@ -37,4 +39,6 @@ export {
   REDIS_HOST,
   REDIS_PORT,
   REDIS_PASS,
+  RAZORPAY_KEY,
+  RAZORPAY_SECRET
 };

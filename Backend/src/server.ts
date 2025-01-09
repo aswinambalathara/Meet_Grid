@@ -33,6 +33,7 @@ app.use(passport.initialize());
 passport.use(googleStrategy);
 
 app.use("/api", routes);
+
 connectRedis()
 connectDB().then(() => {
   app.listen(port, () => {

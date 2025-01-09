@@ -18,15 +18,18 @@ const eventController = new UserEventController(eventService);
 const router = Router();
 
 router.get(
-  "/events/getEventCategories",
-  eventController.getEventCategories.bind(eventController)
+  "/getEventCategories",
+  eventController.handleGetEventCategories.bind(eventController)
 );
 
 router.get(
-  "/events/get-events",
-  eventController.getEvents.bind(eventController)
+  "/get-events",
+  eventController.handleGetEvents.bind(eventController)
 );
 
-router.get('/events/get-event/:id',eventController.getEvent.bind(eventController))
+router.get(
+  "/get-event/:id",
+  eventController.handleGetEvent.bind(eventController)
+);
 
 export default router;
