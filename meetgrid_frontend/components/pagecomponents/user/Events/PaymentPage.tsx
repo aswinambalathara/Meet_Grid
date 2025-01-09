@@ -4,13 +4,19 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Button } from "@/components/ui/button";
 import BillingAddressForm from "@/components/ui/forms/User/Checkout/BillingAddressForm";
 import { Label } from "@/components/ui/label";
+import { updatePaymentMethod } from "@/redux/slices/CheckoutSlice";
 import Image from "next/image";
 import React from "react";
+import { useDispatch } from "react-redux";
 
 function PaymentPage() {
+  const dispatch = useDispatch()
+  const handlePaymentMethodChange = (method:"razorpay" | "paypal") =>{
+    dispatch(updatePaymentMethod(method))
+  }
+
   return (
     <div className="h-full w-full">
       <h1>Billing & Payments</h1>
@@ -30,7 +36,7 @@ function PaymentPage() {
       <h5 className="text-sm">Payment Methods</h5>
       <div className="paymentMethods w-full bg-slate-50 min-h-10 rounded p-3 flex flex-col gap-3">
         <div className="method flex items-center gap-2 bg-slate-200 p-3 rounded">
-          <input type="radio" id="razorpay" name="paymentmethod" />
+          <input type="radio" id="razorpay" name="paymentmethod"  onChange={()=>handlePaymentMethodChange('razorpay')}/>
           <Image
             alt="razorpay-icon"
             src={"/icons/raz-icon.jpg"}
@@ -42,7 +48,7 @@ function PaymentPage() {
         </div>
         {/* <div className="method flex items-center gap-2 bg-slate-200 p-3 rounded">
           <input type="radio" id="paypal" name="paymentmethod"/>
-          <Label htmlFor="paypal">Razorpay Gateway</Label>
+          <Label htmlFor="paypal">Paypal Gateway</Label>
         </div> */}
       </div>
     </div>

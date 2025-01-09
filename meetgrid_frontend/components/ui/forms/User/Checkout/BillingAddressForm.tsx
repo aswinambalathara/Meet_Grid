@@ -3,23 +3,36 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { billingAddressSchema } from "@/lib/utility/schemas";
 import { billingAddressFormData } from "@/lib/utility/types";
+import { updateBillingAddress } from "@/redux/slices/CheckoutSlice";
+import { RootState } from "@/redux/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 
 function BillingAddressForm() {
+  const { billingAddress } = useSelector((state: RootState) => state.checkout);
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<billingAddressFormData>({
     resolver: zodResolver(billingAddressSchema),
     mode: "all",
+    defaultValues: {
+      street: billingAddress?.street,
+      city: billingAddress?.city,
+      country: billingAddress?.country,
+      pincode: billingAddress?.pincode,
+      state: billingAddress?.state,
+    },
   });
 
   const onSubmit = (data: billingAddressFormData) => {
-    console.log(data);
+    dispatch(updateBillingAddress(data));
+    toast.success('Billing address updated')
   };
 
   return (
@@ -75,9 +88,6 @@ function BillingAddressForm() {
       </div>
 
       <div className="footer flex items-center justify-end gap-2">
-        <Button type="button" variant={"outline"} onClick={() => reset()}>
-          Reset
-        </Button>
         <Button type="submit">Submit Address</Button>
       </div>
     </form>

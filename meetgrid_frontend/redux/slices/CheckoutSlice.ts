@@ -1,5 +1,6 @@
 import ITicket from "@/interfaces/ITicket";
-import { createSlice } from "@reduxjs/toolkit";
+import { AttendeeFormData } from "@/lib/utility/types";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 let initialState: ITicket = {
   eventId: "",
@@ -7,36 +8,72 @@ let initialState: ITicket = {
   quantity: 1,
   ticketPrice: 0,
   totalPrice: 0,
+  attendees: [
+    {
+      fullName: "",
+      phone: "",
+      email: undefined,
+      linkedinUrl: undefined,
+      organisation: undefined,
+      designation: undefined,
+    },
+  ],
+  payment:{
+    method:'',
+    paymentId:'',
+    paymentStatus:'Pending',
+    transactionDate:undefined
+  }
 };
 
 const CheckoutSlice = createSlice({
   name: "checkoutState",
   initialState,
   reducers: {
-    increaseQuantity: (state) => {
-      if (state.quantity < 5) {
-        state.quantity++;
+    updateQuantity: (state, action) => {
+      if (action.payload > 0 && action.payload <= 5) {
+        state.quantity = action.payload;
+        state.totalPrice = state.quantity * state.ticketPrice;
+        state.attendees = Array(action.payload).fill({
+          fullName: "",
+          phone: "",
+          email: undefined,
+          linkedinUrl: undefined,
+          organisation: undefined,
+          designation: undefined,
+        });
       }
     },
-    decreaseQuantity: (state) => {
-      if (state.quantity > 0) {
-        state.quantity--;
-      }
-    },
-    updateEventDetails:(state,action)=>{
-        state = {...state,...action.payload}
+
+    updateTicketPrice: (state, action) => {
+      state.ticketPrice = action.payload;
+      state.totalPrice = action.payload;
     },
     selectedEventId: (state, action) => {
       state.eventId = action.payload;
     },
-    updateAttendees: (state, action) => {
-      state.attendees?.push(action.payload);
+    updateAttendees: (
+      state,
+      action: PayloadAction<{ index: number; data: AttendeeFormData }>
+    ) => {
+      if (state.attendees)
+        state.attendees[action.payload.index] = action.payload.data;
     },
     updateBillingAddress: (state, action) => {
-      state.billingAddress = action.payload
+      state.billingAddress = action.payload;
     },
+    updatePaymentMethod:(state,action)=>{
+      state.payment.method = action.payload
+    }
   },
 });
 
-export const { increaseQuantity, decreaseQuantity, selectedEventId, updateAttendees ,updateBillingAddress,updateEventDetails} = CheckoutSlice.actions;
+export const {
+  updateQuantity,
+  selectedEventId,
+  updateAttendees,
+  updateBillingAddress,
+  updateTicketPrice,
+  updatePaymentMethod
+} = CheckoutSlice.actions;
 export default CheckoutSlice.reducer;

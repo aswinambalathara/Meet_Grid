@@ -4,16 +4,14 @@ export default interface ITicket {
   quantity: number;
   ticketPrice: number;
   totalPrice: number;
-  attendees?: [
-    {
-      fullName: string;
-      phone: string;
-      email?: string;
-      linkedinUrl?: string;
-      organisation?: string;
-      designation?: string;
-    }
-  ];
+  attendees?: Array<{
+    fullName: string;
+    phone: string;
+    email?: string;
+    linkedinUrl?: string;
+    organisation?: string;
+    designation?: string;
+  }>;
   billingAddress?: {
     street: string;
     city: string;
@@ -21,10 +19,10 @@ export default interface ITicket {
     country: string;
     pincode: number;
   };
-  payment?: {
+  payment: {
     paymentId: string;
     method: string;
     paymentStatus: "Pending" | "Confirmed";
-    transactionDate: Date;
+    transactionDate: Date | undefined
   };
 }

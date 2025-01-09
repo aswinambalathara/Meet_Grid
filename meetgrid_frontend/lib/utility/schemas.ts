@@ -150,7 +150,17 @@ export const AttendeeSchema = z.object({
     .string()
     .nonempty("Please enter your phone number")
     .regex(/^\d{10,15}$/, "Invalid Phone Number"),
-  email: z.string().email("Please enter valid email address").optional(),
+  email: z
+    .string()
+    .optional()
+    .refine(
+      (val) =>
+        val === "" ||
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(val!),
+      {
+        message: "Please enter a valid email address",
+      }
+    ),
   linkedinUrl: z
     .string()
     .optional()
@@ -166,16 +176,19 @@ export const AttendeeSchema = z.object({
     ),
   organisation: z
     .string()
-    .regex(/^[a-zA-Z0-9&.\- ]$/, "Invalid Input")
     .max(50, "Organisation cannot be more than 50 characters")
-    .optional(),
+    .optional()
+    .refine((val) => val === "" || /^[a-zA-Z\s]+$/.test(val!), {
+      message: "Invalid Input",
+    }),
   designation: z
     .string()
-    .regex(/^[a-zA-Z.\- ]$/, "Invalid Input")
     .max(50, "Designation cannot be more than 50 characters")
-    .optional(),
+    .optional()
+    .refine((val) => val === "" || /^[a-zA-Z\s]+$/.test(val!), {
+      message: "Invalid Input",
+    }),
 });
-
 
 export const billingAddressSchema = z.object({
   street: z
@@ -204,4 +217,3 @@ export const billingAddressSchema = z.object({
       message: "Pincode must be a valid 6-digit number",
     }),
 });
-

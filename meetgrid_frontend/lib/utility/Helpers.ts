@@ -1,3 +1,4 @@
+import moment from "moment";
 import { NominatimResponse } from "./types";
 
 export function generateGoogleMapLink(latitude: number, longitude: number) {
@@ -45,4 +46,8 @@ export const getShortLocation = (address: NominatimResponse["address"]) => {
   }
 
   return "Location not available";
+};
+
+export const formatDate = (date: string, format: string) => {
+  return moment(date).format(format);
 };

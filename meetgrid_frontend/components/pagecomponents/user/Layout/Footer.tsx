@@ -1,27 +1,38 @@
-'use client'
+"use client";
 import React from "react";
 import "@/styles/user.css";
 import Image from "next/image";
 import Logo from "@/components/ui/Logo";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 function Footer() {
-   const path = usePathname()
-  if(path.includes('/auth') || path.includes('/auth/signup') || path.includes('/admin')){
-    return null
+  const path = usePathname();
+  if (
+    path.includes("/auth") ||
+    path.includes("/auth/signup") ||
+    path.includes("/admin")
+  ) {
+    return null;
   }
   return (
     <div className="user-footer w-full min-h-[350px] bg-footer-brown">
       <div className="footer-content min-h-[350px] p-12 text-white">
         {/* <h4 className=" font-bold font text-3xl ">MEET GRID</h4> */}
-        <Logo className="mb-10"/>
+        <Logo className="mb-10" />
         <div className="footer-contents flex flex-col sm:flex-row justify-between sm:items-center px-12">
           <div className="quick-links mb-5 sm:mb-0 ">
             <strong>Quick Links</strong>
             <ul className="mt-6 font-light">
-              <li className="text-sm mb-2">Home</li>
+              <Link href={'/'}>
+                <li className="text-sm mb-2">Home</li>
+              </Link>
+              <Link href={'/events'}>
               <li className="text-sm mb-2">Browse Events</li>
+              </Link>
+              <Link href={'/events/host-event'}>
               <li className="text-sm mb-2">Host an Event</li>
+              </Link>
               <li className="text-sm mb-2">How It Works</li>
             </ul>
           </div>
