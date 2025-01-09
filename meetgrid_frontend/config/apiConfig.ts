@@ -6,6 +6,7 @@ export const CLOUDINARY_URL = process.env.NEXT_PUBLIC_CLOUDINARY
     BASE_URL:BASE_URL,
     USER_URL:`${BASE_URL}/api/user`,
     EVENT_URL:`${BASE_URL}/api/events`,
+    TICKETS_URL:`${BASE_URL}/api/tickets`,
     ADMIN_URL:`${BASE_URL}/api/admin`
 }
 

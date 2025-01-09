@@ -1,6 +1,6 @@
 export default interface ITicket {
   eventId: string;
-  bookedBy: string;
+  bookedBy?: string;
   quantity: number;
   ticketPrice: number;
   totalPrice: number;

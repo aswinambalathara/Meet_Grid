@@ -10,6 +10,7 @@ import { getEvent } from "@/lib/api/user/EventRoutes";
 import { updateTicketPrice } from "@/redux/slices/CheckoutSlice";
 import IEvent from "@/interfaces/IEvent";
 import { formatDate } from "@/lib/utility/Helpers";
+import { checkout } from "@/lib/api/user/TicketsRoutes";
 const PickTickets = lazy(
   () => import("@/components/pagecomponents/user/Events/PickTickets")
 );
@@ -57,8 +58,13 @@ function Checkout() {
       }
     })();
 
+    const script = document.createElement('script');
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    document.body.appendChild(script);
     window.addEventListener("popstate", handlePopState);
     return () => {
+      document.body.removeChild(script)
       window.removeEventListener("popstate", handlePopState);
     };
   }, []);
@@ -90,7 +96,7 @@ function Checkout() {
 
   console.log(attendees);
 
-  const handleProceed = () => {
+  const handleProceed = async () => {
     if (activeStep === "PICK-TICKETS") {
       setActiveStep(steps[steps.indexOf(activeStep) + 1]);
       return;
@@ -103,6 +109,7 @@ function Checkout() {
         return;
       }
       setActiveStep(steps[steps.indexOf(activeStep) + 1]);
+      return;
     }
 
     if (activeStep === "PAYMENT") {
@@ -116,6 +123,59 @@ function Checkout() {
         return;
       }
     }
+
+    try {
+      const checkoutPayload = {
+        eventId,
+        quantity,
+        ticketPrice,
+        totalPrice,
+        billingAddress,
+        payment,
+        attendees,
+      };
+      const order = await checkout(checkoutPayload);
+      if (order) {
+        handlePayment(order.data);
+      }
+    } catch (error) {}
+  };
+
+  const handlePayment = (order: any) => {
+    try {
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY,
+        amount: order.order_amount,
+        currency: order.currency,
+        name: "Meet Grid",
+        description: `Event Booking by ${order.notes.name}`,
+        image: "/images/meetgrid_logo.png",
+        order_id: order.order_id,
+        handler: async function (response: any) {
+          const paymentData = {
+            paymentId: response.razorpay_payment_id,
+            orderId: response.razorpay_order_id,
+            signature: response.razorpay_signature,
+            ticketId: order.notes.ticketId,
+          };
+          console.log(paymentData)
+        },
+        prefill: {
+          name: order.notes.name,
+          email: order.notes.email,
+          contact: order.notes.contact,
+        },
+        notes: {
+          address: "MeetGrid | India",
+        },
+        theme: {
+          color: "#3399cc",
+        },
+      };
+
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+    } catch (error) {}
   };
 
   const handleBackButton = () => {
@@ -131,7 +191,6 @@ function Checkout() {
   if (loading) {
     return <Loading />;
   }
-
 
   return (
     <div className="min-h-screen container bg-slate-50 ">

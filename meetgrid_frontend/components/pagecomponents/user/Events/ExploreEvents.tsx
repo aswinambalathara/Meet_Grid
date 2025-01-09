@@ -56,12 +56,12 @@ function ExploreEvents() {
             }),
             fetchPlace([latitude, longitude]),
           ]);
-        setLocation(getShortLocation(placeResponse?.address!));
-        setCategories(categoryResponse.data);
-        setEvents(eventsResponse.data);
+        placeResponse && setLocation(getShortLocation(placeResponse?.address!));
+        categoryResponse && setCategories(categoryResponse.data);
+        eventsResponse && setEvents(eventsResponse.data);
       } catch (error) {
         if (error instanceof Error) {
-          console.error("Error fetching location or events:", error);
+          //console.error("Error fetching location or events:", error);
           toast.error(error.message);
         }
       } finally {
@@ -74,9 +74,10 @@ function ExploreEvents() {
     (async () => {
       try {
         const response = await fetchEvents(filters);
-        setEvents(response.data);
+        if (response) {
+          setEvents(response.data);
+        }
       } catch (error) {
-        console.error(error);
         if (error instanceof Error) {
           toast.error(error.message);
         }
@@ -111,10 +112,12 @@ function ExploreEvents() {
           },
         }
       );
-      setSuggestions(result.data);
+      if (result) {
+        setSuggestions(result.data);
+      }
     } catch (error) {
       if (error instanceof Error) {
-        console.error("Error fetching location:", error);
+        //console.error("Error fetching location:", error);
         toast.error(error.message);
       }
     }
@@ -125,7 +128,7 @@ function ExploreEvents() {
     const place = suggestions.filter(
       (sg) => sg.place_id === parseInt(placeId!)
     );
-    console.log(place);
+    // console.log(place);
     setFilters((prev) => ({
       ...prev,
       coordinates: {
