@@ -12,7 +12,10 @@ const DeactivateAccount = React.lazy(
   () => import("@/components/pagecomponents/user/Profile/DeactivateAccount")
 );
 const Events = React.lazy(
-  () => import("@/components/pagecomponents/user/Profile/EventsPage")
+  () => import("@/components/pagecomponents/user/Profile/TicketsPage")
+);
+const YourEvents = React.lazy(
+  () => import("@/components/pagecomponents/user/Profile/YourEvents")
 );
 const ChangePassword = React.lazy(
   () => import("@/components/pagecomponents/user/Profile/ChangePassword")
@@ -21,13 +24,20 @@ import { getUserProfile } from "@/lib/api/user/AuthorisedRoutes";
 import IUser from "@/interfaces/IUser";
 import { Toaster } from "react-hot-toast";
 import Loading from "../Layout/Loading";
+import { useSearchParams } from "next/navigation";
 
 function Profile() {
+  const path = useSearchParams();
+
   const [activeSection, setActiveSection] = useState("basic");
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState<IUser>({ email: "" });
 
   useEffect(() => {
+    const events = path.get("events");
+    if (events) {
+      setActiveSection("events");
+    }
     async function fetchUserProfile() {
       try {
         const data = await getUserProfile();
@@ -45,19 +55,28 @@ function Profile() {
       case "basic":
         return (
           <Suspense fallback={<Loading />}>
-            <BasicDetails data={userData} setUserData={setUserData}/>
+            <BasicDetails data={userData} setUserData={setUserData} />
           </Suspense>
         );
       case "professional-details":
         return (
           <Suspense fallback={<Loading />}>
-            <ProfessionalDetails userData={userData} setUserData={setUserData}/>
+            <ProfessionalDetails
+              userData={userData}
+              setUserData={setUserData}
+            />
           </Suspense>
         );
       case "events":
         return (
           <Suspense fallback={<Loading />}>
             <Events />
+          </Suspense>
+        );
+      case "your-events":
+        return (
+          <Suspense fallback={<Loading />}>
+            <YourEvents />
           </Suspense>
         );
       case "change-password":
@@ -68,16 +87,17 @@ function Profile() {
         );
       case "deactivate-account":
         const confirm = window.confirm("Are you trying to Deactivate Account?");
-        if (!confirm) {setActiveSection('basic')}
-          return (
-            <Suspense fallback={<Loading />}>
-              <DeactivateAccount userData={userData} />
-            </Suspense>
-          );
+        if (!confirm) {
+          setActiveSection("basic");
+        }
+        return (
+          <Suspense fallback={<Loading />}>
+            <DeactivateAccount userData={userData} />
+          </Suspense>
+        );
         break;
     }
   };
-
 
   return (
     <div className="min-h-screen text-white flex items-center justify-center">

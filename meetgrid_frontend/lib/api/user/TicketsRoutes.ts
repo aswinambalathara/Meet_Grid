@@ -109,6 +109,24 @@ export const checkout = async (ticketData: ITicket) => {
     const response = await axiosTicketInstance.post("/checkout", ticketData);
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };
+
+export const verifyPayment = async (paymentData:any) =>{
+  try {
+    const response = await axiosTicketInstance.patch('/checkout/verify',paymentData)
+    return response.data
+  } catch (error) {
+    return handleError(error)
+  }
+}
+
+export const getTickets = async () =>{
+  try {
+    const response = await axiosTicketInstance.get('/get-ickets')
+    return response.data
+  } catch (error) {
+    return handleError(error)
+  }
+}

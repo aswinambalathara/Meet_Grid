@@ -41,27 +41,27 @@ axiosEventInstance.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest = error.config as CustomAxiosRequestConfig;
 
-        if (error.response?.status === 403) {
-          const responseData = error.response.data as ErrorResponse
-          console.log(responseData)
-          if (responseData.isBlocked === true) {
-            try {
-              const tokens = JSON.parse(localStorage.getItem("auth") || "{}");
-              await axios.get(`${USER_URL}/auth/logout`);
-              localStorage.setItem(
-                "auth",
-                JSON.stringify({
-                  ...tokens,
-                  userToken: "",
-                })
-              );
-            } catch (err) {
-              handleError(err);
-            }finally{
-              window.location.href = '/auth/login?error=User Blocked'
-            }
-          }
+    if (error.response?.status === 403) {
+      const responseData = error.response.data as ErrorResponse;
+      console.log(responseData);
+      if (responseData.isBlocked === true) {
+        try {
+          const tokens = JSON.parse(localStorage.getItem("auth") || "{}");
+          await axios.get(`${USER_URL}/auth/logout`);
+          localStorage.setItem(
+            "auth",
+            JSON.stringify({
+              ...tokens,
+              userToken: "",
+            })
+          );
+        } catch (err) {
+          handleError(err);
+        } finally {
+          window.location.href = "/auth/login?error=User Blocked";
         }
+      }
+    }
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
@@ -109,7 +109,7 @@ export const getEventCategories = async () => {
     const response = await axiosEventInstance.get("/getEventCategories");
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };
 
@@ -118,7 +118,7 @@ export const HostEvent = async (data: IEvent) => {
     const response = await axiosEventInstance.post("/createEvent", data);
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };
 
@@ -129,7 +129,7 @@ export const fetchEvents = async (filters: EventFilterOptions) => {
     });
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };
 
@@ -138,6 +138,6 @@ export const getEvent = async (id: string) => {
     const response = await axiosEventInstance.get(`/get-event/${id}`);
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };

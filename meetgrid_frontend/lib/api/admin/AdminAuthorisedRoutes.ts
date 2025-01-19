@@ -91,7 +91,7 @@ export const getUsers = async (
     );
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };
 
@@ -100,7 +100,7 @@ export const getUser = async (id: string) => {
     const response = await adminAxiosInstance.get(`/users/${id}`);
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };
 
@@ -112,7 +112,7 @@ export const blockOrUnblockUser = async (id: string, isBlocked: boolean) => {
     });
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };
 
@@ -127,7 +127,7 @@ export const changeAccountStatus = async (
     });
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };
 
@@ -136,9 +136,10 @@ export const adminLogout = async () => {
     const response = await adminAxiosInstance.get("/auth/logout");
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };
+
 
 
 export default adminAxiosInstance

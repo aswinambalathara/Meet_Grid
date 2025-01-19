@@ -31,7 +31,7 @@ export const handleAdminLogin = async (admin: IAdmin) => {
     const response = await axiosInstance.post("/login", admin);
     return response.data;
   } catch (error) {
-    errorHandler(error);
+    return errorHandler(error);
   }
 };
 
@@ -40,6 +40,6 @@ export const handleAdminLogout = async () => {
       const response = await axiosInstance.get("/logout");
       return response.data;
     } catch (error) {
-      errorHandler(error);
+      return errorHandler(error);
     }
   };

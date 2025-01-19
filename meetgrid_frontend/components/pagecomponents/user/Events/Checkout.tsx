@@ -10,7 +10,8 @@ import { getEvent } from "@/lib/api/user/EventRoutes";
 import { updateTicketPrice } from "@/redux/slices/CheckoutSlice";
 import IEvent from "@/interfaces/IEvent";
 import { formatDate } from "@/lib/utility/Helpers";
-import { checkout } from "@/lib/api/user/TicketsRoutes";
+import { checkout, verifyPayment } from "@/lib/api/user/TicketsRoutes";
+import { useRouter } from "next/navigation";
 const PickTickets = lazy(
   () => import("@/components/pagecomponents/user/Events/PickTickets")
 );
@@ -32,6 +33,7 @@ function Checkout() {
     attendees,
   } = useSelector((state: RootState) => state.checkout);
   const dispatch = useDispatch();
+  const router = useRouter()
   const [loading, setLoading] = useState(true);
   const [event, setEvent] = useState<IEvent | null>(null);
   const steps = ["PICK-TICKETS", "ATTENDEE-DETAILS", "PAYMENT"];
@@ -145,21 +147,13 @@ function Checkout() {
     try {
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY,
-        amount: order.order_amount,
+        amount: order.amount,
         currency: order.currency,
         name: "Meet Grid",
         description: `Event Booking by ${order.notes.name}`,
         image: "/images/meetgrid_logo.png",
-        order_id: order.order_id,
-        handler: async function (response: any) {
-          const paymentData = {
-            paymentId: response.razorpay_payment_id,
-            orderId: response.razorpay_order_id,
-            signature: response.razorpay_signature,
-            ticketId: order.notes.ticketId,
-          };
-          console.log(paymentData)
-        },
+        order_id: order.id,
+        handler: (response:any)=>handleVerifyPayment(response,order.notes.ticketId),
         prefill: {
           name: order.notes.name,
           email: order.notes.email,
@@ -175,8 +169,30 @@ function Checkout() {
 
       const razorpay = new window.Razorpay(options);
       razorpay.open();
-    } catch (error) {}
+    } catch (error) {
+      console.error(error)
+      toast.error('Error initiating payment')
+    }
   };
+
+  const handleVerifyPayment = async (response:any,ticketId:string)=>{
+    console.log(response)
+    const paymentData = {
+      paymentId: response.razorpay_payment_id,
+      orderId: response.razorpay_order_id,
+      signature: response.razorpay_signature,
+      ticketId: ticketId,
+    };
+    try {
+      const response = await verifyPayment(paymentData)
+      toast.success(response.message)
+      setTimeout(()=>router.push('/profile?events=true'),2000)
+    } catch (error) {
+      if(error instanceof Error){
+        toast.error(error.message)
+      }
+    }
+  }
 
   const handleBackButton = () => {
     const activeStepIdx = steps.indexOf(activeStep);

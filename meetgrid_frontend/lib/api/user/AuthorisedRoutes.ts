@@ -10,8 +10,6 @@ import IUser from "@/interfaces/IUser";
 
 const { USER_URL } = apiURLs;
 
-
-
 const axiosUserInstance = axios.create({
   baseURL: USER_URL,
   headers: {
@@ -112,7 +110,7 @@ export const getUserProfile = async () => {
     const response = await axiosUserInstance.get("/profile");
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };
 
@@ -124,7 +122,7 @@ export const sendEmailVerification = async (email: string) => {
     );
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };
 
@@ -136,7 +134,7 @@ export const verifyEmailOTP = async (otp: string) => {
     );
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };
 
@@ -148,7 +146,7 @@ export const updateBasicDetails = async (formData: Partial<IUser>) => {
     );
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };
 
@@ -166,7 +164,7 @@ export const updateProfileImage = async ({
     );
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };
 
@@ -180,7 +178,7 @@ export const updateProfessionalDetails = async (
     );
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };
 
@@ -191,7 +189,7 @@ export const changePasswordSendOTP = async () => {
     );
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };
 
@@ -203,7 +201,7 @@ export const verifyChangePasswordOTP = async (otp: number) => {
     );
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };
 
@@ -215,7 +213,7 @@ export const changePassword = async (data: ProfilePasswordFormData) => {
     );
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };
 
@@ -227,6 +225,6 @@ export const deactivateAccount = async (password: string) => {
     );
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };

@@ -4,7 +4,9 @@ import axios from "axios";
 
 type coordinates = [latitude: number, longitude: number];
 
-export const fetchPlace = async (coordinates: coordinates):Promise<NominatimResponse | undefined> => {
+export const fetchPlace = async (
+  coordinates: coordinates
+): Promise<NominatimResponse | undefined | void> => {
   try {
     const response = await axios.get(
       "https://nominatim.openstreetmap.org/reverse?",
@@ -12,12 +14,12 @@ export const fetchPlace = async (coordinates: coordinates):Promise<NominatimResp
         params: {
           lat: coordinates[0],
           lon: coordinates[1],
-          format:'json'
+          format: "json",
         },
       }
     );
-    return response.data
+    return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };

@@ -10,7 +10,7 @@ export const createEventCategory = async (formData: IEventCategory) => {
     );
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };
 
@@ -21,7 +21,7 @@ export const getEventCategories = async () => {
     );
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };
 
@@ -32,7 +32,7 @@ export const deleteEventCategory = async (id: string) => {
     );
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };
 
@@ -44,6 +44,6 @@ export const editEventCategory = async (formData: IEventCategory) => {
     );
     return response.data;
   } catch (error) {
-    handleError(error);
+    return handleError(error);
   }
 };

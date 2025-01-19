@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
 import EventCard from "./EventCard";
 import IEvent from "@/interfaces/IEvent";
 import { EventFilterOptions, NominatimResponse } from "@/lib/utility/types";
@@ -18,6 +17,7 @@ import { Label } from "@/components/ui/label";
 import axios from "axios";
 import IEventCategory from "@/interfaces/IEventCategory";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 function ExploreEvents() {
   const router = useRouter();
@@ -26,11 +26,13 @@ function ExploreEvents() {
   );
   const [loading, setLoading] = useState<boolean>(true);
   const [events, setEvents] = useState<IEvent[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [isFilterActive, setFilterActive] = useState(false);
   const [location, setLocation] = useState<string>("Enter Location");
   const [categories, setCategories] = useState<IEventCategory[]>([]);
   const [suggestions, setSuggestions] = useState<NominatimResponse[]>([]);
+  const [isSortActive, setSortActive] = useState<boolean>(false);
   const [refetch, setRefetch] = useState(false);
   const [filters, setFilters] = useState<EventFilterOptions>({
     categoryGroup: active,
@@ -38,7 +40,7 @@ function ExploreEvents() {
   });
 
   useEffect(() => {
-    (async () => {
+    const fetch = async () => {
       try {
         const { latitude, longitude } = await fetchLocation();
 
@@ -60,18 +62,20 @@ function ExploreEvents() {
         categoryResponse && setCategories(categoryResponse.data);
         eventsResponse && setEvents(eventsResponse.data);
       } catch (error) {
+        console.log("error log component", error);
         if (error instanceof Error) {
-          //console.error("Error fetching location or events:", error);
           toast.error(error.message);
         }
       } finally {
         setLoading(false);
       }
-    })();
+    };
+
+    fetch();
   }, []);
 
   useEffect(() => {
-    (async () => {
+    const fetch = async () => {
       try {
         const response = await fetchEvents(filters);
         if (response) {
@@ -81,8 +85,11 @@ function ExploreEvents() {
         if (error instanceof Error) {
           toast.error(error.message);
         }
+      } finally {
+        setLoading(false);
       }
-    })();
+    };
+    fetch();
   }, [active, location, refetch]);
 
   const handleEventGroupSelection = (
@@ -117,7 +124,6 @@ function ExploreEvents() {
       }
     } catch (error) {
       if (error instanceof Error) {
-        //console.error("Error fetching location:", error);
         toast.error(error.message);
       }
     }
@@ -170,7 +176,6 @@ function ExploreEvents() {
   //console.log(filters.coordinates);
   return (
     <div className="min-h-screen">
-      <Toaster />
       <section className="banner h-80 w-full relative flex items-center justify-center mb-8">
         <Image
           src={"/images/event-bac-1.jpg"}
@@ -210,57 +215,121 @@ function ExploreEvents() {
           </Button>
         </div>
 
-        <div className="filterOptions flex items-start justify-end text-white px-5 gap-3 mb-10">
-          <div className={`search relative ${!isSearchActive && "hidden"} `}>
-            <Input
-              type="text"
-              placeholder="Enter location"
-              className="max-w-60"
-              onChange={debouncedLocationInput}
-            />
-            <i
-              className="fa-solid fa-xmark absolute right-2 top-2 cursor-pointer"
-              onClick={() => setIsSearchActive(false)}
-            />
-            <ul
-              className={`bg-slate-200/50 text-sm mt-1 text-black py-2 rounded-b absolute w-full overflow-auto max-h-60 z-10 ${
-                !suggestions.length && "hidden"
-              }`}
+        <div className="filterOptions flex items-start justify-between text-white px-5 gap-3 mb-10">
+          <div className="sort-search flex items-center gap-3">
+            <div
+              className="sort ring-1 ring-white p-1 cursor-pointer rounded"
+              onClick={() => setSortActive(!isSortActive)}
             >
-              {suggestions.length &&
-                suggestions.map((suggestion) => (
-                  <li
-                    key={suggestion.place_id}
-                    className="bg-slate-100 p-1 text-sm mb-1 cursor-pointer"
-                    data-value={suggestion.place_id}
-                    onClick={handleLocationSelect}
-                  >
-                    {suggestion.display_name}
-                  </li>
-                ))}
-            </ul>
+              <p>
+                Sort <i className="fa-solid fa-arrow-down-wide-short"></i>
+              </p>
+            </div>
+            <div className="search-bar relative">
+              <Input placeholder="Search events" type="text" onChange={(e)=>setSearchTerm(e.target.value)}/>
+              {searchTerm.length > 0 ? (
+                <i
+                  className={`fa-solid fa-xmark absolute right-2 text-sm bottom-[10px]`}
+                ></i>
+              ) : (
+                <i
+                  className={`fa-solid fa-magnifying-glass absolute right-2 text-sm bottom-[10px]`}
+                ></i>
+              )}
+            </div>
           </div>
-          <Button
-            className={`bg-transparent text-slate-300 ring-1 ring-white p-2 max-w-48 overflow-hidden hover:text-white ${
-              isSearchActive && "hidden"
-            }`}
-            onClick={() => setIsSearchActive(true)}
-          >
-            <i className="fa-solid fa-location-dot"></i>
-            <p>{location}</p>
-          </Button>
-          <Button
-            onClick={() => setFilterActive(!isFilterActive)}
-            className={`bg-transparent text-slate-300 hover:text-slate-50 ring-1 ring-white p-2 max-w-48 overflow-hidden`}
-          >
-            <i className="fa-solid fa-filter"></i>
-            Filter
-            <i className="fa-solid fa-chevron-down "></i>
-          </Button>
+
+          <div className="flex gap-2">
+            <div className={`search relative ${!isSearchActive && "hidden"} `}>
+              <Input
+                type="text"
+                placeholder="Enter location"
+                className="max-w-60"
+                onChange={debouncedLocationInput}
+              />
+              <i
+                className="fa-solid fa-xmark absolute right-2 top-2 cursor-pointer"
+                onClick={() => setIsSearchActive(false)}
+              />
+              <ul
+                className={`bg-slate-200/50 text-sm mt-1 text-black py-2 rounded-b absolute w-full overflow-auto max-h-60 z-10 ${
+                  !suggestions.length && "hidden"
+                }`}
+              >
+                {suggestions.length &&
+                  suggestions.map((suggestion) => (
+                    <li
+                      key={suggestion.place_id}
+                      className="bg-slate-100 p-1 text-sm mb-1 cursor-pointer"
+                      data-value={suggestion.place_id}
+                      onClick={handleLocationSelect}
+                    >
+                      {suggestion.display_name}
+                    </li>
+                  ))}
+              </ul>
+            </div>
+            <Button
+              className={`bg-transparent text-slate-300 ring-1 ring-white p-2 max-w-48 overflow-hidden hover:text-white ${
+                isSearchActive && "hidden"
+              }`}
+              onClick={() => setIsSearchActive(true)}
+            >
+              <i className="fa-solid fa-location-dot"></i>
+              <p>{location}</p>
+            </Button>
+            <Button
+              onClick={() => setFilterActive(!isFilterActive)}
+              className={`bg-transparent text-slate-300 hover:text-slate-50 ring-1 ring-white p-2 max-w-48 overflow-hidden`}
+            >
+              <i className="fa-solid fa-filter"></i>
+              Filter
+              <i className="fa-solid fa-chevron-down "></i>
+            </Button>
+          </div>
         </div>
 
+        <ul
+          className={`absolute sort-list text-sm bg-zinc-400 px-4 py-2 rounded top-24 left-5 z-10 leading-6 ${
+            !isSortActive && "hidden"
+          }`}
+        >
+          <li>
+            Price:
+            <div className="flex flex-col text-sm gap-1">
+              <Label className="cursor-pointer">
+                <input type="radio" value="low-to-high" name="sort-filter" />{" "}
+                Low to High
+              </Label>
+              <Label className="cursor-pointer">
+                <input type="radio" value="high-to-low" name="sort-filter" />{" "}
+                High to Low
+              </Label>
+            </div>
+          </li>
+          <li>
+            Distance:
+            <div className="flex flex-col text-sm gap-1">
+              <Label className="cursor-pointer">
+                <input type="radio" value="closest-first" name="sort-filter" />{" "}
+                Closest First
+              </Label>
+              <Label className="cursor-pointer">
+                <input type="radio" value="farthest-first" name="sort-filter" />{" "}
+                Farthest First
+              </Label>
+            </div>
+          </li>
+
+          <div className="mt-3">
+            <button className="bg-stone-900 text-white px-2 rounded">
+              Reset
+            </button>
+          </div>
+        </ul>
+
         <div
-          className={`bg-white/50 w-5/6 sm:w-2/6  h-40 overflow-auto absolute right-5 top-24 rounded filters py-5 px-3 flex flex-col gap-3 text-sm ${
+          className={`bg-white/50 w-5/6 sm:w-2/6  min-h-40  absolute right-5 top-24 rounded filters py-5 px-3 flex flex-col gap-3 text-sm ${
             !isFilterActive && "hidden"
           }`}
         >
@@ -365,6 +434,7 @@ function ExploreEvents() {
             </Button>
           </div>
         </div>
+
         <div
           className={`events-list grid ${
             events.length
