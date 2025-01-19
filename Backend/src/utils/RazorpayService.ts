@@ -4,7 +4,7 @@ import CustomError from "./CustomError";
 import IUser from "../interfaces/entities/IUser";
 import { Orders } from "razorpay/dist/types/orders";
 import crypto from "crypto";
-import { RAZORPAY_KEY } from "../config/env";
+import { RAZORPAY_SECRET } from "../config/env";
 import CryptoService from "./CryptoService";
 
 export class RazorpayService {
@@ -18,7 +18,7 @@ export class RazorpayService {
     const nanoid = this.cryptoService.generateNanoId(5)
     try {
       const options = {
-        amount: 1000 * 100,
+        amount: amount * 100,
         currency: "INR",
         receipt: `PAY${nanoid}`,
         notes: {
@@ -44,7 +44,7 @@ export class RazorpayService {
     payment_id: string,
     signature: string
   ): Promise<boolean> {
-    const hmac = crypto.createHmac("sha256", RAZORPAY_KEY as string);
+    const hmac = crypto.createHmac("sha256", RAZORPAY_SECRET as string);
     hmac.update(`${order_id}|${payment_id}`);
     const generatedSignature = hmac.digest("hex");
     return generatedSignature === signature;

@@ -38,9 +38,9 @@ router.patch(
   ticketController.handleVerifyPayment.bind(ticketController)
 );
 
-router.get(
-  "/get-ticket",
-  ticketController.handleGenerateTicket.bind(ticketController)
-);
+// router.get(
+//   "/get-ticket",
+//   ticketController.handleGenerateTicket.bind(ticketController)
+// );
 
 export default router;

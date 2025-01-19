@@ -14,7 +14,8 @@ export default class UserTicketController {
       const ticketData = req.body;
       const { id } = req.user!;
       const result = await this.ticketService.createTicketOrder(id, ticketData);
-      res.status(StatusCode.Success).json(result);
+      console.log(result)
+      res.status(StatusCode.Success).json(result); 
     } catch (error) {
       next(error);
     }
@@ -39,16 +40,16 @@ export default class UserTicketController {
     }
   }
 
-  async handleGenerateTicket(
-    req: CustomRequest,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-        //not implemented
-        res.status(StatusCode.Accepted)
-    } catch (error) {
-        next(error)
-    }
-  }
+  // async handleGenerateTicket(
+  //   req: CustomRequest,
+  //   res: Response,
+  //   next: NextFunction
+  // ): Promise<void> {
+  //   try {
+  //       //not implemented
+  //       res.status(StatusCode.Accepted)
+  //   } catch (error) {
+  //       next(error)
+  //   }
+  // }
 }

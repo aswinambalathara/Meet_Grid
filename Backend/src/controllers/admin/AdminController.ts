@@ -2,11 +2,13 @@ import { Request, Response, NextFunction } from "express";
 import AdminUserService from "../../services/admin/AdminUserService";
 import { StatusCode } from "../../types";
 import AdminEventCategoryService from "../../services/admin/AdminEventCategoryService";
+import AdminEventService from "../../services/admin/AdminEventService";
 
 export default class AdminController {
   constructor(
     private adminUserService: AdminUserService,
-    private adminEventCategoryService: AdminEventCategoryService
+    private adminEventCategoryService: AdminEventCategoryService,
+    private adminEventService: AdminEventService
   ) {}
 
   async handleGetUsers(
@@ -143,6 +145,47 @@ export default class AdminController {
       const { id } = req.params;
       const result = await this.adminEventCategoryService.delete(id);
       res.status(StatusCode.Success).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async handlegetEvents(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const result = await this.adminEventService.getEvents();
+      res.status(StatusCode.Success).json(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async handleApproveEvent(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const {id} = req.params 
+      const result = await this.adminEventService.changeEventStatus(true,id);
+      res.status(StatusCode.Success).json(result)
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async handleRejectEvent(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const {id} = req.params 
+      const result = await this.adminEventService.changeEventStatus(false,id);
+      res.status(StatusCode.Success).json(result)
     } catch (error) {
       next(error);
     }

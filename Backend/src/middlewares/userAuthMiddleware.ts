@@ -55,6 +55,7 @@ export default class UserAuthMiddleware {
 
         req.user = { email: payload.email, id: payload.id };
         next();
+        return
       }
 
       console.log('database hit')

@@ -21,6 +21,7 @@ export default class TicketService {
     userId: string,
     ticketData: ITicket
   ): Promise<payloadResponse> {
+
     this.validatorService.validateRequiredFields({
       eventId: ticketData.eventId,
       quantity: ticketData.quantity,
@@ -56,13 +57,13 @@ export default class TicketService {
     ticketData.payment.paymentStatus = "Pending";
     await event.save();
     const ticket = await this.ticketRepository.create(ticketData);
-
     const order = await this.razorpayService.createOrder(
-      ticketData.totalPrice,
+     ticketData.totalPrice,
       user,
       ticket.id
     );
     return { data: order, message: "razorpay order created", status: true };
+
   }
 
   async verifyPayment(
@@ -71,6 +72,7 @@ export default class TicketService {
     paymentId: string,
     signature: string
   ): Promise<response> {
+    //console.log(ticketId,orderId,paymentId,signature)
     const isVerified = await this.razorpayService.verifyPayment(
       orderId,
       paymentId,

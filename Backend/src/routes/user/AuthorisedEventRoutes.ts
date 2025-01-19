@@ -22,7 +22,6 @@ router.post(
   eventController.handleCreateEvent.bind(eventController)
 );
 
-router.post('/check-out',)
 
 
 export default router;

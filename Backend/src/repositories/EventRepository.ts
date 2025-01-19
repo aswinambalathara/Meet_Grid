@@ -15,7 +15,7 @@ export default class EventRepository implements IEventRepository {
     return await this.model.findById(id).populate('organizer','fullName image email phone bio professionalInfo.linkedinUrl','user').exec()
   }
   async findAll(): Promise<IEvent[]> {
-    return await this.model.find();
+    return await this.model.find().populate('category').exec()
   }
   async create(event: IEvent): Promise<IEvent> {
     const newEvent = new this.model(event);
