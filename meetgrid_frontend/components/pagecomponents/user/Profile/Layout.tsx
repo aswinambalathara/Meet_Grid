@@ -25,6 +25,7 @@ import IUser from "@/interfaces/IUser";
 import { Toaster } from "react-hot-toast";
 import Loading from "../Layout/Loading";
 import { useSearchParams } from "next/navigation";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 function Profile() {
   const path = useSearchParams();
@@ -102,6 +103,7 @@ function Profile() {
   return (
     <div className="min-h-screen text-white flex items-center justify-center">
       <Toaster />
+      <TooltipProvider>
       <div className="profile-container bg-slate-300 w-[1350px] h-[600px] rounded-lg flex">
         <div className="side-bar bg-slate-500 w-64 h-full rounded-l-lg flex flex-col items-center py-5">
           <h3 className="text-xl font-semibold">Profile Settings</h3>
@@ -126,6 +128,7 @@ function Profile() {
         </div>
         <div className="content w-full p-2">{!loading && renderContent()}</div>
       </div>
+      </TooltipProvider>
     </div>
   );
 }
