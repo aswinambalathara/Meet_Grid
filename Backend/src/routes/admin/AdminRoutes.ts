@@ -49,7 +49,7 @@ router.get(
   adminController.handleGetEventCategories.bind(adminController)
 );
 
-router.patch(
+router.delete(
   "/event-categories/delete/:id",
   adminController.handleDeleteEventCategory.bind(adminController)
 );

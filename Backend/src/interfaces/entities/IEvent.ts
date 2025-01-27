@@ -46,7 +46,10 @@ export default interface IEvent extends Document {
     availableTickets: number;
     registrationDeadline:Date;
   };
-  status: "Active" | "Completed" | "Cancelled" | "Pending" | "Rejected";
+  eventStatus: {
+    status:"Active" | "Completed" | "Cancelled" | "Pending" | "Rejected",
+    message?:string
+  };
   isActive: boolean;
   readonly createdAt: Date;
   updatedAt: Date;

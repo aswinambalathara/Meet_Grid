@@ -183,8 +183,9 @@ export default class AdminController {
     next: NextFunction
   ): Promise<void> {
     try {
-      const {id} = req.params 
-      const result = await this.adminEventService.changeEventStatus(false,id);
+      const {id} = req.params
+      const {message} = req.body 
+      const result = await this.adminEventService.changeEventStatus(false,id,message);
       res.status(StatusCode.Success).json(result)
     } catch (error) {
       next(error);

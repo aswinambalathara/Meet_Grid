@@ -12,7 +12,8 @@ export default class AdminEventService {
 
   async changeEventStatus(
     isApproved: boolean,
-    eventId: string
+    eventId: string,
+    message?:string
   ): Promise<response> {
     const event = await this.eventRepository.findById(eventId);
     if (!event) {
@@ -20,9 +21,9 @@ export default class AdminEventService {
     }
 
     if (isApproved) {
-      event.status = "Active";
+      event.eventStatus.status = "Active";
     } else {
-      event.status = "Rejected";
+      event.eventStatus = {status:'Rejected',message:message}
     }
 
     await event.save();

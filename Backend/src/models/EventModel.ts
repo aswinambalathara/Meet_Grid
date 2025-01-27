@@ -8,7 +8,11 @@ const eventSchema = new Schema<IEvent>(
       required: true,
     },
     description: { type: String, required: true },
-    category: { type: Schema.Types.ObjectId, ref: "eventCategory", required: true },
+    category: {
+      type: Schema.Types.ObjectId,
+      ref: "eventCategory",
+      required: true,
+    },
     startDate: { type: Date, required: true },
     endDate: { type: Date, required: true },
     eventType: { type: String, enum: ["Online", "In-Person"], required: true },
@@ -62,21 +66,32 @@ const eventSchema = new Schema<IEvent>(
         availableTickets: { type: Number, required: true },
         registrationDeadline: { type: Date, required: true },
         ticketName: { type: String, required: true, default: "Normal Ticket" },
-        ticketDescription: { type: String, required: true, default: "This is a normal ticket" },
+        ticketDescription: {
+          type: String,
+          required: true,
+          default: "This is a normal ticket",
+        },
       },
       required: true,
     },
-    status: {
-      type: String,
-      enum: ["Active", "Completed", "Cancelled", "Pending", "Rejected"],
-      default: "Pending",
+    eventStatus: {
+      type: {
+        status: {
+          type: String,
+          enum: ["Active", "Completed", "Cancelled", "Pending", "Rejected"],
+          default: "Pending",
+        },
+        message:{
+          type:String,
+        }
+      },
     },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true }
 );
 
-eventSchema.index({ location: "2dsphere" });
+// eventSchema.index({ location: "2dsphere" });
 
-const EventModel = model("event", eventSchema);
+const EventModel = model("event", eventSchema); 
 export default EventModel;
