@@ -1,50 +1,28 @@
-// import { Button } from "@/components/ui/button";
-// import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-// import { Input } from "@/components/ui/input";
-// import { Label } from "@/components/ui/label";
-// import {
-//   Table,
-//   TableBody,
-//   TableCell,
-//   TableHead,
-//   TableHeader,
-//   TableRow,
-// } from "@/components/ui/table";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip";
-// import { TooltipContent } from "@radix-ui/react-tooltip";
 import React from "react";
-import Overview from "../EventManagement/Overview";
-import PendingEvents from "../EventManagement/PendingEvents";
-import ApprovedEvents from "../EventManagement/ApprovedEvents";
-import CancelledEvents from "../EventManagement/CancelledEvents";
+import Notifications from "../EventManagement/Notifications";
+import UserManageEvents from "../EventManagement/UserManageEvents";
 import TicketManagement from "../EventManagement/TicketManagement";
 
 function YourEvents() {
   return (
 
-    <div className="YourEvents-Container w-full p-5">
-    <Tabs defaultValue="overview" className="w-full">
-      <TabsList className="grid sm:grid-cols-5">
-        <TabsTrigger value="overview">Overview</TabsTrigger>
-        <TabsTrigger value="pending-events">Event Waiting for Approval</TabsTrigger>
-        <TabsTrigger value="approved-events">Approved Events</TabsTrigger>
-        <TabsTrigger value="cancelled-events">Cancelled/Rejected events</TabsTrigger>
-        <TabsTrigger value="ticket-and-sales">Ticket & Sales</TabsTrigger>
+    <div className="YourEvents-Container w-full p-5 h-full overflow-auto">
+      {/* <h1 className="text-black font-bold text-lg mb-2">Event Management Dashboard</h1> */}
+    <Tabs defaultValue="notifications" className="w-full">
+      <TabsList className="grid sm:grid-cols-3">
+        <TabsTrigger value="notifications">Notifications</TabsTrigger>
+        <TabsTrigger value="event-management">Your Events</TabsTrigger>
+        <TabsTrigger value="ticket-management">Tickets</TabsTrigger>
       </TabsList>
-      <TabsContent value="overview">
-        <Overview />
+      <TabsContent value="notifications">
+        <Notifications />
       </TabsContent>
-      <TabsContent value="pending-events">
-        <PendingEvents/>
+      <TabsContent value="event-management">
+        <UserManageEvents/>
       </TabsContent>
-      <TabsContent value="approved-events">
-        <ApprovedEvents/>
-      </TabsContent>
-      <TabsContent value="cancelled-events">
-        <CancelledEvents/>
-      </TabsContent>
-      <TabsContent value="ticket-and-sales">
+      <TabsContent value="ticket-management">
         <TicketManagement/>
       </TabsContent>
     </Tabs>

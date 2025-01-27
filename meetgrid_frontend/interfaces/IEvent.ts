@@ -42,5 +42,8 @@ export default interface IEvent {
     availableTickets: number;
     registrationDeadline: Date;
   };
-  status?: "Active" | "Completed" | "Cancelled" | "Pending" | "Rejected";
+  eventStatus: {
+    status:"Active" | "Completed" | "Cancelled" | "Pending" | "Rejected",
+    message?:string
+  };
 }
