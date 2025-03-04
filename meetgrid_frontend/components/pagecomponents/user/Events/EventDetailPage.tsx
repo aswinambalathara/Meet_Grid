@@ -26,6 +26,7 @@ function EventDetailPage() {
   ).format("DD-MM-YYYY hh:mm A");
   const startDate = moment(event?.startDate).format("MMMM Do YYYY, h:mm A");
   const endDate = moment(event?.endDate).format("MMMM Do YYYY, h:mm A");
+  
   useEffect(() => {
     (async () => {
       try {

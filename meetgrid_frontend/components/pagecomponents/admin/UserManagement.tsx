@@ -114,7 +114,8 @@ function UserManagement() {
                 className="py-5 placeholder:text-white/50 border-slate-900"
                 onKeyDown={handleSearch}
               />
-              <i className="fa-solid fa-magnifying-glass absolute right-3"></i>
+              <i className="fa-solid fa-magnifying-glass absolute right-10"></i>
+              <i onClick={()=>setSearchTerm("")} className="fa-solid fa-arrow-rotate-right absolute right-3 text-sm hover:scale-110 hover:text-white/50 cursor-pointer"></i>
             </div>
           </div>
           <Table>
@@ -151,7 +152,7 @@ function UserManagement() {
               ) : (
                 users.map((user) => (
                   <TableRow key={user._id}>
-                    <TableCell>{user.fullName}</TableCell>
+                    <TableCell className="capitalize">{user.fullName}</TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell
                       className={
@@ -170,7 +171,7 @@ function UserManagement() {
                     </TableCell>
                     <TableCell className="flex gap-2">
                       <i
-                        className="fa-solid fa-eye text-sky-700 text-base"
+                        className="fa-solid fa-eye text-sky-700 text-base cursor-pointer"
                         onClick={() => handleViewProfile(user)}
                       ></i>
                       {user.isBlocked ? (

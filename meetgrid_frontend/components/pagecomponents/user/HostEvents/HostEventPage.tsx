@@ -54,7 +54,9 @@ function HostEventPage() {
   }, []);
 
   useEffect(() => {
-    fetchEventCategories();
+    if (eventCategories.length === 0) {
+      fetchEventCategories();
+    }
   }, [fetchEventCategories]);
 
   const eventType = methods.watch("eventType") || "In-Person";
@@ -93,7 +95,7 @@ function HostEventPage() {
     }
   };
 
-  console.error(methods.formState.errors,'logging from main')
+  console.error(methods.formState.errors, "logging from main");
   //console.log(methods.getValues())
   return (
     <div className="min-h-screen bg-sky-100 sm:mb-5 sm:mx-16 rounded-lg">

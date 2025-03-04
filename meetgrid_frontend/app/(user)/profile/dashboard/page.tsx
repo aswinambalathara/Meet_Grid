@@ -5,7 +5,7 @@ import React from "react";
 function page() {
   return (
     <div className="min-h-screen  sm:px-16  pt-5">
-      <div className="container bg-white/70 min-h-screen rounded-t-3xl p-14">
+      <div className="container bg-white/50 min-h-screen rounded-t-3xl p-14 border border-zinc-100">
         <div className="header flex flex-col sm:flex-row items-center gap-4 mb-5 relative">
           <Image
             src={"/images/profile-img.jpg"}

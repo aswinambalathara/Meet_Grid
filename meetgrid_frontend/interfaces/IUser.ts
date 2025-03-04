@@ -1,12 +1,13 @@
 export default interface IUser {
   readonly _id?: string;
+  readonly createdAt?: string;
   email: string;
   fullName?: string;
   password?: string;
   phone?: string;
   image?: {
-    url:string,
-    public_id:string
+    url: string;
+    public_id: string;
   };
   bio?: string;
   gender?: "Male" | "Female" | "Others";
