@@ -20,13 +20,13 @@ function Sidebar() {
     if (confirm) {
       try {
         await handleAdminLogout();
-        logout("adminToken");
         router.push("/admin/login");
       } catch (error) {
         if (error instanceof Error) {
-          logout("adminToken");
           console.error(error);
         }
+      } finally {
+        logout("adminToken");
       }
     }
   };

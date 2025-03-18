@@ -31,7 +31,7 @@ export default class EventRepository implements IEventRepository {
     return await this.model.findOne({ filters });
   }
   async findEvents(filters: EventFilter): Promise<IEvent[]> {
-    console.log(filters);
+    //console.log(filters);
     const pipeline: any[] = [];
 
 
@@ -52,7 +52,11 @@ export default class EventRepository implements IEventRepository {
         },
       });
     }
+
+    const date = new Date()
     const physicalMatch: Record<string, any> = {};
+
+    physicalMatch['endDate'] = {$gt:date};
 
     if (filters.categoryGroup) {
       physicalMatch["category.categoryType"] = filters.categoryGroup;
@@ -136,7 +140,7 @@ export default class EventRepository implements IEventRepository {
 
     //console.log(pipeline);
     const result = await this.model.aggregate(pipeline);
-    console.log(result);
+    //console.log(result);
     return result;
   }
 }

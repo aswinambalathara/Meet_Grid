@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import Link from "next/link";
 
 function UserManageEvents() {
   return (
@@ -64,7 +65,7 @@ function UserManageEvents() {
             <TableCell className="flex gap-1">
               <Tooltip>
                 <TooltipTrigger>
-                  <i className="fa-regular fa-eye text-blue-500" />
+                <Link href={'/profile/manage-event/soo'}><i className="fa-regular fa-eye text-blue-500" /></Link>
                 </TooltipTrigger>
                 <TooltipContent className="text-[12px] bg-zinc-700 p-1 text-white rounded-md">
                   <p>View Event</p>

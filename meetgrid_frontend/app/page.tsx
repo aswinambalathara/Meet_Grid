@@ -20,7 +20,7 @@ function Page() {
           {FeatureCards.map((feature, idx) => (
             <Card
               key={idx}
-              className={`h-64 w-72 p-5 shadow-stone-500 shadow-md ${
+              className={`h-64 w-72 p-5 shadow-stone-500 shadow-md rounded-tr-3xl rounded-bl-3xl rounded-tl-am rounded-br-sm ${
                 idx === Math.floor(FeatureCards.length / 2) && "mt-5"
               }`}
             >

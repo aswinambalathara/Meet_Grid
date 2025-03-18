@@ -145,6 +145,7 @@ function ExploreEvents() {
     setLocation(getShortLocation(place[0].address));
     setIsSearchActive(false);
   };
+
   const debouncedLocationInput = debounce(handleLocationInput, 500);
 
   const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -184,11 +185,11 @@ function ExploreEvents() {
           className="object-cover blur-sm brightness-75"
         />
         <div className="banner-content absolute alegreya flex flex-col items-center justify-center">
-          <h1 className="text-4xl font-extrabold">
+          <h1 className="text-xl sm:text-4xl font-extrabold">
             <span className="text-red-600">Discover</span> Your Next{" "}
             <span className="text-amber-600">Great Experience</span>
           </h1>
-          <h5 className="font-semibold text-lg text-white">
+          <h5 className="font-semibold text-sm text-center sm:text-lg text-white">
             Explore a diverse range of local and virtual events tailored to your
             interests.
           </h5>
@@ -198,7 +199,7 @@ function ExploreEvents() {
       <section className="section-events border border-b-0 min-h-screen relative rounded-t-xl pb-10">
         <div className="event-selectors flex gap-3 justify-center items-center mb-5">
           <Button
-            className={`w-[200px] bg-transparent ring-1 text-white ring-white rounded-b-2xl hover:bg-white hover:text-black ${
+            className={`w-[200px] bg-transparent border border-t-0 border-white text-white rounded-tl-xl sm:rounded-tl-sm rounded-b-2xl hover:bg-white hover:text-black ${
               active === "Professional" ? "bg-white text-black" : ""
             }`}
             onClick={() => handleEventGroupSelection("Professional")}
@@ -206,7 +207,7 @@ function ExploreEvents() {
             Professional & Business
           </Button>
           <Button
-            className={`w-[200px] rounded-b-2xl ring-1 bg-transparent hover:bg-white hover:text-black ring-white ${
+            className={`w-[200px] rounded-b-2xl rounded-tr-xl sm:rounded-tr-sm border border-t-0 border-white bg-transparent hover:bg-white hover:text-black  ${
               active === "General" ? "bg-white text-black" : ""
             }`}
             onClick={() => handleEventGroupSelection("General")}
@@ -215,18 +216,23 @@ function ExploreEvents() {
           </Button>
         </div>
 
-        <div className="filterOptions flex items-start justify-between text-white px-5 gap-3 mb-10">
-          <div className="sort-search flex items-center gap-3">
+        <div className="filterOptions flex items-start justify-between text-white px-2 sm:px-5 gap-3 mb-10">
+          <div className="sort-search flex items-center gap-3 w-full">
             <div
-              className="sort ring-1 ring-white p-1 cursor-pointer rounded"
+              className="sort ring-1 ring-white p-1 cursor-pointer rounded space-x-1"
               onClick={() => setSortActive(!isSortActive)}
             >
-              <p>
-                Sort <i className="fa-solid fa-arrow-down-wide-short"></i>
-              </p>
+              <p className="hidden sm:inline-block">Sort</p>
+              <i className="fa-solid fa-arrow-down-wide-short"></i>
             </div>
+
             <div className="search-bar relative">
-              <Input placeholder="Search events" type="text" onChange={(e)=>setSearchTerm(e.target.value)}/>
+              <Input
+                className=""
+                placeholder="Search events"
+                type="text"
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
               {searchTerm.length > 0 ? (
                 <i
                   className={`fa-solid fa-xmark absolute right-2 text-sm bottom-[10px]`}
@@ -276,15 +282,15 @@ function ExploreEvents() {
               onClick={() => setIsSearchActive(true)}
             >
               <i className="fa-solid fa-location-dot"></i>
-              <p>{location}</p>
+              <p className=" hidden sm:block">{location}</p>
             </Button>
             <Button
               onClick={() => setFilterActive(!isFilterActive)}
               className={`bg-transparent text-slate-300 hover:text-slate-50 ring-1 ring-white p-2 max-w-48 overflow-hidden`}
             >
               <i className="fa-solid fa-filter"></i>
-              Filter
-              <i className="fa-solid fa-chevron-down "></i>
+              <p className="hidden sm:block">Filter</p>
+              <i className="fa-solid fa-chevron-down hidden sm:block" />
             </Button>
           </div>
         </div>

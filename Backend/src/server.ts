@@ -10,6 +10,7 @@ import "./types/index";
 import passport from "passport";
 import googleStrategy from "./config/passport";
 import connectRedis from "./config/configRedis";
+
 const app = express();
 const port = PORT || 4000;
 

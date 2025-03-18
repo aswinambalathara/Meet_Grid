@@ -42,11 +42,12 @@ function Navbar() {
   const handleLogOut = async () => {
     try {
       await userLogout();
-      logout("userToken");
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
       }
+    }finally{
+      logout("userToken");
     }
   };
 
