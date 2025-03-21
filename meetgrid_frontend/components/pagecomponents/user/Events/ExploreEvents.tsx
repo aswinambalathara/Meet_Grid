@@ -17,7 +17,35 @@ import { Label } from "@/components/ui/label";
 import axios from "axios";
 import IEventCategory from "@/interfaces/IEventCategory";
 import { useRouter } from "next/navigation";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import toast from "react-hot-toast";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 function ExploreEvents() {
   const router = useRouter();
@@ -216,21 +244,45 @@ function ExploreEvents() {
           </Button>
         </div>
 
-        <div className="filterOptions flex items-start justify-between text-white px-2 sm:px-5 gap-3 mb-10">
+        <div className="filterOptions flex items-center justify-between text-white px-2 sm:px-5 gap-3 mb-10">
           <div className="sort-search flex items-center gap-3 w-full">
-            <div
-              className="sort ring-1 ring-white p-1 cursor-pointer rounded space-x-1"
-              onClick={() => setSortActive(!isSortActive)}
+            <Select
+              onValueChange={(value) =>
+                setFilters((prev) => ({ ...prev, sort: value }))
+              }
             >
-              <p className="hidden sm:inline-block">Sort</p>
-              <i className="fa-solid fa-arrow-down-wide-short"></i>
-            </div>
+              <SelectTrigger className="text-white w-fit  overflow-hidden space-x-1 p-1">
+                <SelectValue placeholder={`Sort `} />
+                <i className="fa-solid fa-arrow-down-wide-short"></i>
+              </SelectTrigger>
+              <SelectContent side="bottom">
+                <SelectGroup>
+                  <SelectLabel>
+                    <i className="fa-solid fa-indian-rupee-sign text-blue-500" />{" "}
+                    Price
+                  </SelectLabel>
+                  <SelectItem value="low-to-high">Low to High</SelectItem>
+                  <SelectItem value="high-to-low">High to Low</SelectItem>
+                </SelectGroup>
+                <SelectGroup>
+                  <SelectLabel>
+                    <i className="fa-solid fa-location-arrow text-blue-500" />{" "}
+                    Distance
+                  </SelectLabel>
+                  <SelectItem value="closest-first">Closest First</SelectItem>
+                  <SelectItem value="farthest-first">Farthest First</SelectItem>
+                </SelectGroup>
+                <Button size={"sm"} className="self-center">
+                  Reset
+                </Button>
+              </SelectContent>
+            </Select>
 
-            <div className="search-bar relative">
+            <div className="search-bar relative w-full">
               <Input
-                className=""
                 placeholder="Search events"
                 type="text"
+                className="p-2"
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
               {searchTerm.length > 0 ? (
@@ -245,201 +297,169 @@ function ExploreEvents() {
             </div>
           </div>
 
-          <div className="flex gap-2">
-            <div className={`search relative ${!isSearchActive && "hidden"} `}>
-              <Input
-                type="text"
-                placeholder="Enter location"
-                className="max-w-60"
-                onChange={debouncedLocationInput}
-              />
-              <i
-                className="fa-solid fa-xmark absolute right-2 top-2 cursor-pointer"
-                onClick={() => setIsSearchActive(false)}
-              />
-              <ul
-                className={`bg-slate-200/50 text-sm mt-1 text-black py-2 rounded-b absolute w-full overflow-auto max-h-60 z-10 ${
-                  !suggestions.length && "hidden"
-                }`}
-              >
-                {suggestions.length &&
-                  suggestions.map((suggestion) => (
-                    <li
-                      key={suggestion.place_id}
-                      className="bg-slate-100 p-1 text-sm mb-1 cursor-pointer"
-                      data-value={suggestion.place_id}
-                      onClick={handleLocationSelect}
-                    >
-                      {suggestion.display_name}
-                    </li>
-                  ))}
-              </ul>
+          <div className="flex border border-white rounded">
+            <div className={`bg-transparent text-white flex items-center gap-1 rounded p-1 max-w-28 sm:max-w-48 overflow-hidden`}>
+              <i className="fa-solid fa-location-dot "></i>
+              <p className="text-xs sm:text-sm">{location}</p>
             </div>
             <Button
-              className={`bg-transparent text-slate-300 ring-1 ring-white p-2 max-w-48 overflow-hidden hover:text-white ${
-                isSearchActive && "hidden"
-              }`}
-              onClick={() => setIsSearchActive(true)}
-            >
-              <i className="fa-solid fa-location-dot"></i>
-              <p className=" hidden sm:block">{location}</p>
-            </Button>
-            <Button
               onClick={() => setFilterActive(!isFilterActive)}
-              className={`bg-transparent text-slate-300 hover:text-slate-50 ring-1 ring-white p-2 max-w-48 overflow-hidden`}
+              className={`bg-transparent text-slate-300 hover:text-slate-50 border-l-2 p-1 border-white rounded-none max-w-48 overflow-hidden`}
             >
               <i className="fa-solid fa-filter"></i>
               <p className="hidden sm:block">Filter</p>
-              <i className="fa-solid fa-chevron-down hidden sm:block" />
             </Button>
           </div>
         </div>
 
-        <ul
-          className={`absolute sort-list text-sm bg-zinc-400 px-4 py-2 rounded top-24 left-5 z-10 leading-6 ${
-            !isSortActive && "hidden"
-          }`}
+        <Dialog
+          open={isFilterActive}
+          onOpenChange={(open) => setFilterActive(open)}
         >
-          <li>
-            Price:
-            <div className="flex flex-col text-sm gap-1">
-              <Label className="cursor-pointer">
-                <input type="radio" value="low-to-high" name="sort-filter" />{" "}
-                Low to High
-              </Label>
-              <Label className="cursor-pointer">
-                <input type="radio" value="high-to-low" name="sort-filter" />{" "}
-                High to Low
-              </Label>
-            </div>
-          </li>
-          <li>
-            Distance:
-            <div className="flex flex-col text-sm gap-1">
-              <Label className="cursor-pointer">
-                <input type="radio" value="closest-first" name="sort-filter" />{" "}
-                Closest First
-              </Label>
-              <Label className="cursor-pointer">
-                <input type="radio" value="farthest-first" name="sort-filter" />{" "}
-                Farthest First
-              </Label>
-            </div>
-          </li>
-
-          <div className="mt-3">
-            <button className="bg-stone-900 text-white px-2 rounded">
-              Reset
-            </button>
-          </div>
-        </ul>
-
-        <div
-          className={`bg-white/50 w-5/6 sm:w-2/6  min-h-40  absolute right-5 top-24 rounded filters py-5 px-3 flex flex-col gap-3 text-sm ${
-            !isFilterActive && "hidden"
-          }`}
-        >
-          <div className="control flex flex-col gap-1">
-            <p>
-              Max Distance <span>({filters.maxDistance || 5}KM)</span>{" "}
-            </p>
-            <Slider
-              onValueChange={(values) =>
-                setFilters((prev) => ({
-                  ...prev,
-                  maxDistance: values[0],
-                }))
-              }
-              min={5}
-              value={[filters.maxDistance || 5]}
-              defaultValue={[5]}
-              max={100}
-              step={1}
-            />
-          </div>
-          <div className="control flex flex-col gap-1">
-            <p>Categories</p>
-            <select
-              name="event-categories"
-              defaultValue={""}
-              value={filters.category}
-              className="rounded h-8 text-sm capitalize cursor-pointer"
-              id="event-categories"
-              onChange={(e) =>
-                setFilters((prev) => ({
-                  ...prev,
-                  category: e.target.value,
-                }))
-              }
-            >
-              <option value={""} hidden>
-                Select category
-              </option>
-              {categories.length ? (
-                categories
-                  .filter(
-                    (category) =>
-                      category.categoryType === filters.categoryGroup
-                  )
-                  .map((category) => (
-                    <option
-                      className="capitalize cursor-pointer"
-                      key={category._id}
-                      value={category._id}
-                    >
-                      {category.categoryName}
-                    </option>
-                  ))
-              ) : (
-                <option>No category found</option>
-              )}
-            </select>
-          </div>
-          <div className="control flex flex-col gap-1">
-            <p>Event Type</p>
-            <div className="radioGroup flex gap-2">
-              <input
-                type="hidden"
-                name="eventType"
-                id="default"
-                value={""}
-                defaultChecked
-              />
-              <div className="radio-item flex items-center space-x-1">
-                <input
-                  type="radio"
-                  id="type-1"
-                  name="eventType"
-                  className="size-4"
-                  value={"Online"}
-                  onChange={handleRadioChange}
-                  checked={filters.eventType === "Online"}
+          <DialogContent className="border border-black bg-white/70">
+            <DialogHeader>
+              <DialogTitle>Sort & Filters</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col gap-2 content">
+              <div className={`search relative `}>
+                <Input
+                  type="text"
+                  placeholder="Enter location"
+                  className="w-full"
+                  onChange={debouncedLocationInput}
                 />
-                <Label htmlFor="type-1">Online</Label>
-              </div>
-              <div className="radio-item flex items-center space-x-1">
-                <input
-                  type="radio"
-                  id="type-2"
-                  name="eventType"
-                  className="size-4"
-                  value={"In-Person"}
-                  onChange={handleRadioChange}
-                  checked={filters.eventType === "In-Person"}
+                <i
+                  className="fa-solid fa-xmark absolute right-2 top-2 cursor-pointer"
+                  onClick={() => setIsSearchActive(false)}
                 />
-                <Label htmlFor="type-2">In-Person</Label>
+                <ul
+                  className={`bg-slate-200/50 text-sm mt-1 text-black py-2 rounded-b absolute w-full overflow-auto max-h-60 z-10 ${
+                    !suggestions.length && "hidden"
+                  }`}
+                >
+                  {suggestions.length &&
+                    suggestions.map((suggestion) => (
+                      <li
+                        key={suggestion.place_id}
+                        className="bg-slate-100 p-1 text-sm mb-1 cursor-pointer"
+                        data-value={suggestion.place_id}
+                        onClick={handleLocationSelect}
+                      >
+                        {suggestion.display_name}
+                      </li>
+                    ))}
+                </ul>
+              </div>
+
+              <div className="control flex flex-col gap-1">
+                <p>
+                  Max Distance <span>({filters.maxDistance || 5}KM)</span>{" "}
+                </p>
+                <Slider
+                  onValueChange={(values) =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      maxDistance: values[0],
+                    }))
+                  }
+                  min={5}
+                  value={[filters.maxDistance || 5]}
+                  defaultValue={[5]}
+                  max={100}
+                  step={1}
+                />
+              </div>
+
+              <div className="control flex flex-col gap-1">
+                <p>Categories</p>
+                <select
+                  name="event-categories"
+                  defaultValue={""}
+                  value={filters.category}
+                  className="rounded h-8 text-sm capitalize cursor-pointer text-black"
+                  id="event-categories"
+                  onChange={(e) =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      category: e.target.value,
+                    }))
+                  }
+                >
+                  <option value={""} hidden>
+                    Select category
+                  </option>
+                  {categories.length ? (
+                    categories
+                      .filter(
+                        (category) =>
+                          category.categoryType === filters.categoryGroup
+                      )
+                      .map((category) => (
+                        <option
+                          className="capitalize cursor-pointer"
+                          key={category._id}
+                          value={category._id}
+                        >
+                          {category.categoryName}
+                        </option>
+                      ))
+                  ) : (
+                    <option>No category found</option>
+                  )}
+                </select>
+              </div>
+
+              <div className="control flex flex-col gap-1">
+                <p>Event Type</p>
+                <div className="radioGroup flex gap-2">
+                  <input
+                    type="hidden"
+                    name="eventType"
+                    id="default"
+                    value={""}
+                    defaultChecked
+                  />
+                  <div className="radio-item flex items-center space-x-1">
+                    <input
+                      type="radio"
+                      id="type-1"
+                      name="eventType"
+                      className="size-4"
+                      value={"Online"}
+                      onChange={handleRadioChange}
+                      checked={filters.eventType === "Online"}
+                    />
+                    <Label htmlFor="type-1">Online</Label>
+                  </div>
+                  <div className="radio-item flex items-center space-x-1">
+                    <input
+                      type="radio"
+                      id="type-2"
+                      name="eventType"
+                      className="size-4"
+                      value={"In-Person"}
+                      onChange={handleRadioChange}
+                      checked={filters.eventType === "In-Person"}
+                    />
+                    <Label htmlFor="type-2">In-Person</Label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="control flex gap-1 mt-4 justify-end">
+                <Button
+                  className="text-white"
+                  onClick={() => setRefetch(!refetch)}
+                >
+                  Apply Filters
+                </Button>
+                <Button variant={"secondary"} onClick={handleResetFilter}>
+                  Reset
+                </Button>
               </div>
             </div>
-          </div>
-          <div className="control flex gap-1 mt-4 justify-end">
-            <Button className="text-white" onClick={() => setRefetch(!refetch)}>
-              Apply Filters
-            </Button>
-            <Button variant={"secondary"} onClick={handleResetFilter}>
-              Reset
-            </Button>
-          </div>
-        </div>
+          </DialogContent>
+        </Dialog>
 
         <div
           className={`events-list grid ${

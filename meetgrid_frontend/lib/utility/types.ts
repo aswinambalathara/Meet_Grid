@@ -78,6 +78,7 @@ export type EventFilterOptions = {
   maxDistance?: number;
   eventType?: "Online" | "In-Person";
   search?: string;
+  sort?:string
 };
 
 export type ErrorResponse = {
